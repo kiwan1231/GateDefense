@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-G1.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:/work/GitProject/GateDefense/G1/Intermediate/Build/Win64/x64/G1Editor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"C:/work/GitProject/GateDefense/G1/Intermediate/Build/Win64/x64/UnrealEditor/Development/G1/G1.cpp.obj"
+"C:/work/GitProject/GateDefense/G1/Intermediate/Build/Win64/x64/UnrealEditor/Development/G1/PerModuleInline.gen.cpp.obj"
+"C:/work/GitProject/GateDefense/G1/Intermediate/Build/Win64/x64/UnrealEditor/Development/G1/Default.rc2.res"
+/OUT:"C:/work/GitProject/GateDefense/G1/Intermediate/Build/Win64/x64/UnrealEditor/Development/G1/UnrealEditor-G1.lib"

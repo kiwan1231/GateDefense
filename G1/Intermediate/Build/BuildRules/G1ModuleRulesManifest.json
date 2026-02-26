@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"C:\\work\\GitProject\\GateDefense\\G1\\Source\\G1\\G1.Build.cs",
+		"C:\\work\\GitProject\\GateDefense\\G1\\Source\\G1.Target.cs",
+		"C:\\work\\GitProject\\GateDefense\\G1\\Source\\G1Editor.Target.cs"
+	],
+	"EngineVersion": "5.7.3"
+}
