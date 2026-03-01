@@ -7,8 +7,26 @@ public class G1 : ModuleRules
 	public G1(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+		PublicIncludePaths.AddRange(new string[]
+		{
+			"G1"
+		});
+
+		PublicDependencyModuleNames.AddRange(new string[] {
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"EnhancedInput",
+			"GameplayTags",
+			"GameplayTasks",
+			"GameplayAbilities",
+			"NavigationSystem",
+			"AIModule",
+			"Niagara",
+			"UMG"
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
