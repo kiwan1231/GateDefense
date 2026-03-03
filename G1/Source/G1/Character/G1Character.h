@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Utility/G1CharacterDefine.h"
+
+
+
 #include "G1Character.generated.h"
 
 UCLASS()
@@ -14,6 +18,10 @@ class G1_API AG1Character : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AG1Character();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ECharacterState State = ECharacterState::None;
 
 protected:
 	// Called when the game starts or when spawned

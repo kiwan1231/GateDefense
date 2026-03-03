@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 
 UENUM(BlueprintType)
-enum class ECreatureState : uint8
+enum class ECharacterState : uint8
 {
 	None,
 	Moving,

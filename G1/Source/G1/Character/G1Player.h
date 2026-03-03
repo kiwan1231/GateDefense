@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Character/G1Character.h"
+#include "Utility/G1GameplayTags.h"
+
+
 #include "G1Player.generated.h"
 
 /**
@@ -14,4 +17,27 @@ class G1_API AG1Player : public AG1Character
 {
 	GENERATED_BODY()
 	
+public:
+	AG1Player();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void HandleGameplayEvent(FGameplayTag EventTag);
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UCameraComponent> Camera;
 };
