@@ -7,11 +7,13 @@
 #include "Utility/G1CharacterDefine.h"
 #include "Utility/G1GameplayTags.h"
 #include "GameplayTagContainer.h"
+#include "Data/G1PlayerInputData.h"
 
 #include "G1PlayerController.generated.h"
 
 struct FInputActionValue;
-
+class UInputAction;
+class UInputMappingContext;
 /**
  * 
  */
@@ -30,6 +32,12 @@ protected:
 
 public:
 	virtual void HandleGameplayEvent(FGameplayTag EventTag);
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+	TObjectPtr<UInputAction> InputAction = nullptr;
 
 private:
 	void Input_SetDestination(const FInputActionValue& InputValue);

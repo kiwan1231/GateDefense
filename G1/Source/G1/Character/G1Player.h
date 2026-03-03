@@ -9,6 +9,8 @@
 
 #include "G1Player.generated.h"
 
+struct FInputActionValue;
+
 /**
  * 
  */
@@ -40,4 +42,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UCameraComponent> Camera;
+
 };

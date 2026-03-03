@@ -59,7 +59,6 @@ void AG1Player::Tick(float DeltaTime)
 void AG1Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void AG1Player::HandleGameplayEvent(FGameplayTag EventTag)

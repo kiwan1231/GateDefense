@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "System/G1AssetManager.h"
+#include "Data/G1PlayerInputData.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -19,11 +21,27 @@ AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitial
 void AG1PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (InputMappingContext != nullptr)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(InputMappingContext, 0);
+		}
+	}
 }
 
 void AG1PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	if (InputAction != nullptr)
+	{
+		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+		{
+			EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+		}
+	}
 }
 
 void AG1PlayerController::PlayerTick(float DeltaTime)
