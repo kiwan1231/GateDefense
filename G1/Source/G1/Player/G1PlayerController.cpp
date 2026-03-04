@@ -63,6 +63,10 @@ void AG1PlayerController::TickCursorTrace()
 {
 }
 
+void AG1PlayerController::ChaseTargetAndAttack()
+{
+}
+
 void AG1PlayerController::Input_SetDestination(const FInputActionValue& InputValue)
 {
 }
