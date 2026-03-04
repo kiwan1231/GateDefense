@@ -4,7 +4,7 @@
 
 #include "NativeGameplayTags.h"
 
-namespace R1GameplayTags
+namespace G1GameplayTags
 {
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Action_Move);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Action_Turn);
@@ -13,7 +13,7 @@ namespace R1GameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Action_HitTarget);
 }
 
-namespace R1GameplayTags
+namespace G1GameplayTags
 {
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_Begin);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_End);

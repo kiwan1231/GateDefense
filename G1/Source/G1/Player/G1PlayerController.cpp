@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "System/G1AssetManager.h"
 #include "Data/G1PlayerInputData.h"
+#include "Utility/G1GameplayTags.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -22,24 +23,28 @@ void AG1PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (InputMappingContext != nullptr)
+	if (const UG1PlayerInputData* InputData = UG1AssetManager::GetAssetByName<UG1PlayerInputData>("Input_Common"))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(InputMappingContext, 0);
+			Subsystem->AddMappingContext(InputData->InputMappingContext, 0);
 		}
 	}
+
+	R1Player = Cast<AG1Player>(GetCharacter());
 }
 
 void AG1PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	if (InputAction != nullptr)
+	if (const UG1PlayerInputData* InputData = UG1AssetManager::GetAssetByName<UG1PlayerInputData>("Input_Common"))
 	{
 		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 		{
-			EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+			auto MoveAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Move);
+
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 		}
 	}
 }
@@ -62,17 +67,16 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
 
+	FRotator CamRot = this->PlayerCameraManager->GetCameraRotation();
+	FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, CamRot.Yaw, 0));
+
 	if (MovementVector.X != 0)
 	{
-		FRotator Rotator = GetControlRotation();
-		FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Rotator.Yaw, 0));
 		GetPawn()->AddMovementInput(Direction, MovementVector.X);
 	}
 
 	if (MovementVector.Y != 0)
 	{
-		FRotator Rotator = GetControlRotation();
-		FVector Direction = UKismetMathLibrary::GetRightVector(FRotator(0, Rotator.Yaw, 0));
 		GetPawn()->AddMovementInput(Direction, MovementVector.Y);
 	}
 }

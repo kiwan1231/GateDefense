@@ -12,6 +12,11 @@
 #include "G1PlayerController.generated.h"
 
 struct FInputActionValue;
+class UNiagaraSystem;
+class G1Character;
+class G1Player;
+
+
 class UInputAction;
 class UInputMappingContext;
 /**
@@ -33,11 +38,21 @@ protected:
 public:
 	virtual void HandleGameplayEvent(FGameplayTag EventTag);
 
+private:
+	void TickCursorTrace();
+	void ChaseTargetAndAttack();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
 	TObjectPtr<UInputAction> InputAction = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	float ShortPressThreshold = 0.3f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UNiagaraSystem> FXCursor;
 
 private:
 	void Input_SetDestination(const FInputActionValue& InputValue);
@@ -58,4 +73,13 @@ private:
 	FVector CachedDestination;
 	float FollowTime;
 	bool bMousePressed = false;
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AG1Character> TargetActor;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AG1Character> HighlightActor;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AG1Player> R1Player;
+
 };
