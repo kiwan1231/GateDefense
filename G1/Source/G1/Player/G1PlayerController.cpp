@@ -59,6 +59,10 @@ void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
 
 }
 
+void AG1PlayerController::TickCursorTrace()
+{
+}
+
 void AG1PlayerController::Input_SetDestination(const FInputActionValue& InputValue)
 {
 }
@@ -66,18 +70,21 @@ void AG1PlayerController::Input_SetDestination(const FInputActionValue& InputVal
 void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
-
 	FRotator CamRot = this->PlayerCameraManager->GetCameraRotation();
-	FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, CamRot.Yaw, 0));
+	FRotator YawRot(0.f, CamRot.Yaw, 0.f);
 
 	if (MovementVector.X != 0)
 	{
-		GetPawn()->AddMovementInput(Direction, MovementVector.X);
+		FVector Forward = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+		//GetPawn()->AddActorWorldOffset(Forward * 10.0f * MovementVector.X);
+		GetPawn()->AddMovementInput(Forward, MovementVector.X);
 	}
 
 	if (MovementVector.Y != 0)
 	{
-		GetPawn()->AddMovementInput(Direction, MovementVector.Y);
+		FVector Right = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+		//GetPawn()->AddActorWorldOffset(Right * 10.0f * MovementVector.Y);
+		GetPawn()->AddMovementInput(Right, MovementVector.Y);
 	}
 }
 

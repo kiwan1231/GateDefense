@@ -43,11 +43,6 @@ private:
 	void ChaseTargetAndAttack();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
-	TObjectPtr<UInputMappingContext> InputMappingContext;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
-	TObjectPtr<UInputAction> InputAction = nullptr;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	float ShortPressThreshold = 0.3f;
 

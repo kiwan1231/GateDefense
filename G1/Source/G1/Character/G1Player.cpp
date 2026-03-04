@@ -18,8 +18,8 @@ AG1Player::AG1Player()
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Rotate character to moving direction
+	//GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
