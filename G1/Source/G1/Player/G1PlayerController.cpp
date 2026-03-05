@@ -9,6 +9,8 @@
 #include "System/G1AssetManager.h"
 #include "Data/G1PlayerInputData.h"
 #include "Utility/G1GameplayTags.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "NiagaraFunctionLibrary.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -58,14 +60,14 @@ void AG1PlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	UpdateMoveTarget(DeltaTime);
+	UpdateMovePoint(DeltaTime);
 }
 
 void AG1PlayerController::StopMovement()
 {
 	Super::StopMovement();
 
-	bMoveTarget = false;
+	SetCharacterState(ECharacterState::Idle);
 	CachedDestination = FVector::ZeroVector;
 }
 void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
@@ -97,7 +99,7 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 		GetPawn()->AddMovementInput(Right, MovementVector.Y);
 	}
 
-	bMoveTarget = false;
+	SetCharacterState(ECharacterState::MoveDirection);
 	CachedDestination = FVector::ZeroVector;
 }
 
@@ -132,14 +134,21 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	// Move towards mouse pointer or touch
 	if (GetPawn() != nullptr)
 	{
-		bMoveTarget = true;
+		SetCharacterState(ECharacterState::MovePoint);
 		CachedDestination = Hit.Location;
+		// We move there and spawn some particles
+
+		if (FXCursor)
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		}
 	}
 }
 
-void AG1PlayerController::UpdateMoveTarget(float DeltaTime)
+void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 {
-	if (bMoveTarget == false)
+	if (GetCharacterState() != ECharacterState::MovePoint)
 	{
 		return;
 	}

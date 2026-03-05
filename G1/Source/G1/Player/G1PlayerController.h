@@ -53,7 +53,7 @@ private:
 	void Input_Attack(const FInputActionValue& InputValue);
 	void Input_HitTarget(const FInputActionValue& InputValue);
 
-	void UpdateMoveTarget(float DeltaTime);
+	void UpdateMovePoint(float DeltaTime);
 
 private:
 	ECharacterState GetCharacterState();
@@ -62,8 +62,6 @@ private:
 private:
 	FVector CachedDestination;
 	float FollowTime;
-	bool bMousePressed = false;
-	bool bMoveTarget = false;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

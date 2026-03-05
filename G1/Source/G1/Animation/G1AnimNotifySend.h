@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "GameplayTagContainer.h"
+
+
 #include "G1AnimNotifySend.generated.h"
 
 /**
@@ -14,4 +17,13 @@ class G1_API UG1AnimNotifySend : public UAnimNotify
 {
 	GENERATED_BODY()
 	
+public:
+	UG1AnimNotifySend(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	FGameplayTag EventTag;
 };

@@ -25,7 +25,10 @@ void AG1Character::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
+void AG1Character::HandleGameplayEvent(FGameplayTag EventTag)
+{
+	UE_LOG(LogTemp, Log, TEXT("HandleGameplayEvent"));
+}
 // Called to bind functionality to input
 void AG1Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
