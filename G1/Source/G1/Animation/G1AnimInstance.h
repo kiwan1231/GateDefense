@@ -24,10 +24,12 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Character> Character;
+
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UCharacterMovementComponent> MovementComponent;
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	FVector Velocity = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly)
