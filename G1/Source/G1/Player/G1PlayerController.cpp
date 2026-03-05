@@ -43,8 +43,13 @@ void AG1PlayerController::SetupInputComponent()
 		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 		{
 			auto MoveAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Move);
-
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+
+			auto JumpAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Jump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+
+			auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
+			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);
 		}
 	}
 }
@@ -52,19 +57,20 @@ void AG1PlayerController::SetupInputComponent()
 void AG1PlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+
+	UpdateMoveTarget(DeltaTime);
 }
 
+void AG1PlayerController::StopMovement()
+{
+	Super::StopMovement();
+
+	bMoveTarget = false;
+	CachedDestination = FVector::ZeroVector;
+}
 void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
 {
 
-}
-
-void AG1PlayerController::TickCursorTrace()
-{
-}
-
-void AG1PlayerController::ChaseTargetAndAttack()
-{
 }
 
 void AG1PlayerController::Input_SetDestination(const FInputActionValue& InputValue)
@@ -90,6 +96,9 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 		//GetPawn()->AddActorWorldOffset(Right * 10.0f * MovementVector.Y);
 		GetPawn()->AddMovementInput(Right, MovementVector.Y);
 	}
+
+	bMoveTarget = false;
+	CachedDestination = FVector::ZeroVector;
 }
 
 void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
@@ -98,22 +107,59 @@ void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
+	if (AG1Character* MyCharacter = Cast<AG1Character>(GetPawn()))
+	{
+		MyCharacter->Jump();
+	}
 }
 
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
 }
 
-void AG1PlayerController::OnInputStarted()
+void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 {
+	// We look for the location in the world where the player has pressed the input
+	FHitResult Hit;
+	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, OUT Hit);
+
+	// If we hit a surface, cache the location
+	if (false == bHitSuccessful)
+	{
+		return;
+	}
+
+	// Move towards mouse pointer or touch
+	if (GetPawn() != nullptr)
+	{
+		bMoveTarget = true;
+		CachedDestination = Hit.Location;
+	}
 }
 
-void AG1PlayerController::OnSetDestinationTriggered()
+void AG1PlayerController::UpdateMoveTarget(float DeltaTime)
 {
-}
+	if (bMoveTarget == false)
+	{
+		return;
+	}
 
-void AG1PlayerController::OnSetDestinationReleased()
-{
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn == nullptr)
+	{
+		StopMovement();
+		return;
+	}
+
+	FVector Direction = CachedDestination - R1Player->GetActorLocation();
+	if (Direction.Length() <= 100)
+	{
+		StopMovement();
+		return;
+	}
+
+	FVector MoveDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+	ControlledPawn->AddMovementInput(MoveDirection, 10, false);
 }
 
 ECharacterState AG1PlayerController::GetCharacterState()
@@ -123,4 +169,8 @@ ECharacterState AG1PlayerController::GetCharacterState()
 
 void AG1PlayerController::SetCharacterState(ECharacterState InState)
 {
+	if (R1Player)
+	{
+		R1Player->State = InState;
+	}
 }

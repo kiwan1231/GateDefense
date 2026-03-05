@@ -34,13 +34,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void PlayerTick(float DeltaTime) override;
-
+	virtual void StopMovement() override;
 public:
 	virtual void HandleGameplayEvent(FGameplayTag EventTag);
-
-private:
-	void TickCursorTrace();
-	void ChaseTargetAndAttack();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -55,10 +51,9 @@ private:
 	void Input_Turn(const FInputActionValue& InputValue);
 	void Input_Jump(const FInputActionValue& InputValue);
 	void Input_Attack(const FInputActionValue& InputValue);
+	void Input_HitTarget(const FInputActionValue& InputValue);
 
-	void OnInputStarted();
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
+	void UpdateMoveTarget(float DeltaTime);
 
 private:
 	ECharacterState GetCharacterState();
@@ -68,6 +63,7 @@ private:
 	FVector CachedDestination;
 	float FollowTime;
 	bool bMousePressed = false;
+	bool bMoveTarget = false;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
