@@ -61,6 +61,7 @@ void AG1PlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	UpdateMovePoint(DeltaTime);
+
 }
 
 void AG1PlayerController::StopMovement()
@@ -161,6 +162,7 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 	}
 
 	FVector Direction = CachedDestination - R1Player->GetActorLocation();
+	Direction.Z = 0;
 	if (Direction.Length() <= 100)
 	{
 		StopMovement();
@@ -173,7 +175,7 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 
 ECharacterState AG1PlayerController::GetCharacterState()
 {
-	return ECharacterState::None;
+	return (R1Player) ? R1Player->State : ECharacterState::None;
 }
 
 void AG1PlayerController::SetCharacterState(ECharacterState InState)

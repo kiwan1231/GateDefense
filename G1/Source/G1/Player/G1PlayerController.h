@@ -59,6 +59,10 @@ private:
 	ECharacterState GetCharacterState();
 	void SetCharacterState(ECharacterState InState);
 
+protected:
+	UPROPERTY(EditAnywhere,  Category="Animation")
+	TObjectPtr<class UAnimMontage> AttackMontage;
+
 private:
 	FVector CachedDestination;
 	float FollowTime;
