@@ -23,6 +23,13 @@ public:
 	AG1Player();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UCameraComponent> Camera;
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -36,11 +43,6 @@ public:
 
 	virtual void HandleGameplayEvent(FGameplayTag EventTag);
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<class USpringArmComponent> SpringArm;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<class UCameraComponent> Camera;
-
+protected: // interface
+	virtual void InitAbilitySystem() override;
 };

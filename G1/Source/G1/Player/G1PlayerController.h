@@ -45,23 +45,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UNiagaraSystem> FXCursor;
 
-private:
-	void Input_SetDestination(const FInputActionValue& InputValue);
+private: // input function
 	void Input_Move(const FInputActionValue& InputValue);
-	void Input_Turn(const FInputActionValue& InputValue);
 	void Input_Jump(const FInputActionValue& InputValue);
+	void Input_Turn(const FInputActionValue& InputValue);
 	void Input_Attack(const FInputActionValue& InputValue);
 	void Input_HitTarget(const FInputActionValue& InputValue);
 
+private:/// tick function
+	void UpdateCharacterState(float DeltaTime);
 	void UpdateMovePoint(float DeltaTime);
 
 private:
 	ECharacterState GetCharacterState();
 	void SetCharacterState(ECharacterState InState);
-
-protected:
-	UPROPERTY(EditAnywhere,  Category="Animation")
-	TObjectPtr<class UAnimMontage> AttackMontage;
 
 private:
 	FVector CachedDestination;
@@ -73,6 +70,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Character> HighlightActor;
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class AG1Player> R1Player;
+	TObjectPtr<class AG1Player> G1Player;
 
 };

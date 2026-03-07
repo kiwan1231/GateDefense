@@ -7,6 +7,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Player/G1PlayerState.h"
+#include "AbilitySystem/G1AbilitySystem.h"
+#include "AbilitySystem/Attributes/G1AttributeSet.h"
+#include "AbilitySystem/Attributes/G1PlayerSet.h"
 
 // Sets default values
 AG1Player::AG1Player()
@@ -46,6 +50,8 @@ void AG1Player::BeginPlay()
 void AG1Player::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	InitAbilitySystem();
 }
 
 // Called every frame
@@ -63,5 +69,18 @@ void AG1Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AG1Player::HandleGameplayEvent(FGameplayTag EventTag)
 {
-	
+	UE_LOG(LogTemp, Log, TEXT("HandleGameplayEvent"));
+}
+
+void AG1Player::InitAbilitySystem()
+{
+	Super::InitAbilitySystem();
+
+	if (AG1PlayerState* PS = GetPlayerState<AG1PlayerState>())
+	{
+		AbilitySystem = Cast<UG1AbilitySystem>(PS->GetAbilitySystemComponent());
+		AbilitySystem->InitAbilityActorInfo(PS, this);
+
+		AttributeSet = PS->GetG1PlayerSet();
+	}
 }

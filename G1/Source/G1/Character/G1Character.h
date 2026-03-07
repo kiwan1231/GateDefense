@@ -6,12 +6,13 @@
 #include "GameFramework/Character.h"
 #include "Utility/G1CharacterDefine.h"
 #include "GameplayTagContainer.h"
+#include "AbilitySystemInterface.h"
 
 
 #include "G1Character.generated.h"
 
 UCLASS()
-class G1_API AG1Character : public ACharacter
+class G1_API AG1Character : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -19,9 +20,19 @@ public:
 	// Sets default values for this character's properties
 	AG1Character();
 
-public:
+public: /// ReadWrite
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ECharacterState State = ECharacterState::None;
+
+protected: /// ReadOnly
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Ability)
+	TObjectPtr<class UG1AbilitySystem> AbilitySystem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ability)
+	TObjectPtr<class UG1AttributeSet> AttributeSet;
+
+	UPROPERTY(EditAnywhere, Category =Ability)
+	TArray<TSubclassOf<class UGameplayAbility>> StartupAbilities;
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,4 +46,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+public: // interface
+	virtual void InitAbilitySystem();
+
+public: /// public ±â´É ÇÔ¼ö
+
+	// ¾îºô¸®Æ¼ ½Àµæ
+	void AddCharacterAbilities();
+	// ¾îºô¸®Æ¼ ½ÇÇà
+	void ActivateAbility(FGameplayTag AbilityTag);
+
+public:
+	bool IsAttackState();
 };

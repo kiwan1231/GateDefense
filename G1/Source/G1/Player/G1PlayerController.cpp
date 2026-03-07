@@ -33,7 +33,7 @@ void AG1PlayerController::BeginPlay()
 		}
 	}
 
-	R1Player = Cast<AG1Player>(GetCharacter());
+	G1Player = Cast<AG1Player>(GetCharacter());
 }
 
 void AG1PlayerController::SetupInputComponent()
@@ -50,6 +50,9 @@ void AG1PlayerController::SetupInputComponent()
 			auto JumpAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
 
+			auto AttackAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Attack);
+			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Attack);
+
 			auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
 			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);
 		}
@@ -59,6 +62,8 @@ void AG1PlayerController::SetupInputComponent()
 void AG1PlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+
+	UpdateCharacterState(DeltaTime);
 
 	UpdateMovePoint(DeltaTime);
 
@@ -71,17 +76,17 @@ void AG1PlayerController::StopMovement()
 	SetCharacterState(ECharacterState::Idle);
 	CachedDestination = FVector::ZeroVector;
 }
+
 void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
 {
-
-}
-
-void AG1PlayerController::Input_SetDestination(const FInputActionValue& InputValue)
-{
+	//UE_LOG(LogTemp, Log, TEXT("HandleGameplayEvent"));
 }
 
 void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
+	if (G1Player->IsAttackState())
+		return;
+
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
 	FRotator CamRot = this->PlayerCameraManager->GetCameraRotation();
 	FRotator YawRot(0.f, CamRot.Yaw, 0.f);
@@ -104,24 +109,39 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 	CachedDestination = FVector::ZeroVector;
 }
 
-void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
-{
-}
-
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
+	if (G1Player->IsAttackState())
+		return;
+
 	if (AG1Character* MyCharacter = Cast<AG1Character>(GetPawn()))
 	{
 		MyCharacter->Jump();
 	}
 }
 
+void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
+{
+	if (G1Player->IsAttackState())
+		return;
+}
+
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
+	if (G1Player->IsAttackState())
+		return;
+
+	G1Player->ActivateAbility(G1GameplayTags::Event_Montage_Attack);
+
+	//R1Player->PlayAnimMontage(AttackMontage);
+	SetCharacterState(ECharacterState::MoveAttack);
 }
 
 void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 {
+	if (G1Player->IsAttackState())
+		return;
+
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, OUT Hit);
@@ -147,6 +167,15 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	}
 }
 
+void AG1PlayerController::UpdateCharacterState(float DeltaTime)
+{
+	if (GetCharacterState() == ECharacterState::MoveAttack
+			&& G1Player->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr) == false)
+	{
+		SetCharacterState(ECharacterState::Idle);
+	}
+}
+
 void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 {
 	if (GetCharacterState() != ECharacterState::MovePoint)
@@ -161,7 +190,7 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 		return;
 	}
 
-	FVector Direction = CachedDestination - R1Player->GetActorLocation();
+	FVector Direction = CachedDestination - G1Player->GetActorLocation();
 	Direction.Z = 0;
 	if (Direction.Length() <= 100)
 	{
@@ -175,13 +204,13 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 
 ECharacterState AG1PlayerController::GetCharacterState()
 {
-	return (R1Player) ? R1Player->State : ECharacterState::None;
+	return (G1Player) ? G1Player->State : ECharacterState::None;
 }
 
 void AG1PlayerController::SetCharacterState(ECharacterState InState)
 {
-	if (R1Player)
+	if (G1Player)
 	{
-		R1Player->State = InState;
+		G1Player->State = InState;
 	}
 }
