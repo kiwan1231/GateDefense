@@ -14,4 +14,16 @@ class G1_API UBTS_FindTarget : public UBTService
 {
 	GENERATED_BODY()
 	
+public:
+	UBTS_FindTarget();
+
+protected:
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SearchRadius = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FBlackboardKeySelector TargetKey;
 };
