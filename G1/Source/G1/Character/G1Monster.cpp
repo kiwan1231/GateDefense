@@ -5,6 +5,7 @@
 #include "AbilitySystem/Attributes/G1MonsterSet.h"
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "Components/BoxComponent.h"
+#include "Character/G1Player.h"
 
 AG1Monster::AG1Monster()
 	: Super()
@@ -15,7 +16,15 @@ AG1Monster::AG1Monster()
 
 	AttributeSet = CreateDefaultSubobject<UG1MonsterSet>("MonsterSet");
 
-	RHandHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RHandHitBox"));
+	//RHandHitBox = Cast<UBoxComponent>(GetDefaultSubobjectByName(TEXT("R_Hand_HitBox")));
+	//RHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+
+	//LHandHitBox = Cast<UBoxComponent>(GetDefaultSubobjectByName(TEXT("L_Hand_HitBox")));
+	//LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+
+
+
+	/*RHandHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RHandHitBox"));
 	RHandHitBox->SetupAttachment(GetMesh(), TEXT("hand_r"));
 	RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
@@ -23,7 +32,7 @@ AG1Monster::AG1Monster()
 	LHandHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LHandHitBox"));
 	LHandHitBox->SetupAttachment(GetMesh(), TEXT("hand_l"));
 	LHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+	LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);*/
 
 	//RHandHitBox->SetupAttachment(GetMesh(), TEXT("RightHandSocket"));
 	//RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -40,6 +49,11 @@ void AG1Monster::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	}*/
 
+	if (Cast<AG1Player>(OtherActor) == nullptr)
+	{
+		return;
+	}
+
 	if (OverlappedComponent == RHandHitBox)
 	{
 		UE_LOG(LogTemp, Log, TEXT("OnAttackOverlap RHandHitBox"));
@@ -55,6 +69,23 @@ void AG1Monster::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilitySystem();
+
+	TArray<UBoxComponent*> Boxes;
+	GetComponents<UBoxComponent>(Boxes);
+
+	for (UBoxComponent* Box : Boxes)
+	{
+		if (Box->GetName() == TEXT("R_Hand_HitBox"))
+		{
+			RHandHitBox = Box;
+			RHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+		}
+		else if (Box->GetName() == TEXT("L_Hand_HitBox"))
+		{
+			LHandHitBox = Box;
+			LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+		}
+	}
 }
 
 void AG1Monster::Tick(float DeltaTime)
@@ -73,12 +104,18 @@ void AG1Monster::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiTy
 {
 	Super::HandleGameplayEvent(EventTag, EventType);
 
-	if (EventType == ECharacterAnimNotiType::OnQueryOnly)
+	/*const FGameplayTag AttackTag = FGameplayTag::RequestGameplayTag(TEXT("Event.Attack"));
+
+	if (EventTag.MatchesTagExact(AttackTag))
+	{
+	}*/
+
+	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else if (EventType == ECharacterAnimNotiType::NoCollision)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+	}*/
 }
