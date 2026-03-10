@@ -16,6 +16,6 @@ void UG1AnimNotifySend::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	AG1Character* LocalCharacter = Cast<AG1Character>(MeshComp->GetOwner());
 	if (LocalCharacter)
 	{
-		LocalCharacter->HandleGameplayEvent(EventTag);
+		LocalCharacter->HandleGameplayEvent(EventTag, EventType);
 	}
 }

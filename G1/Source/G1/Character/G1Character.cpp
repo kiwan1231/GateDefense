@@ -27,9 +27,9 @@ void AG1Character::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-void AG1Character::HandleGameplayEvent(FGameplayTag EventTag)
+void AG1Character::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
-	UE_LOG(LogTemp, Log, TEXT("HandleGameplayEvent"));
+	
 }
 
 // Called to bind functionality to input

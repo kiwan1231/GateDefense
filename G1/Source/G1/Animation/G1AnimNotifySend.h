@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "GameplayTagContainer.h"
-
+#include "Utility/G1CharacterDefine.h"
 
 #include "G1AnimNotifySend.generated.h"
 
@@ -26,4 +26,6 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag EventTag;
+	UPROPERTY(EditAnywhere)
+	ECharacterAnimNotiType EventType;
 };

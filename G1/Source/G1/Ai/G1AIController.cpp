@@ -12,8 +12,6 @@ AG1AIController::AG1AIController(const FObjectInitializer& ObjectInitializer)
 void AG1AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
-	UE_LOG(LogTemp, Log, TEXT("AI OnPossess !!!"));
 }
 
 void AG1AIController::BeginPlay()
@@ -29,7 +27,7 @@ void AG1AIController::BeginPlay()
 	FNavPathSharedPtr NavPath;
 	MoveTo(MoveRequest, OUT & NavPath);
 
-	if (NavPath.IsValid())
+	/*if (NavPath.IsValid())
 	{
 		TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
 		for (const auto& Point : PathPoints)
@@ -37,7 +35,7 @@ void AG1AIController::BeginPlay()
 			const FVector& Location = Point.Location;
 			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.0f);
 		}
-	}
+	}*/
 }
 
 void AG1AIController::Tick(float DeltaTime)

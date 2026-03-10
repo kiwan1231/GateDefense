@@ -15,3 +15,11 @@ enum class ECharacterState : uint8
 	Skill,
 	Dead,
 };
+
+UENUM(BlueprintType)
+enum class ECharacterAnimNotiType : uint8
+{
+	None,
+	OnQueryOnly,
+	NoCollision,
+};

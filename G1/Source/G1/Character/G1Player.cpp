@@ -67,9 +67,9 @@ void AG1Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AG1Player::HandleGameplayEvent(FGameplayTag EventTag)
+void AG1Player::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
-	UE_LOG(LogTemp, Log, TEXT("HandleGameplayEvent"));
+	Super::HandleGameplayEvent(EventTag, EventType);
 }
 
 void AG1Player::InitAbilitySystem()

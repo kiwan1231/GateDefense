@@ -7,7 +7,7 @@
 #include "Utility/G1CharacterDefine.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
-
+#include "Utility/G1CharacterDefine.h"
 
 #include "G1Character.generated.h"
 
@@ -41,7 +41,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void HandleGameplayEvent(FGameplayTag EventTag);
+	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

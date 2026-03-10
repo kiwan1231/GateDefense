@@ -41,7 +41,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void HandleGameplayEvent(FGameplayTag EventTag);
+	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 
 protected: // interface
 	virtual void InitAbilitySystem() override;

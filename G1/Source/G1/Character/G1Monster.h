@@ -17,6 +17,15 @@ class G1_API AG1Monster : public AG1Character
 public:
 	AG1Monster();
 
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* RHandHitBox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UBoxComponent* LHandHitBox;
+private:
+	UFUNCTION()
+	void OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -25,4 +34,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void InitAbilitySystem() override;
+
+	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 };
