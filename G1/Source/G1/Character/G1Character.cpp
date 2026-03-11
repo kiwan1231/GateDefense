@@ -48,6 +48,18 @@ void AG1Character::InitAbilitySystem()
 {
 }
 
+void AG1Character::Highlight()
+{
+	bHighlighted = true;
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(250);
+}
+void AG1Character::UnHighlight()
+{
+	bHighlighted = false;
+	GetMesh()->SetRenderCustomDepth(false);
+}
+
 void AG1Character::AddCharacterAbilities()
 {
 	UG1AbilitySystem* AS = Cast<UG1AbilitySystem>(AbilitySystem);

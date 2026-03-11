@@ -13,8 +13,8 @@
 
 struct FInputActionValue;
 class UNiagaraSystem;
-class G1Character;
-class G1Player;
+class AG1Character;
+class AG1Player;
 
 
 class UInputAction;
@@ -35,6 +35,7 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void StopMovement() override;
+
 public:
 	virtual void HandleGameplayEvent(FGameplayTag EventTag);
 
@@ -55,6 +56,7 @@ private: // input function
 private:/// tick function
 	void UpdateCharacterState(float DeltaTime);
 	void UpdateMovePoint(float DeltaTime);
+	void UpdateHighlight();
 
 private:
 	ECharacterState GetCharacterState();
@@ -66,10 +68,10 @@ private:
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class AG1Character> TargetActor;
+	TObjectPtr<AG1Character> TargetActor;
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class AG1Character> HighlightActor;
+	TObjectPtr<AG1Character> HighlightActor;
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class AG1Player> G1Player;
+	TObjectPtr<AG1Player> G1Player;
 
 };

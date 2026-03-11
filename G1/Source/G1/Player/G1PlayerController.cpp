@@ -67,6 +67,7 @@ void AG1PlayerController::PlayerTick(float DeltaTime)
 
 	UpdateMovePoint(DeltaTime);
 
+	UpdateHighlight();
 }
 
 void AG1PlayerController::StopMovement()
@@ -156,13 +157,22 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	if (GetPawn() != nullptr)
 	{
 		SetCharacterState(ECharacterState::MovePoint);
-		CachedDestination = Hit.Location;
-		// We move there and spawn some particles
 
-		if (FXCursor)
+		if (IsValid(HighlightActor))
 		{
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+			CachedDestination = HighlightActor->GetTargetLocation();
+			TargetActor = HighlightActor;
+		}
+		else
+		{
+			CachedDestination = Hit.Location;
+			TargetActor = nullptr;
+
+			if (FXCursor)
+			{
+				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+			}
 		}
 	}
 }
@@ -190,6 +200,11 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 		return;
 	}
 
+	if (IsValid(TargetActor))
+	{
+		CachedDestination = TargetActor->GetTargetLocation();
+	}
+
 	FVector Direction = CachedDestination - G1Player->GetActorLocation();
 	Direction.Z = 0;
 	if (Direction.Length() <= 100)
@@ -200,6 +215,43 @@ void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 
 	FVector MoveDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 	ControlledPawn->AddMovementInput(MoveDirection, 10, false);
+}
+
+void AG1PlayerController::UpdateHighlight()
+{
+	FHitResult OutCursorHit;
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, OUT OutCursorHit) == false)
+	{
+		return;
+	}
+
+	AG1Character* LocalHighlightActor = Cast<AG1Character>(OutCursorHit.GetActor());
+	if (LocalHighlightActor == nullptr)
+	{
+		/// 기존에 있는데 해제
+		if (HighlightActor)
+		{
+			HighlightActor->UnHighlight();
+		}
+	}
+	else
+	{
+		if (HighlightActor)
+		{
+			/// 다른애로 된경우
+			if (HighlightActor != LocalHighlightActor)
+			{
+				HighlightActor->UnHighlight();
+				LocalHighlightActor->Highlight();
+			}
+		}
+		else
+		{
+			LocalHighlightActor->Highlight();
+		}
+	}
+
+	HighlightActor = LocalHighlightActor;
 }
 
 ECharacterState AG1PlayerController::GetCharacterState()

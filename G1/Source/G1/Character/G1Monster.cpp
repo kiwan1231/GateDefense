@@ -79,11 +79,13 @@ void AG1Monster::BeginPlay()
 		{
 			RHandHitBox = Box;
 			RHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+			RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 		else if (Box->GetName() == TEXT("L_Hand_HitBox"))
 		{
 			LHandHitBox = Box;
 			LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
+			LHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }
@@ -110,12 +112,12 @@ void AG1Monster::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiTy
 	{
 	}*/
 
-	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
+	if (EventType == ECharacterAnimNotiType::OnQueryOnly)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else if (EventType == ECharacterAnimNotiType::NoCollision)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}*/
+	}
 }

@@ -8,11 +8,12 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
 #include "Utility/G1CharacterDefine.h"
+#include "Interface/G1HighlightInterface.h"
 
 #include "G1Character.generated.h"
 
 UCLASS()
-class G1_API AG1Character : public ACharacter, public IAbilitySystemInterface
+class G1_API AG1Character : public ACharacter, public IAbilitySystemInterface, public IG1HighlightInterface
 {
 	GENERATED_BODY()
 
@@ -34,6 +35,9 @@ protected: /// ReadOnly
 	UPROPERTY(EditAnywhere, Category =Ability)
 	TArray<TSubclassOf<class UGameplayAbility>> StartupAbilities;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bHighlighted = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,6 +54,8 @@ public:
 
 public: // interface
 	virtual void InitAbilitySystem();
+	virtual void Highlight();
+	virtual void UnHighlight();
 
 public: /// public 기능 함수
 
