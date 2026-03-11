@@ -3,6 +3,8 @@
 
 #include "Character/G1Character.h"
 #include "AbilitySystem/G1AbilitySystem.h"
+#include "AbilitySystem/Attributes/G1AttributeSet.h"
+#include "Utility/G1CharacterDefine.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -42,6 +44,32 @@ void AG1Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 UAbilitySystemComponent* AG1Character::GetAbilitySystemComponent() const
 {
 	return AbilitySystem;
+}
+
+void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
+{
+	float Hp = AttributeSet->GetHealth();
+	float MaxHp = AttributeSet->GetMaxHealth();
+
+	Hp = FMath::Clamp(Hp - Damage, 0, MaxHp);
+	AttributeSet->SetHealth(Hp);
+
+	if (Hp == 0)
+	{
+		OnDead(Attacker);
+	}
+
+	//D(FString::Printf(TEXT("%d"), Hp));
+}
+
+void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
+{
+	if (State == ECharacterState::Dead)
+	{
+		return;
+	}
+
+	State = ECharacterState::Dead;
 }
 
 void AG1Character::InitAbilitySystem()

@@ -52,6 +52,9 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker);
+	virtual void OnDead(TObjectPtr<AG1Character> Attacker);
+
 public: // interface
 	virtual void InitAbilitySystem();
 	virtual void Highlight();

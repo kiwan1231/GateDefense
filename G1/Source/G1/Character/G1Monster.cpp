@@ -48,19 +48,15 @@ void AG1Monster::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 
 	}*/
-
-	if (Cast<AG1Player>(OtherActor) == nullptr)
+	AG1Player* demagedPlayer = Cast<AG1Player>(OtherActor);
+	if (demagedPlayer == nullptr || demagedPlayer->State == ECharacterState::Dead)
 	{
 		return;
 	}
 
-	if (OverlappedComponent == RHandHitBox)
+	if (OverlappedComponent == RHandHitBox || OverlappedComponent == LHandHitBox)
 	{
-		UE_LOG(LogTemp, Log, TEXT("OnAttackOverlap RHandHitBox"));
-	}
-	else if (OverlappedComponent == LHandHitBox)
-	{
-		UE_LOG(LogTemp, Log, TEXT("OnAttackOverlap LHandHitBox"));
+		demagedPlayer->OnDamaged(AttributeSet->GetBaseDamage(), Cast<AG1Character>(this));
 	}
 }
 
