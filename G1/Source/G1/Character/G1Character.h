@@ -38,6 +38,9 @@ protected: /// ReadOnly
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
+	TArray<FName> EquipmentList;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,10 +53,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:/// ability
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker);
 	virtual void OnDead(TObjectPtr<AG1Character> Attacker);
+
+public: // equipment
+	void InitEquipment();
+	virtual void AddEquipment(const FName EquipID);
+	virtual void RemoveEquipment(const FName EquipID);
 
 public: // interface
 	virtual void InitAbilitySystem();

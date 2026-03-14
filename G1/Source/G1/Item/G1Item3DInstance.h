@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Item/G1Item3DInstance.h"
-#include "G1DropItem.generated.h"
+#include "GameFramework/Actor.h"
+#include "G1Item3DInstance.generated.h"
 
 UCLASS()
-class G1_API AG1DropItem : public AG1Item3DInstance
+class G1_API AG1Item3DInstance : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AG1DropItem();
+	AG1Item3DInstance();
 
 protected:
 	// Called when the game starts or when spawned

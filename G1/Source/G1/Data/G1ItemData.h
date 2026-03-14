@@ -27,10 +27,13 @@ public:
 	bool Stackable;
 
 	UPROPERTY(EditDefaultsOnly)
-	UStaticMesh* EquipStaticMesh;
+	TSubclassOf<class AG1EquipmentItem> EquipmentStaticMesh;
+
+	/*UPROPERTY(EditDefaultsOnly)
+	UStaticMesh* DropStaticMesh;*/
 
 	UPROPERTY(EditDefaultsOnly)
-	UStaticMesh* DropStaticMesh;
+	TSubclassOf<class UGameplayEffect> ItemEffect;
 };
 
 /**

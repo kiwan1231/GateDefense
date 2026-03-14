@@ -5,6 +5,12 @@
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "AbilitySystem/Attributes/G1AttributeSet.h"
 #include "Utility/G1CharacterDefine.h"
+#include "System/G1AssetManager.h"
+#include "Data/G1ItemData.h"
+#include "Item/G1EquipmentItem.h"
+#include "Components/SceneComponent.h"
+#include "Engine/EngineTypes.h"
+#include "AbilitySystem/G1AbilitySystem.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -21,6 +27,8 @@ void AG1Character::BeginPlay()
 	Super::BeginPlay();
 	
 	AddCharacterAbilities();
+
+	InitEquipment();
 }
 
 // Called every frame
@@ -72,8 +80,40 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 	State = ECharacterState::Dead;
 }
 
+void AG1Character::InitEquipment()
+{
+	if (const UG1ItemData* ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon"))
+	{
+		for (const FName ID : EquipmentList)
+		{
+			const FG1ItemInfo* ItemInfo = ItemData->FindItemInfo(ID);
+			if (ItemInfo == nullptr)
+				continue;
+
+			if (ItemInfo->EquipmentStaticMesh != nullptr)
+			{
+				AG1EquipmentItem* EquipItem = GetWorld()->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
+				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+			}
+
+			AbilitySystem->AddEquipmentGameplayEffect(ID);
+		}
+	}
+
+	
+}
+
+void AG1Character::AddEquipment(const FName EquipID)
+{
+}
+
+void AG1Character::RemoveEquipment(const FName EquipID)
+{
+}
+
 void AG1Character::InitAbilitySystem()
 {
+	
 }
 
 void AG1Character::Highlight()

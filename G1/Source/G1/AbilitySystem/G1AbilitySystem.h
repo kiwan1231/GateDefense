@@ -8,6 +8,8 @@
 #include "Abilities/GameplayAbility.h"
 #include "G1AbilitySystem.generated.h"
 
+class UG1ItemData;
+
 /**
  * 
  */
@@ -19,7 +21,15 @@ class G1_API UG1AbilitySystem : public UAbilitySystemComponent
 public:
 	void AddCharacterAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& StartupAbilities);
 
+	void AddEquipmentGameplayEffect(const FName EquipID);
+	void RemoveEquipmentGameplayEffect(const FName EquipID);
+
 	void ActivateAbility(FGameplayTag AbilityTag);
 
 	TArray<FGameplayAbilitySpecHandle> SpecHandles;
+
+	TMap<FName, FActiveGameplayEffectHandle> EquipHandles;
+
+private:
+	UG1ItemData* ItemData = nullptr;
 };

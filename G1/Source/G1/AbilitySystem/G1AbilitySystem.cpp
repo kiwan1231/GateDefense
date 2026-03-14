@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/G1AbilitySystem.h"
+#include "System/G1AssetManager.h"
+#include "Data/G1ItemData.h"
 
 void UG1AbilitySystem::AddCharacterAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& StartupAbilities)
 {
@@ -17,6 +19,35 @@ void UG1AbilitySystem::AddCharacterAbilities(const TArray<TSubclassOf<class UGam
 		//GiveAbilityAndActivateOnce(AbilitySpec);
 
 		SpecHandles.Add(SpecHandle);
+	}
+}
+
+void UG1AbilitySystem::AddEquipmentGameplayEffect(const FName EquipID)
+{
+	if (ItemData == nullptr)
+	{
+		ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+	}
+
+	const FG1ItemInfo* ItemInfo = ItemData->FindItemInfo(EquipID);
+	if (ItemInfo != nullptr && ItemInfo->ItemEffect != nullptr)
+	{
+		FGameplayEffectContextHandle Context = MakeEffectContext();
+		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(ItemInfo->ItemEffect, 1.f, Context);
+
+		if (SpecHandle.IsValid())
+		{
+			EquipHandles.Add(EquipID, ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get()));
+		}
+	}
+}
+
+void UG1AbilitySystem::RemoveEquipmentGameplayEffect(const FName EquipID)
+{
+	if (EquipHandles.Contains(EquipID))
+	{
+		RemoveActiveGameplayEffect(EquipHandles[EquipID]);
+		EquipHandles.Remove(EquipID);
 	}
 }
 

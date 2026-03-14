@@ -15,8 +15,6 @@ enum class EItemType : uint8
 UENUM(BlueprintType)
 enum class EItemRarity : uint8
 {
-	Junk,
-	Poor,
 	Common,
 	UnCommon,
 	Rare,

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "G1ItemInstance.generated.h"
+#include "G1Item2DInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class G1_API UG1ItemInstance : public UObject
+class G1_API UG1Item2DInstance : public UObject
 {
 	GENERATED_BODY()
 	
