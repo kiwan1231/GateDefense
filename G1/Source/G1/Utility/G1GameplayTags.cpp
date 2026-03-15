@@ -18,3 +18,11 @@ namespace G1GameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack, "Ability.Attack");
 }
+
+namespace G1GameplayTags
+{
+	UE_DEFINE_GAMEPLAY_TAG(Team_None, "Team_None");
+	UE_DEFINE_GAMEPLAY_TAG(Team_Monster, "Team_Monster");
+	UE_DEFINE_GAMEPLAY_TAG(Team_Player, "Team_Player");
+	UE_DEFINE_GAMEPLAY_TAG(Team_Npc, "Team_Npc");
+}

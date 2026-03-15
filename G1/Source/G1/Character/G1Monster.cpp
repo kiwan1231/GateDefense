@@ -10,6 +10,8 @@
 AG1Monster::AG1Monster()
 	: Super()
 {
+	TeamTag = G1GameplayTags::Team_Monster;
+
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
 	AbilitySystem = CreateDefaultSubobject<UG1AbilitySystem>("AbilitySystem");

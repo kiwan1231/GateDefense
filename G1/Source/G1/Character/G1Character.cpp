@@ -10,7 +10,7 @@
 #include "Item/G1EquipmentItem.h"
 #include "Components/SceneComponent.h"
 #include "Engine/EngineTypes.h"
-#include "AbilitySystem/G1AbilitySystem.h"
+#include "Utility/G1GameplayTags.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -19,6 +19,7 @@ AG1Character::AG1Character()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	TeamTag = G1GameplayTags::Team_None;
 }
 
 // Called when the game starts or when spawned
@@ -94,6 +95,8 @@ void AG1Character::InitEquipment()
 			{
 				AG1EquipmentItem* EquipItem = GetWorld()->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
 				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+				EquipItem->SetOwner(this);
+				EquipObjectList.Add(ID, EquipItem);
 			}
 
 			AbilitySystem->AddEquipmentGameplayEffect(ID);
@@ -148,5 +151,34 @@ void AG1Character::ActivateAbility(FGameplayTag AbilityTag)
 bool AG1Character::IsAttackState()
 {
 	return State == ECharacterState::MoveAttack;
+}
+
+bool AG1Character::IsSameTeam(const AActor* Ohter) const
+{
+	const AG1Character* OtherCharacter = Cast<AG1Character>(Ohter);
+
+	if (!OtherCharacter)
+	{
+		return false;
+	}
+
+	return TeamTag == OtherCharacter->TeamTag;
+}
+
+bool AG1Character::IsEnemyTeam(const AActor* Ohter) const
+{
+	const AG1Character* OtherCharacter = Cast<AG1Character>(Ohter);
+
+	if (!OtherCharacter)
+	{
+		return false;
+	}
+
+	return TeamTag != OtherCharacter->TeamTag;
+}
+
+float AG1Character::TotalDemage() const
+{
+	return AttributeSet->GetBaseDamage();
 }
 

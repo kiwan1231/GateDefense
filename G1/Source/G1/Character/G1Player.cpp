@@ -16,6 +16,8 @@
 AG1Player::AG1Player()
 	: Super()
 {
+	TeamTag = G1GameplayTags::Team_Player;
+
 	/// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;

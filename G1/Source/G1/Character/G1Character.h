@@ -25,6 +25,9 @@ public: /// ReadWrite
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ECharacterState State = ECharacterState::None;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag TeamTag;
+
 protected: /// ReadOnly
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Ability)
 	TObjectPtr<class UG1AbilitySystem> AbilitySystem;
@@ -40,6 +43,9 @@ protected: /// ReadOnly
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
 	TArray<FName> EquipmentList;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Equip)
+	TMap<FName, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
 
 protected:
 	// Called when the game starts or when spawned
@@ -78,4 +84,7 @@ public: /// public 기능 함수
 
 public:
 	bool IsAttackState();
+	bool IsSameTeam(const AActor* Ohter) const;
+	bool IsEnemyTeam(const AActor* Ohter) const;
+	float TotalDemage() const;
 };

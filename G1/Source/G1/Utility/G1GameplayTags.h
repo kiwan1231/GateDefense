@@ -21,3 +21,11 @@ namespace G1GameplayTags
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Attack);
 }
+
+namespace G1GameplayTags
+{
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Team_None);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Team_Monster);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Team_Player);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Team_Npc);
+}
