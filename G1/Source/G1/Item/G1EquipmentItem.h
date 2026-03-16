@@ -32,6 +32,7 @@ protected:
 
 public:
 	void SetOwner(class AG1Character* owner);
+	void SetWeaponCollisionEnabled(bool Enabled);
 
 private:
 	UFUNCTION()

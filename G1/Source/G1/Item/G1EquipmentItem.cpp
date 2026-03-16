@@ -26,6 +26,7 @@ void AG1EquipmentItem::BeginPlay()
 		if (Box->GetName() == TEXT("WeaponCollisionBox"))
 		{
 			CollisionBox = Box;
+			CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AG1EquipmentItem::OnAttackOverlap);
 		}
 	}
 }
@@ -40,6 +41,14 @@ void AG1EquipmentItem::Tick(float DeltaTime)
 void AG1EquipmentItem::SetOwner(AG1Character* owner)
 {
 	ownerCharacter = owner;
+}
+
+void AG1EquipmentItem::SetWeaponCollisionEnabled(bool Enabled)
+{
+	if (CollisionBox)
+	{
+		CollisionBox->SetCollisionEnabled(Enabled ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	}
 }
 
 void AG1EquipmentItem::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -6,6 +6,7 @@
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "Components/BoxComponent.h"
 #include "Character/G1Player.h"
+#include "Item/G1EquipmentItem.h"
 
 AG1Monster::AG1Monster()
 	: Super()
@@ -104,18 +105,23 @@ void AG1Monster::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiTy
 {
 	Super::HandleGameplayEvent(EventTag, EventType);
 
-	/*const FGameplayTag AttackTag = FGameplayTag::RequestGameplayTag(TEXT("Event.Attack"));
-
-	if (EventTag.MatchesTagExact(AttackTag))
+	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 	{
-	}*/
+		FName Key = Pair.Key;
+		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
 
-	if (EventType == ECharacterAnimNotiType::OnQueryOnly)
+		if (Item)
+		{
+			Item->SetWeaponCollisionEnabled(EventType == ECharacterAnimNotiType::OnQueryOnly);
+		}
+	}
+
+	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	else if (EventType == ECharacterAnimNotiType::NoCollision)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+	}*/
 }
