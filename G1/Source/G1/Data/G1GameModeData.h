@@ -8,27 +8,49 @@
 #include "G1GameModeData.generated.h"
 
 UENUM(BlueprintType)
-enum class EGameModeEventTrigger : uint8
+enum class EEventTriggerType : uint8
 {
 	None = 0,
 	ElapsedTime,
+	PlayerDeath,
 	MonsterKill,
 	BossKill,
 	PlayerEnterArea,
 };
 
 UENUM(BlueprintType)
-enum class EGameModeEventAction : uint8
+enum class EEventActionType : uint8
 {
 	None = 0,
 	SpawnMonster,
 	SpawnBoss,
 	ClearGame,
+	GameOver,
 	ActiveTrigger,
 };
 
 USTRUCT()
-struct FGameModeEvent
+struct FEventActionData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	FName ActionID;
+
+	UPROPERTY(EditDefaultsOnly)
+	EEventActionType ActionType;
+
+public:
+	/// Action
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
+	TSubclassOf<class AG1Monster> SpawnMonster;
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
+	FVector SpawnPos;
+};
+
+USTRUCT()
+struct FEventData
 {
 	GENERATED_BODY()
 
@@ -36,12 +58,21 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FName EventID;
 
+	UPROPERTY(EditDefaultsOnly)
+	EEventTriggerType TriggerType;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool Repeat = false;
+
+public:
 	/// Trigger
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "EventType == EGameModeEventTrigger::ElapsedTime"))
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "TriggerType == EEventTriggerType::ElapsedTime"))
 	float ElapsedTime;
 
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "EventType == EGameModeEventTrigger::BossKill"))
-	FName BossMonsterID;
+public:
+	/// Action
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FEventActionData> ActionDataList;
 };
 
 /**
@@ -51,11 +82,12 @@ UCLASS()
 class G1_API UG1GameModeData : public UDataAsset
 {
 	GENERATED_BODY()
-	
-//public:
-//	const FG1ItemInfo* FindItemInfo(const FName& ItemID) const;
-//
-//public:
-//	UPROPERTY(EditDefaultsOnly)
-//	TArray<FG1ItemInfo> ItemDataList;
+
+public:
+	const FEventData* FindEventData(const FName& EventID) const;
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FEventData> EventDataList;
+
 };

@@ -3,15 +3,16 @@
 
 #include "Data/G1GameModeData.h"
 
-//const FG1ItemInfo* UG1ItemData::FindItemInfo(const FName& ItemID) const
-//{
-//	for (const FG1ItemInfo& Data : ItemDataList)
-//	{
-//		if (Data.ItemID.IsEqual(ItemID))
-//		{
-//			return &Data;
-//		}
-//	}
-//
-//	return nullptr;
-//}
+const FEventData* UG1GameModeData::FindEventData(const FName& EventID) const
+{
+    for (const FEventData& Data : EventDataList)
+    {
+        if (Data.EventID.IsEqual(EventID))
+        {
+            return &Data;
+        }
+    }
+
+    return nullptr;
+}
+

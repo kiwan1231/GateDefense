@@ -67,7 +67,7 @@ void AG1EquipmentItem::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent,
 	}
 	if (OverlappedComponent == CollisionBox)
 	{
-		UE_LOG(LogTemp, Log, TEXT("아이템으로 침"))
+		UE_LOG(LogTemp, Log, TEXT("Item Attack!!"))
 		demagedPlayer->OnDamaged(ownerCharacter->TotalDemage(), Cast<AG1Character>(this));
 	}
 }
