@@ -87,4 +87,5 @@ public:
 	bool IsSameTeam(const AActor* Ohter) const;
 	bool IsEnemyTeam(const AActor* Ohter) const;
 	float TotalDemage() const;
+	bool IsDeadG1Character() const;
 };

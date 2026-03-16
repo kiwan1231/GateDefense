@@ -182,3 +182,8 @@ float AG1Character::TotalDemage() const
 	return AttributeSet->GetBaseDamage();
 }
 
+bool AG1Character::IsDeadG1Character() const
+{
+	return State == ECharacterState::Dead;
+}
+
