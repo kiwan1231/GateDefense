@@ -29,3 +29,8 @@ enum class EEquipmentType : uint8
 	None,
 	Weapon,
 };
+
+namespace InventoryItem
+{
+	const FIntPoint UnitInventorySlotSize = FIntPoint(50.f, 50.f);
+}
