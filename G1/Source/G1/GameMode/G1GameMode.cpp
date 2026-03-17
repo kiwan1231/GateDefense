@@ -6,6 +6,9 @@
 #include "Player/G1PlayerState.h"
 #include "Character/G1Player.h"
 #include "Utility/G1LogChannels.h"
+#include "System/G1AssetManager.h"
+#include "Data/G1GameModeData.h"
+#include "Character/G1Monster.h"
 
 AG1GameMode::AG1GameMode()
 	: Super()
@@ -16,6 +19,8 @@ AG1GameMode::AG1GameMode()
 void AG1GameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitEventInstance();
 
 	ChangeState(EGameModeState::Intro);
 
@@ -31,6 +36,8 @@ void AG1GameMode::Tick(float DeltaTime)
 	if (ModeState == EGameModeState::Playing)
 	{
 		ElapsedTime += DeltaTime;
+
+		CheckElapsedTimeEvent();
 	}
 }
 
@@ -71,4 +78,57 @@ void AG1GameMode::CheckState(float DeltaTime)
 void AG1GameMode::ChangeState(EGameModeState State)
 {
 	ModeState = State;
+}
+
+void AG1GameMode::InitEventInstance()
+{
+	GameModeData = UG1AssetManager::GetAssetByName<UG1GameModeData>("GameModeData_Common");
+
+	EventInstanceList.Empty();
+
+	if (GameModeData)
+	{
+		for (const FEventData& Event : GameModeData->EventDataList)
+		{
+			EventInstanceList.Emplace(&Event, true);
+		}
+	}
+	else
+	{
+		UE_LOG(LogG1, Error, TEXT("UG1GameModeData Load Fail"));
+	}
+}
+
+void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
+{
+	PlayEvent->CompleteTrigger = true;
+
+	for (const FEventActionData& Action : PlayEvent->EventData->ActionDataList)
+	{
+		if (Action.ActionType == EEventActionType::SpawnMonster)
+		{
+			AG1Monster* Monster = GetWorld()->SpawnActor<AG1Monster>(Action.SpawnMonster, Action.SpawnPos, FRotator::ZeroRotator);
+		}
+	}
+}
+
+void AG1GameMode::CheckElapsedTimeEvent()
+{
+	for (FG1EventInstance& EventInstance : EventInstanceList)
+	{
+		if (EventInstance.CompleteTrigger)
+		{
+			continue;
+		}
+
+		if (EventInstance.EventData->TriggerType != EEventTriggerType::ElapsedTime)
+		{
+			continue;
+		}
+
+		if (EventInstance.EventData->ElapsedTime <= ElapsedTime)
+		{
+			PlayEventAction(&EventInstance);
+		}
+	}
 }

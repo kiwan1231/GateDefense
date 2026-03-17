@@ -73,6 +73,7 @@ public:
 	/// Action
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FEventActionData> ActionDataList;
+
 };
 
 /**

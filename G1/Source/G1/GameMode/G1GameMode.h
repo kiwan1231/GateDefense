@@ -12,6 +12,38 @@
 /**
  * 
  */
+
+struct FEventData;
+
+USTRUCT()
+struct FG1EventInstance
+{
+	GENERATED_BODY()
+
+public:
+	FG1EventInstance()
+	{
+
+	}
+
+	FG1EventInstance(const FEventData* _EventData, bool _EnabledTrigger)
+		: EventData(_EventData)
+		, EnabledTrigger(_EnabledTrigger)
+		, CompleteTrigger(false)
+	{
+
+	}
+
+public:
+	const FEventData* EventData = nullptr;
+
+	UPROPERTY(VisibleAnywhere)
+	bool EnabledTrigger = false;
+
+	UPROPERTY(VisibleAnywhere)
+	bool CompleteTrigger = false;
+};
+
 UCLASS()
 class G1_API AG1GameMode : public AGameModeBase
 {
@@ -33,9 +65,20 @@ public:
 	virtual void ChangeState(EGameModeState State);
 
 public:
+	virtual void InitEventInstance();
+	virtual void PlayEventAction(FG1EventInstance* PlayEvent);
+	virtual void CheckElapsedTimeEvent();
+
+public:
 	UPROPERTY(BlueprintReadWrite, Category = ModeBase)
 	EGameModeState ModeState;
 
 	UPROPERTY(BlueprintReadWrite, Category = ModeBase)
-	float ElapsedTime;
+	float ElapsedTime = 0.f;
+
+	UPROPERTY()
+	class UG1GameModeData* GameModeData = nullptr;
+
+	UPROPERTY()
+	TArray<FG1EventInstance> EventInstanceList;
 };

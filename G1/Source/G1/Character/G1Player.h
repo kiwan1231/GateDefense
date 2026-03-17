@@ -45,4 +45,5 @@ public:
 
 protected: // interface
 	virtual void InitAbilitySystem() override;
+
 };
