@@ -20,7 +20,7 @@ AG1Player::AG1Player()
 
 	/// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
@@ -29,8 +29,16 @@ AG1Player::AG1Player()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
-	SpringArm->SetRelativeRotation(FRotator(-60, 0, 0));
-	SpringArm->TargetArmLength = 800.f;
+	SpringArm->SetRelativeRotation(FRotator(-35.f, 0, 0));
+	SpringArm->SocketOffset = FVector(0.f, 0.f, 20.f);
+	SpringArm->TargetOffset = FVector(0.f, 0.f, 50.f);
+	SpringArm->TargetArmLength = 250.f;
+	SpringArm->bUsePawnControlRotation = true;
+
+	/// 벽 충돌 카메라 처리
+	SpringArm->bDoCollisionTest = true;
+	SpringArm->ProbeSize = 12.f;
+	SpringArm->ProbeChannel = ECC_Camera;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);

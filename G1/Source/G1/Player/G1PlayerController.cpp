@@ -89,26 +89,47 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 		return;
 
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
+	//this->PlayerCameraManager->GetActorForwardVector()
+	if (MovementVector.X != 0)
+	{
+		GetPawn()->AddMovementInput(this->PlayerCameraManager->GetActorForwardVector(), MovementVector.X);
+	}
+
+	if (MovementVector.Y != 0)
+	{
+		GetPawn()->AddMovementInput(this->PlayerCameraManager->GetActorRightVector(), MovementVector.Y);
+	}
+
+	SetCharacterState(ECharacterState::MoveDirection);
+	CachedDestination = FVector::ZeroVector;
+}
+/*
+* 이전 디아블로식 이동 함수
+void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
+{
+	if (G1Player->IsAttackState())
+		return;
+
+	FVector2D MovementVector = InputValue.Get<FVector2D>();
 	FRotator CamRot = this->PlayerCameraManager->GetCameraRotation();
 	FRotator YawRot(0.f, CamRot.Yaw, 0.f);
 
 	if (MovementVector.X != 0)
 	{
 		FVector Forward = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
-		//GetPawn()->AddActorWorldOffset(Forward * 10.0f * MovementVector.X);
 		GetPawn()->AddMovementInput(Forward, MovementVector.X);
 	}
 
 	if (MovementVector.Y != 0)
 	{
 		FVector Right = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
-		//GetPawn()->AddActorWorldOffset(Right * 10.0f * MovementVector.Y);
 		GetPawn()->AddMovementInput(Right, MovementVector.Y);
 	}
 
 	SetCharacterState(ECharacterState::MoveDirection);
 	CachedDestination = FVector::ZeroVector;
 }
+*/
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
