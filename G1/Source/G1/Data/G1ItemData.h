@@ -18,10 +18,10 @@ public:
 	FName ItemID;
 
 	UPROPERTY(EditDefaultsOnly)
-	EItemType ItemType;
+	EItemType ItemType = EItemType::None;
 
 	UPROPERTY(EditDefaultsOnly)
-	EItemRarity ItemRarity;
+	EItemRarity ItemRarity = EItemRarity::Common;
 
 	UPROPERTY(EditDefaultsOnly)
 	bool Stackable;

@@ -11,6 +11,8 @@
 #include "Utility/G1GameplayTags.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Util/FMathExtension.h"
+#include "Animation/G1AnimInstance.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -34,6 +36,7 @@ void AG1PlayerController::BeginPlay()
 	}
 
 	G1Player = Cast<AG1Player>(GetCharacter());
+	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
 }
 
 void AG1PlayerController::SetupInputComponent()
@@ -46,6 +49,7 @@ void AG1PlayerController::SetupInputComponent()
 		{
 			auto MoveAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Move);
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ThisClass::Input_Move_Complete);
 
 			auto JumpAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Jump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
@@ -53,8 +57,8 @@ void AG1PlayerController::SetupInputComponent()
 			auto AttackAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Attack);
 			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Attack);
 
-			auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
-			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);
+			/*auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
+			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);*/
 		}
 	}
 }
@@ -65,7 +69,7 @@ void AG1PlayerController::PlayerTick(float DeltaTime)
 
 	UpdateCharacterState(DeltaTime);
 
-	UpdateMovePoint(DeltaTime);
+	//UpdateMovePoint(DeltaTime);
 
 	UpdateHighlight();
 }
@@ -89,16 +93,30 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 		return;
 
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
-	//this->PlayerCameraManager->GetActorForwardVector()
-	if (MovementVector.X != 0)
+	UG1AnimInstance* AnimInstance = Cast<UG1AnimInstance>(MeshComponent->GetAnimInstance());
+	AnimInstance->ForwardState = (MovementVector.X == 0) ? 0 : (MovementVector.X > 0) ? 1 : -1;
+	AnimInstance->RightState = (MovementVector.Y == 0) ? 0 : (MovementVector.Y > 0) ? 1 : -1;
+
+	/*if (MovementVector.X != 0)
 	{
-		GetPawn()->AddMovementInput(this->PlayerCameraManager->GetActorForwardVector(), MovementVector.X);
+		GetPawn()->AddMovementInput(G1Extension::VectorDumpZ(this->PlayerCameraManager->GetActorForwardVector()), MovementVector.X);
 	}
 
 	if (MovementVector.Y != 0)
 	{
-		GetPawn()->AddMovementInput(this->PlayerCameraManager->GetActorRightVector(), MovementVector.Y);
-	}
+		GetPawn()->AddMovementInput(G1Extension::VectorDumpZ(this->PlayerCameraManager->GetActorRightVector()), MovementVector.Y);
+	}*/
+
+	FRotator ControlRot = GetControlRotation();
+	FRotator YawRot(0.f, ControlRot.Yaw, 0.f);
+
+	FVector Forward = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
+	FVector Right = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
+
+	FVector Direction = Forward * MovementVector.X + Right * MovementVector.Y;
+	Direction = Direction.GetSafeNormal();
+
+	GetPawn()->AddMovementInput(Direction, 1.0f);
 
 	SetCharacterState(ECharacterState::MoveDirection);
 	CachedDestination = FVector::ZeroVector;
@@ -130,6 +148,12 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 	CachedDestination = FVector::ZeroVector;
 }
 */
+void AG1PlayerController::Input_Move_Complete(const FInputActionValue& InputValue)
+{
+	UG1AnimInstance* AnimInstance = Cast<UG1AnimInstance>(MeshComponent->GetAnimInstance());
+	AnimInstance->ForwardState = 0;
+	AnimInstance->RightState = 0;
+}
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {

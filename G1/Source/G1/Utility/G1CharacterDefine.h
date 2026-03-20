@@ -16,6 +16,21 @@ enum class ECharacterState : uint8
 	Dead,
 };
 
+//UENUM(BlueprintType)
+//enum class ECharacterStateFlag : uint8
+//{
+//	None UMETA(Hidden),
+//	Idle = 1 << 0,
+//	ForwardMove = 1 << 1,
+//	BackMove = 1 << 2,
+//	RightMove = 1 << 3,
+//	LeftMove = 1 << 4,
+//	Jump = 1 << 5,
+//	Fall = 1 << 6,
+//	Dead = 1 << 7,
+//};
+//ENUM_CLASS_FLAGS(ECharacterStateFlag)
+
 UENUM(BlueprintType)
 enum class ECharacterAnimNotiType : uint8
 {

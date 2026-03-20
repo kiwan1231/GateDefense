@@ -54,7 +54,6 @@ AG1Player::AG1Player()
 void AG1Player::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void AG1Player::PossessedBy(AController* NewController)

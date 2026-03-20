@@ -41,13 +41,14 @@ protected:
 	bool bShouldMove = false;
 
 	UPROPERTY(BlueprintReadOnly)
-	float ForwardState = 0.f;		// -1 후진, 0, 1 전진
-	UPROPERTY(BlueprintReadOnly)
-	float RightState = 0.f;			// -1 왼쪽, 0 , 1 오른쪽
-
-	UPROPERTY(BlueprintReadOnly)
 	ECharacterAnimState AnimState;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsFalling = false;
+
+public:
+	UPROPERTY(BlueprintReadOnly)
+	float ForwardState = 0.f;		// -1 후진, 0, 1 전진
+	UPROPERTY(BlueprintReadOnly)
+	float RightState = 0.f;			// -1 왼쪽, 0 , 1 오른쪽
 };

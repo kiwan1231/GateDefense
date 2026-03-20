@@ -59,7 +59,7 @@ public:
 	FName EventID;
 
 	UPROPERTY(EditDefaultsOnly)
-	EEventTriggerType TriggerType;
+	EEventTriggerType TriggerType = EEventTriggerType::None;
 
 	UPROPERTY(EditDefaultsOnly)
 	bool Repeat = false;

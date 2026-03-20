@@ -48,6 +48,7 @@ public:
 
 private: // input function
 	void Input_Move(const FInputActionValue& InputValue);
+	void Input_Move_Complete(const FInputActionValue& InputValue);
 	void Input_Jump(const FInputActionValue& InputValue);
 	void Input_Turn(const FInputActionValue& InputValue);
 	void Input_Attack(const FInputActionValue& InputValue);
@@ -73,5 +74,7 @@ protected:
 	TObjectPtr<AG1Character> HighlightActor;
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AG1Player> G1Player;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<USkeletalMeshComponent> MeshComponent;
 
 };

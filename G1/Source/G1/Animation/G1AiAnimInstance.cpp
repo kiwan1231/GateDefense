@@ -21,4 +21,21 @@ void UG1AiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	ForwardState = (Velocity.X == 0) ? 0 : (Velocity.X > 0) ? 1 : -1;
 	RightState = (Velocity.Y == 0) ? 0 : (Velocity.Y > 0) ? 1 : -1;
+
+	if (ForwardState == 0 && RightState == 0)
+	{
+		AnimState = ECharacterAnimState::Idle;
+	}
+	else if (ForwardState != 0 && RightState != 0)
+	{
+		AnimState = ECharacterAnimState::Diagonal;
+	}
+	else if (ForwardState != 0)
+	{
+		AnimState = ECharacterAnimState::Forward;
+	}
+	else if (RightState != 0)
+	{
+		AnimState = ECharacterAnimState::Right;
+	}
 }
