@@ -17,7 +17,7 @@
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bShowMouseCursor = true;
+	bShowMouseCursor = false;
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
@@ -56,6 +56,9 @@ void AG1PlayerController::SetupInputComponent()
 
 			auto AttackAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Attack);
 			EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Attack);
+
+			auto TurnAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Turn);
+			EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Turn);
 
 			/*auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
 			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);*/
@@ -170,6 +173,12 @@ void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 {
 	if (G1Player->IsAttackState())
 		return;
+
+	FVector2D Axis = InputValue.Get<FVector2D>();
+
+	GetPawn()->AddControllerYawInput(Axis.X);
+	//GetPawn()->AddControllerPitchInput(Axis.Y);
+	//UE_LOG(LogTemp, Log, TEXT("Input_Turn %s"), Axis.ToString());
 }
 
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)

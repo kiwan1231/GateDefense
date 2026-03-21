@@ -33,7 +33,7 @@ AG1Player::AG1Player()
 	SpringArm->SocketOffset = FVector(0.f, 0.f, 20.f);
 	SpringArm->TargetOffset = FVector(0.f, 0.f, 50.f);
 	SpringArm->TargetArmLength = 250.f;
-	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->bUsePawnControlRotation = false;
 
 	/// 벽 충돌 카메라 처리
 	SpringArm->bDoCollisionTest = true;
