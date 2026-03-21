@@ -116,7 +116,7 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 	FVector Forward = FRotationMatrix(YawRot).GetUnitAxis(EAxis::X);
 	FVector Right = FRotationMatrix(YawRot).GetUnitAxis(EAxis::Y);
 
-	FVector Direction = Forward * MovementVector.X + Right * MovementVector.Y;
+	FVector Direction = (G1Extension::VectorDumpZ(Forward) * MovementVector.X) + (G1Extension::VectorDumpZ(Right) * MovementVector.Y);
 	Direction = Direction.GetSafeNormal();
 
 	GetPawn()->AddMovementInput(Direction, 1.0f);

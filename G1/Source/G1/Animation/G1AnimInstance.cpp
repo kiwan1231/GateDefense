@@ -15,20 +15,32 @@ UG1AnimInstance::UG1AnimInstance(const FObjectInitializer& ObjectInitializer)
 void UG1AnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-
-	Character = Cast<AG1Character>(TryGetPawnOwner());
-
-	if (Character)
-		MovementComponent = Character->GetCharacterMovement();
 }
 
 void UG1AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (Character == nullptr || MovementComponent == nullptr)
+	if (IsInit() == false)
+	{
 		return;
+	}
 
 	Velocity = MovementComponent->Velocity;
 	GroundSpeed = Velocity.Size2D();
+}
+
+bool UG1AnimInstance::IsInit()
+{
+	if (Character == nullptr)
+	{
+		Character = Cast<AG1Character>(TryGetPawnOwner());
+	}
+
+	if (Character != nullptr && MovementComponent == nullptr)
+	{
+		MovementComponent = Character->GetCharacterMovement();
+	}
+
+	return (Character != nullptr || MovementComponent != nullptr);
 }

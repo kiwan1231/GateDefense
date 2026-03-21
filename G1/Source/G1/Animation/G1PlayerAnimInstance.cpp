@@ -19,8 +19,12 @@ void UG1PlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	if (IsInit() == false)
+	{
+		return;
+	}
+
 	FVector LocalVelocity = Character->GetTransform().InverseTransformVectorNoScale(Velocity);
-	UE_LOG(LogTemp, Warning, TEXT("Test Log %s"), *LocalVelocity.ToString());
 
 	bShouldMove = (GroundSpeed > 3.f && MovementComponent->GetCurrentAcceleration() != FVector::ZeroVector);
 	bIsFalling = MovementComponent->IsFalling();

@@ -24,6 +24,9 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 protected:
+	virtual bool IsInit();
+
+protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Character> Character;
 

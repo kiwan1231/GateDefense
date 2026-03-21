@@ -17,6 +17,11 @@ void UG1AiAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	if (IsInit() == false)
+	{
+		return;
+	}
+
 	bShouldMove = (GroundSpeed > 3.f);
 
 	ForwardState = (Velocity.X == 0) ? 0 : (Velocity.X > 0) ? 1 : -1;
