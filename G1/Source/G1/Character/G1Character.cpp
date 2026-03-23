@@ -37,7 +37,9 @@ void AG1Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	UpdateConditionData(DeltaTime);
 }
+
 void AG1Character::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
 	
@@ -112,6 +114,62 @@ void AG1Character::AddEquipment(const FName EquipID)
 
 void AG1Character::RemoveEquipment(const FName EquipID)
 {
+}
+
+void AG1Character::UpdateConditionData(float DeltaTime)
+{
+	for (int32 i = ConditionDataList.Num() - 1; i >= 0; --i)
+	{
+		FConditionData& Data = ConditionDataList[i];
+
+		if (Data.DurationTime == -1)
+			continue;
+
+		Data.DurationTime = FMath::Max(0.0f, Data.DurationTime - DeltaTime);
+
+		if (Data.DurationTime == 0)
+		{
+			ConditionDataList.RemoveAt(i);
+		}
+	}
+
+	//ConditionDataList.RemoveAll([DeltaTime](FConditionData& Data)
+	//	{
+	//		if (Data.DurationTime == -1)
+	//			return false;
+	//
+	//		Data.DurationTime = FMath::Clamp(Data.DurationTime - DeltaTime, 0.0f, Data.DurationTime);
+	//
+	//		return Data.DurationTime == 0;
+	//	});*/
+}
+
+void AG1Character::AddConditionData(EConditionType Type, float DurationTime, float Value1)
+{
+	if (Type == EConditionType::Hit)
+	{
+		FConditionData* FoundData = ConditionDataList.FindByPredicate(
+			[Type](const FConditionData& Data)
+			{
+				return Data.Type == Type;
+			}
+		);
+
+		int DivideValue = 1;
+		if (FoundData != nullptr)
+		{
+			FoundData->int1 = FoundData->int1 + 1;
+			DivideValue = FoundData->int1;
+		}
+		else
+		{
+			FConditionData Data;
+			Data.Type = EConditionType::HitResistance;
+			Data.DurationTime = -1;
+			Data.int1 = 1;
+			ConditionDataList.Add(Data);
+		}
+	}
 }
 
 void AG1Character::InitAbilitySystem()

@@ -46,6 +46,9 @@ protected: /// ReadOnly
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Equip)
 	TMap<FName, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Condition)
+	TArray<FConditionData> ConditionDataList;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -68,6 +71,10 @@ public: // equipment
 	void InitEquipment();
 	virtual void AddEquipment(const FName EquipID);
 	virtual void RemoveEquipment(const FName EquipID);
+
+public: // ConditionData
+	virtual void UpdateConditionData(float DeltaTime);
+	virtual void AddConditionData(EConditionType Type, float DurationTime, float Value1);
 
 public: // interface
 	virtual void InitAbilitySystem();

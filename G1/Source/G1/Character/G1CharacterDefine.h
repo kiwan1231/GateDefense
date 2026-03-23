@@ -16,6 +16,35 @@ enum class ECharacterState : uint8
 	Dead,
 };
 
+UENUM(BlueprintType)
+enum class EConditionType : uint8
+{
+	None,
+	Hit,
+	HitResistance,
+	Stun,
+	MoveSlow,
+};
+
+USTRUCT()
+struct FConditionData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly)
+	EConditionType Type;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DurationTime; // -1이면 무한
+
+	UPROPERTY(EditDefaultsOnly)
+	float float1;
+
+	UPROPERTY(EditDefaultsOnly)
+	int int1;
+};
+
 //UENUM(BlueprintType)
 //enum class ECharacterStateFlag : uint8
 //{
