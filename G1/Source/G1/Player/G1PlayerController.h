@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Utility/G1CharacterDefine.h"
+#include "Character/G1CharacterDefine.h"
 #include "Utility/G1GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "Data/G1PlayerInputData.h"

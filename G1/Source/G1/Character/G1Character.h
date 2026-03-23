@@ -4,10 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Utility/G1CharacterDefine.h"
+#include "G1CharacterDefine.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
-#include "Utility/G1CharacterDefine.h"
 #include "Interface/G1HighlightInterface.h"
 
 #include "G1Character.generated.h"

@@ -4,7 +4,7 @@
 #include "Character/G1Character.h"
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "AbilitySystem/Attributes/G1AttributeSet.h"
-#include "Utility/G1CharacterDefine.h"
+#include "G1CharacterDefine.h"
 #include "System/G1AssetManager.h"
 #include "Data/G1ItemData.h"
 #include "Item/G1EquipmentItem.h"

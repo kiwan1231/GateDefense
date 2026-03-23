@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "GameplayTagContainer.h"
-#include "Utility/G1CharacterDefine.h"
+#include "Character/G1CharacterDefine.h"
 
 #include "G1AnimNotifySend.generated.h"
 
