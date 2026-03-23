@@ -29,6 +29,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<class UCameraComponent> Camera;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class USphereComponent> CameraPivotSphere;
+
+private:
+	FVector SpringArmSocketOffset;
+	FVector SpringArmTargetOffset;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -43,7 +50,11 @@ public:
 
 	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 
+	virtual void UpdateCamera(float DeltaTime);
+
 protected: // interface
 	virtual void InitAbilitySystem() override;
 
+private:
+	FVector GetSpringArmEndLocation();
 };
