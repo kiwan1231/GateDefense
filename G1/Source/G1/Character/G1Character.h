@@ -46,8 +46,12 @@ protected: /// ReadOnly
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Equip)
 	TMap<FName, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Condition)
-	TArray<FConditionData> ConditionDataList;
+	UPROPERTY()
+	TArray<struct FG1CharacterConditionData> ConditionDataList;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UG1AnimInstance> AnimInstance;
 
 protected:
 	// Called when the game starts or when spawned
@@ -94,4 +98,8 @@ public:
 	bool IsEnemyTeam(const AActor* Ohter) const;
 	float TotalDemage() const;
 	bool IsDeadG1Character() const;
+
+private:
+	void G1PlayAnimMontage(class UAnimMontage* Montage);
+	void OnMontageEnded(class UAnimMontage* Montage, bool bInterrupted);
 };

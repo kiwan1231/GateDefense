@@ -26,6 +26,10 @@ public:
 protected:
 	virtual bool IsInit();
 
+public:
+	virtual UAnimMontage* GetHitAnimMontage() const;
+	virtual UAnimMontage* GetDeathAnimMontage() const;
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Character> Character;
@@ -49,9 +53,20 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsFalling = false;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> HitMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> DeathMontage;
+
 public:
+	UPROPERTY(BlueprintReadOnly)
+	bool EnableAnimInstance = false;		// -1 후진, 0, 1 전진
+
 	UPROPERTY(BlueprintReadOnly)
 	float ForwardState = 0.f;		// -1 후진, 0, 1 전진
 	UPROPERTY(BlueprintReadOnly)
 	float RightState = 0.f;			// -1 왼쪽, 0 , 1 오른쪽
+
 };

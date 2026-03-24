@@ -26,6 +26,8 @@ void UG1AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
+	EnableAnimInstance = AnimState != ECharacterAnimState::Dead;
+
 	Velocity = MovementComponent->Velocity;
 	GroundSpeed = Velocity.Size2D();
 }
@@ -43,4 +45,14 @@ bool UG1AnimInstance::IsInit()
 	}
 
 	return (Character != nullptr || MovementComponent != nullptr);
+}
+
+UAnimMontage* UG1AnimInstance::GetHitAnimMontage() const
+{
+	return HitMontage;
+}
+
+UAnimMontage* UG1AnimInstance::GetDeathAnimMontage() const
+{
+	return DeathMontage;
 }

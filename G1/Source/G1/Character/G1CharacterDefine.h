@@ -26,24 +26,20 @@ enum class EConditionType : uint8
 	MoveSlow,
 };
 
-USTRUCT()
-struct FConditionData
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly)
-	EConditionType Type;
-
-	UPROPERTY(EditDefaultsOnly)
-	float DurationTime; // -1이면 무한
-
-	UPROPERTY(EditDefaultsOnly)
-	float float1;
-
-	UPROPERTY(EditDefaultsOnly)
-	int int1;
-};
+//USTRUCT()
+//struct FG1ConditionData
+//{
+//	GENERATED_BODY()
+//
+//public:
+//	EConditionType Type;
+//
+//	float DurationTime; // -1이면 무한
+//
+//	float float1;
+//
+//	int int1;
+//};
 
 //UENUM(BlueprintType)
 //enum class ECharacterStateFlag : uint8

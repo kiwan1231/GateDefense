@@ -11,6 +11,8 @@
 #include "Components/SceneComponent.h"
 #include "Engine/EngineTypes.h"
 #include "Utility/G1GameplayTags.h"
+#include "G1CharacterConditionData.h"
+#include "Animation/G1AnimInstance.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -26,6 +28,8 @@ AG1Character::AG1Character()
 void AG1Character::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	AnimInstance = Cast<UG1AnimInstance>(GetMesh()->GetAnimInstance());
 	
 	AddCharacterAbilities();
 
@@ -68,6 +72,20 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
 	if (Hp == 0)
 	{
 		OnDead(Attacker);
+
+		if (AnimInstance != nullptr)
+		{
+			G1PlayAnimMontage(AnimInstance->GetDeathAnimMontage());
+		}
+	}
+	else
+	{
+		AddConditionData(EConditionType::Hit, 1.f, 1.f);
+
+		if (AnimInstance != nullptr)
+		{
+			G1PlayAnimMontage(AnimInstance->GetHitAnimMontage());
+		}
 	}
 
 	//D(FString::Printf(TEXT("%d"), Hp));
@@ -120,7 +138,7 @@ void AG1Character::UpdateConditionData(float DeltaTime)
 {
 	for (int32 i = ConditionDataList.Num() - 1; i >= 0; --i)
 	{
-		FConditionData& Data = ConditionDataList[i];
+		FG1CharacterConditionData& Data = ConditionDataList[i];
 
 		if (Data.DurationTime == -1)
 			continue;
@@ -133,7 +151,7 @@ void AG1Character::UpdateConditionData(float DeltaTime)
 		}
 	}
 
-	//ConditionDataList.RemoveAll([DeltaTime](FConditionData& Data)
+	//ConditionDataList.RemoveAll([DeltaTime](FG1ConditionData& Data)
 	//	{
 	//		if (Data.DurationTime == -1)
 	//			return false;
@@ -148,8 +166,8 @@ void AG1Character::AddConditionData(EConditionType Type, float DurationTime, flo
 {
 	if (Type == EConditionType::Hit)
 	{
-		FConditionData* FoundData = ConditionDataList.FindByPredicate(
-			[Type](const FConditionData& Data)
+		FG1CharacterConditionData* FoundData = ConditionDataList.FindByPredicate(
+			[Type](const FG1CharacterConditionData& Data)
 			{
 				return Data.Type == Type;
 			}
@@ -163,7 +181,7 @@ void AG1Character::AddConditionData(EConditionType Type, float DurationTime, flo
 		}
 		else
 		{
-			FConditionData Data;
+			FG1CharacterConditionData Data;
 			Data.Type = EConditionType::HitResistance;
 			Data.DurationTime = -1;
 			Data.int1 = 1;
@@ -245,3 +263,26 @@ bool AG1Character::IsDeadG1Character() const
 	return State == ECharacterState::Dead;
 }
 
+void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)
+{
+	if (AnimInstance != nullptr && Montage != nullptr)
+	{
+		FOnMontageEnded EndDelegate;
+		EndDelegate.BindUObject(this, &AG1Character::OnMontageEnded);
+
+		//AnimInstance->Montage_SetEndDelegate(EndDelegate, Montage);
+		AnimInstance->Montage_SetBlendingOutDelegate(EndDelegate, Montage);
+		AnimInstance->Montage_Play(Montage);
+	}
+}
+
+void AG1Character::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+		UE_LOG(LogTemp, Log, TEXT("OnMontageEnded DeathAnimMontage"));
+	if (Montage == AnimInstance->GetDeathAnimMontage())
+	{
+		GetMesh()->bPauseAnims = true;
+
+		//AnimInstance->Montage_Pause();
+	}
+}
