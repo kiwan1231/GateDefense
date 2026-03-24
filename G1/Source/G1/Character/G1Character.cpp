@@ -13,6 +13,7 @@
 #include "Utility/G1GameplayTags.h"
 #include "G1CharacterConditionData.h"
 #include "Animation/G1AnimInstance.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -44,9 +45,45 @@ void AG1Character::Tick(float DeltaTime)
 	UpdateConditionData(DeltaTime);
 }
 
-void AG1Character::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
+void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
+	if (EventTag == G1GameplayTags::Event_Montage_Begin)
+	{
+
+	}
+
+	else if (EventTag == G1GameplayTags::Event_Montage_End)
+	{
+		if (Montage == AnimInstance->GetDeathAnimMontage())
+		{
+			AnimInstance->EnableAnimInstance = false;
+		}
+	}
+
+	else if (EventTag == G1GameplayTags::Event_Montage_Attack_Start
+				|| EventTag == G1GameplayTags::Event_Montage_Attack_End)
+	{
+		for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
+		{
+			FName Key = Pair.Key;
+			TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
+
+			if (Item != nullptr)
+			{
+				Item->SetWeaponCollisionEnabled(EventType == ECharacterAnimNotiType::OnQueryOnly);
+			}
+		}
+	}
 	
+
+	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
+	{
+		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else if (EventType == ECharacterAnimNotiType::NoCollision)
+	{
+		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}*/
 }
 
 // Called to bind functionality to input
@@ -267,22 +304,6 @@ void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)
 {
 	if (AnimInstance != nullptr && Montage != nullptr)
 	{
-		FOnMontageEnded EndDelegate;
-		EndDelegate.BindUObject(this, &AG1Character::OnMontageEnded);
-
-		//AnimInstance->Montage_SetEndDelegate(EndDelegate, Montage);
-		AnimInstance->Montage_SetBlendingOutDelegate(EndDelegate, Montage);
 		AnimInstance->Montage_Play(Montage);
-	}
-}
-
-void AG1Character::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-		UE_LOG(LogTemp, Log, TEXT("OnMontageEnded DeathAnimMontage"));
-	if (Montage == AnimInstance->GetDeathAnimMontage())
-	{
-		GetMesh()->bPauseAnims = true;
-
-		//AnimInstance->Montage_Pause();
 	}
 }

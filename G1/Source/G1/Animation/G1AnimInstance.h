@@ -62,7 +62,7 @@ protected:
 
 public:
 	UPROPERTY(BlueprintReadOnly)
-	bool EnableAnimInstance = false;		// -1 후진, 0, 1 전진
+	bool EnableAnimInstance = true;
 
 	UPROPERTY(BlueprintReadOnly)
 	float ForwardState = 0.f;		// -1 후진, 0, 1 전진

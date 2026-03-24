@@ -3,6 +3,7 @@
 
 #include "Animation/G1AnimNotifySend.h"
 #include "Character/G1Character.h"
+#include "Animation/AnimMontage.h"
 
 UG1AnimNotifySend::UG1AnimNotifySend(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -14,8 +15,9 @@ void UG1AnimNotifySend::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	AG1Character* LocalCharacter = Cast<AG1Character>(MeshComp->GetOwner());
-	if (LocalCharacter)
+	UAnimMontage* Montage = Cast<UAnimMontage>(Animation);
+	if (LocalCharacter && Montage)
 	{
-		LocalCharacter->HandleGameplayEvent(EventTag, EventType);
+		LocalCharacter->HandleGameplayEvent(Montage, EventTag, EventType);
 	}
 }

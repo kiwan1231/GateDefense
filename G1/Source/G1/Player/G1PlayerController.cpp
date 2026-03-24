@@ -186,7 +186,7 @@ void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 	if (G1Player->IsAttackState())
 		return;
 
-	G1Player->ActivateAbility(G1GameplayTags::Event_Montage_Attack);
+	G1Player->ActivateAbility(G1GameplayTags::Ability_Attack);
 
 	//R1Player->PlayAnimMontage(AttackMontage);
 	SetCharacterState(ECharacterState::MoveAttack);

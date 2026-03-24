@@ -24,6 +24,12 @@ void UG1PlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
+	if (EnableAnimInstance == false)
+	{
+		AnimState = ECharacterAnimState::None;
+		return;
+	}
+
 	FVector LocalVelocity = Character->GetTransform().InverseTransformVectorNoScale(Velocity);
 
 	bShouldMove = (GroundSpeed > 3.f && MovementComponent->GetCurrentAcceleration() != FVector::ZeroVector);

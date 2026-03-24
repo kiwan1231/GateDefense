@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Character/G1Player.h"
 #include "Item/G1EquipmentItem.h"
+#include "Animation/AnimMontage.h"
 
 AG1Monster::AG1Monster()
 	: Super()
@@ -101,27 +102,7 @@ void AG1Monster::InitAbilitySystem()
 	AbilitySystem->InitAbilityActorInfo(this, this);
 }
 
-void AG1Monster::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
+void AG1Monster::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
-	Super::HandleGameplayEvent(EventTag, EventType);
-
-	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
-	{
-		FName Key = Pair.Key;
-		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
-
-		if (Item)
-		{
-			Item->SetWeaponCollisionEnabled(EventType == ECharacterAnimNotiType::OnQueryOnly);
-		}
-	}
-
-	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
-	{
-		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-	else if (EventType == ECharacterAnimNotiType::NoCollision)
-	{
-		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}*/
+	Super::HandleGameplayEvent(Montage, EventTag, EventType);
 }

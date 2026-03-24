@@ -36,5 +36,5 @@ public:
 
 	virtual void InitAbilitySystem() override;
 
-	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
+	virtual void HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 };

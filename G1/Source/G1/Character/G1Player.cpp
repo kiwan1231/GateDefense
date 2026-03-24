@@ -12,6 +12,7 @@
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "AbilitySystem/Attributes/G1AttributeSet.h"
 #include "AbilitySystem/Attributes/G1PlayerSet.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AG1Player::AG1Player()
@@ -85,9 +86,9 @@ void AG1Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AG1Player::HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType)
+void AG1Player::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
-	Super::HandleGameplayEvent(EventTag, EventType);
+	Super::HandleGameplayEvent(Montage, EventTag, EventType);
 }
 
 void AG1Player::UpdateCamera(float DeltaTime)

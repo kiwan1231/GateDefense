@@ -60,7 +60,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void HandleGameplayEvent(FGameplayTag EventTag, ECharacterAnimNotiType EventType);
+	virtual void HandleGameplayEvent(class UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType);
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -101,5 +101,4 @@ public:
 
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);
-	void OnMontageEnded(class UAnimMontage* Montage, bool bInterrupted);
 };

@@ -19,14 +19,15 @@ void UG1AnimInstance::NativeInitializeAnimation()
 
 void UG1AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
+	if (false == EnableAnimInstance)
+		return;
+
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	if (IsInit() == false)
 	{
 		return;
 	}
-
-	EnableAnimInstance = AnimState != ECharacterAnimState::Dead;
 
 	Velocity = MovementComponent->Velocity;
 	GroundSpeed = Velocity.Size2D();
