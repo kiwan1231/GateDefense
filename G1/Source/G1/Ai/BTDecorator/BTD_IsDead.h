@@ -13,7 +13,6 @@ UCLASS()
 class G1_API UBTD_IsDead : public UBTDecorator
 {
 	GENERATED_BODY()
-	
 public:
 	UBTD_IsDead();
 

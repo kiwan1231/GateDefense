@@ -27,6 +27,7 @@ void AG1EquipmentItem::BeginPlay()
 		{
 			CollisionBox = Box;
 			CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AG1EquipmentItem::OnAttackOverlap);
+			CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }
