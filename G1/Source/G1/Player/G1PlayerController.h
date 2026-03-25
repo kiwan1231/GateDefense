@@ -55,7 +55,7 @@ private: // input function
 	void Input_HitTarget(const FInputActionValue& InputValue);
 
 private:/// tick function
-	void UpdateCharacterState(float DeltaTime);
+	//void UpdateCharacterState(float DeltaTime);
 	void UpdateMovePoint(float DeltaTime);
 	void UpdateHighlight();
 

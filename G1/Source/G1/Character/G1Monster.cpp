@@ -70,7 +70,7 @@ void AG1Monster::BeginPlay()
 
 	InitAbilitySystem();
 
-	TArray<UBoxComponent*> Boxes;
+	/*TArray<UBoxComponent*> Boxes;
 	GetComponents<UBoxComponent>(Boxes);
 
 	for (UBoxComponent* Box : Boxes)
@@ -87,7 +87,7 @@ void AG1Monster::BeginPlay()
 			LHandHitBox->OnComponentBeginOverlap.AddDynamic(this, &AG1Monster::OnAttackOverlap);
 			LHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
-	}
+	}*/
 }
 
 void AG1Monster::Tick(float DeltaTime)

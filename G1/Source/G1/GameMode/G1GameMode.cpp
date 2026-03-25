@@ -67,7 +67,7 @@ void AG1GameMode::CheckState(float DeltaTime)
 				return;
 			}
 
-			if (Player->IsDeadG1Character())
+			if (Player->InDeadState())
 			{
 				ChangeState(EGameModeState::Outro);
 			}

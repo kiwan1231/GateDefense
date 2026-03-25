@@ -93,11 +93,21 @@ public: /// public 기능 함수
 	void ActivateAbility(FGameplayTag AbilityTag);
 
 public:
-	bool IsAttackState();
 	bool IsSameTeam(const AActor* Ohter) const;
 	bool IsEnemyTeam(const AActor* Ohter) const;
 	float TotalDemage() const;
-	bool IsDeadG1Character() const;
+	
+public:
+	void SetSatate(ECharacterState _State);
+	bool InAttackState() const;
+	bool InAbilityState() const;
+	bool InDeadState() const;
+
+public:
+	virtual bool EnableMove() const;
+	virtual bool EnableJump() const;
+	virtual bool EnableAttack() const;
+	virtual bool EnableAbility() const;
 
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);

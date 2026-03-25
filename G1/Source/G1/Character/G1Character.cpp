@@ -49,14 +49,30 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 {
 	if (EventTag == G1GameplayTags::Event_Montage_Begin)
 	{
-
+		if (EventType == ECharacterAnimNotiType::InAbilityState)
+		{
+			SetSatate(ECharacterState::Ability);
+		}
 	}
 
 	else if (EventTag == G1GameplayTags::Event_Montage_End)
 	{
-		if (Montage == AnimInstance->GetDeathAnimMontage())
+		if (EventType == ECharacterAnimNotiType::OutAbilityState)
 		{
+			if (State == ECharacterState::Ability)
+			{
+				SetSatate(ECharacterState::Idle);
+			}
+		}
+
+		else if (Montage == AnimInstance->GetDeathAnimMontage())
+		{
+			GetMesh()->bPauseAnims = true;
+			GetMesh()->SetComponentTickEnabled(false);
 			AnimInstance->EnableAnimInstance = false;
+			SetActorTickEnabled(false);
+			AnimInstance->StopAllMontages(0.0f);
+			AnimInstance->SetRootMotionMode(ERootMotionMode::IgnoreRootMotion);
 		}
 	}
 
@@ -117,7 +133,7 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
 	}
 	else
 	{
-		AddConditionData(EConditionType::Hit, 1.f, 1.f);
+		AddConditionData(EConditionType::Hit, 0.5f, 1.f);
 
 		if (AnimInstance != nullptr)
 		{
@@ -203,7 +219,7 @@ void AG1Character::AddConditionData(EConditionType Type, float DurationTime, flo
 {
 	if (Type == EConditionType::Hit)
 	{
-		FG1CharacterConditionData* FoundData = ConditionDataList.FindByPredicate(
+		FG1CharacterConditionData* HitData = ConditionDataList.FindByPredicate(
 			[Type](const FG1CharacterConditionData& Data)
 			{
 				return Data.Type == Type;
@@ -211,16 +227,16 @@ void AG1Character::AddConditionData(EConditionType Type, float DurationTime, flo
 		);
 
 		int DivideValue = 1;
-		if (FoundData != nullptr)
+		if (HitData != nullptr)
 		{
-			FoundData->int1 = FoundData->int1 + 1;
-			DivideValue = FoundData->int1;
+			HitData->int1 = HitData->int1 + 1;
+			HitData->DurationTime = DurationTime / HitData->int1;
 		}
 		else
 		{
 			FG1CharacterConditionData Data;
-			Data.Type = EConditionType::HitResistance;
-			Data.DurationTime = -1;
+			Data.Type = EConditionType::Hit;
+			Data.DurationTime = DurationTime;
 			Data.int1 = 1;
 			ConditionDataList.Add(Data);
 		}
@@ -261,11 +277,6 @@ void AG1Character::ActivateAbility(FGameplayTag AbilityTag)
 		AbilitySystem->ActivateAbility(AbilityTag);
 }
 
-bool AG1Character::IsAttackState()
-{
-	return State == ECharacterState::MoveAttack;
-}
-
 bool AG1Character::IsSameTeam(const AActor* Ohter) const
 {
 	const AG1Character* OtherCharacter = Cast<AG1Character>(Ohter);
@@ -295,9 +306,100 @@ float AG1Character::TotalDemage() const
 	return AttributeSet->GetBaseDamage();
 }
 
-bool AG1Character::IsDeadG1Character() const
+void AG1Character::SetSatate(ECharacterState _State)
+{
+	State = _State;
+}
+
+bool AG1Character::InAttackState() const
+{
+	return State == ECharacterState::Attack;
+}
+
+bool AG1Character::InAbilityState() const
+{
+	return State == ECharacterState::Ability;
+}
+
+bool AG1Character::InDeadState() const
 {
 	return State == ECharacterState::Dead;
+}
+
+bool AG1Character::EnableMove() const
+{
+	if (InAttackState() || InAbilityState() || InDeadState())
+	{
+		return false;
+	}
+
+	for (int32 i = 0; i < ConditionDataList.Num(); i++)
+	{
+		auto Type = ConditionDataList[i].Type;
+		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool AG1Character::EnableJump() const
+{
+	if (InAttackState() || InAbilityState() || InDeadState())
+	{
+		return false;
+	}
+
+	for (int32 i = 0; i < ConditionDataList.Num(); i++)
+	{
+		auto Type = ConditionDataList[i].Type;
+		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool AG1Character::EnableAttack() const
+{
+	if (InAttackState() || InAbilityState() || InDeadState())
+	{
+		return false;
+	}
+
+	for (int32 i = 0; i < ConditionDataList.Num(); i++)
+	{
+		auto Type = ConditionDataList[i].Type;
+		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool AG1Character::EnableAbility() const
+{
+	if (InAttackState() || InAbilityState() || InDeadState())
+	{
+		return false;
+	}
+
+	for (int32 i = 0; i < ConditionDataList.Num(); i++)
+	{
+		auto Type = ConditionDataList[i].Type;
+		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)

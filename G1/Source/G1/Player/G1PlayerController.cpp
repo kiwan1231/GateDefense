@@ -70,7 +70,7 @@ void AG1PlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	UpdateCharacterState(DeltaTime);
+	//UpdateCharacterState(DeltaTime);
 
 	//UpdateMovePoint(DeltaTime);
 
@@ -92,7 +92,7 @@ void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
 
 void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
-	if (G1Player->IsAttackState())
+	if (G1Player->EnableMove() == false)
 		return;
 
 	FVector2D MovementVector = InputValue.Get<FVector2D>();
@@ -121,7 +121,7 @@ void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 
 	GetPawn()->AddMovementInput(Direction, 1.0f);
 
-	SetCharacterState(ECharacterState::MoveDirection);
+	SetCharacterState(ECharacterState::Move);
 	CachedDestination = FVector::ZeroVector;
 }
 /*
@@ -156,11 +156,16 @@ void AG1PlayerController::Input_Move_Complete(const FInputActionValue& InputValu
 	UG1AnimInstance* AnimInstance = Cast<UG1AnimInstance>(MeshComponent->GetAnimInstance());
 	AnimInstance->ForwardState = 0;
 	AnimInstance->RightState = 0;
+
+	if (G1Player->State == ECharacterState::Move)
+	{
+		SetCharacterState(ECharacterState::Idle);
+	}
 }
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
-	if (G1Player->IsAttackState())
+	if (G1Player->EnableJump())
 		return;
 
 	if (AG1Character* MyCharacter = Cast<AG1Character>(GetPawn()))
@@ -171,7 +176,7 @@ void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 {
-	if (G1Player->IsAttackState())
+	if (G1Player->EnableMove() == false)
 		return;
 
 	FVector2D Axis = InputValue.Get<FVector2D>();
@@ -183,18 +188,15 @@ void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
-	if (G1Player->IsAttackState())
+	if (G1Player->EnableAbility() == false)
 		return;
 
 	G1Player->ActivateAbility(G1GameplayTags::Ability_Attack);
-
-	//R1Player->PlayAnimMontage(AttackMontage);
-	SetCharacterState(ECharacterState::MoveAttack);
 }
 
 void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 {
-	if (G1Player->IsAttackState())
+	if (G1Player->InAttackState())
 		return;
 
 	// We look for the location in the world where the player has pressed the input
@@ -210,7 +212,7 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	// Move towards mouse pointer or touch
 	if (GetPawn() != nullptr)
 	{
-		SetCharacterState(ECharacterState::MovePoint);
+		SetCharacterState(ECharacterState::Move);
 
 		if (IsValid(HighlightActor))
 		{
@@ -231,18 +233,18 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	}
 }
 
-void AG1PlayerController::UpdateCharacterState(float DeltaTime)
-{
-	if (GetCharacterState() == ECharacterState::MoveAttack
-			&& G1Player->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr) == false)
-	{
-		SetCharacterState(ECharacterState::Idle);
-	}
-}
+//void AG1PlayerController::UpdateCharacterState(float DeltaTime)
+//{
+//	if (GetCharacterState() == ECharacterState::MoveAttack
+//			&& G1Player->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr) == false)
+//	{
+//		SetCharacterState(ECharacterState::Idle);
+//	}
+//}
 
 void AG1PlayerController::UpdateMovePoint(float DeltaTime)
 {
-	if (GetCharacterState() != ECharacterState::MovePoint)
+	if (GetCharacterState() != ECharacterState::Move)
 	{
 		return;
 	}

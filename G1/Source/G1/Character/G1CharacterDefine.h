@@ -9,10 +9,9 @@ enum class ECharacterState : uint8
 {
 	None,
 	Idle,
-	MoveDirection,
-	MovePoint,
-	MoveAttack,
-	Skill,
+	Move,
+	Attack,
+	Ability,
 	Dead,
 };
 
@@ -62,6 +61,8 @@ enum class ECharacterAnimNotiType : uint8
 	None,
 	OnQueryOnly,
 	NoCollision,
+	InAbilityState,
+	OutAbilityState,
 };
 
 #define D(x) if(GEngine) { GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, x); }
