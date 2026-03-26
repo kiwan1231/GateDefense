@@ -39,6 +39,16 @@ void AG1GameMode::Tick(float DeltaTime)
 
 		CheckElapsedTimeEvent();
 	}
+
+	else if (ModeState == EGameModeState::GameOver)
+	{
+
+	}
+
+	else if (ModeState == EGameModeState::GameClear)
+	{
+
+	}
 }
 
 void AG1GameMode::CheckState(float DeltaTime)
@@ -101,13 +111,22 @@ void AG1GameMode::InitEventInstance()
 
 void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 {
-	PlayEvent->CompleteTrigger = true;
+	PlayEvent->TriggerCount = 0;
+
+	if (PlayEvent->EventData->Repeat == false)
+	{
+		PlayEvent->CompleteTrigger = true;
+	}
 
 	for (const FEventActionData& Action : PlayEvent->EventData->ActionDataList)
 	{
 		if (Action.ActionType == EEventActionType::SpawnMonster)
 		{
 			AG1Monster* Monster = GetWorld()->SpawnActor<AG1Monster>(Action.SpawnMonster, Action.SpawnPos, FRotator::ZeroRotator);
+			if (Monster != nullptr)
+			{
+				Monster->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
+			}
 		}
 	}
 }
@@ -131,4 +150,46 @@ void AG1GameMode::CheckElapsedTimeEvent()
 			PlayEventAction(&EventInstance);
 		}
 	}
+}
+
+void AG1GameMode::CheckCharacterDeadEvent(AG1Character* DeadCharacter)
+{
+	for (FG1EventInstance& EventInstance : EventInstanceList)
+	{
+		if (EventInstance.CompleteTrigger)
+		{
+			continue;
+		}
+
+		if (DeadCharacter->TeamTag == G1GameplayTags::Team_Monster
+				&& EventInstance.EventData->TriggerType != EEventTriggerType::MonsterDeath)
+		{
+			continue;
+		}
+
+		if (DeadCharacter->TeamTag == G1GameplayTags::Team_Player
+			&& EventInstance.EventData->TriggerType != EEventTriggerType::PlayerDeath)
+		{
+			continue;
+		}
+
+		EventInstance.TriggerCount += 1;
+
+		if (EventInstance.TriggerCount >= EventInstance.EventData->RequiredTriggerCount)
+		{
+			PlayEventAction(&EventInstance);
+		}
+	}
+}
+
+void AG1GameMode::Delegate_OnCharacterDead(AG1Character* DeadCharacter)
+{
+	UE_LOG(LogTemp, Log, TEXT("Delegate_OnCharacterDead !!!"));
+
+	if (DeadCharacter == nullptr)
+	{
+		return;
+	}
+
+	CheckCharacterDeadEvent(DeadCharacter);
 }

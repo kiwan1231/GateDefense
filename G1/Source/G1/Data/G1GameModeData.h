@@ -13,8 +13,8 @@ enum class EEventTriggerType : uint8
 	None = 0,
 	ElapsedTime,
 	PlayerDeath,
-	MonsterKill,
-	BossKill,
+	MonsterDeath,
+	BossDeath,
 	PlayerEnterArea,
 };
 
@@ -63,6 +63,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	bool Repeat = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	int RequiredTriggerCount = 1;
 
 public:
 	/// Trigger

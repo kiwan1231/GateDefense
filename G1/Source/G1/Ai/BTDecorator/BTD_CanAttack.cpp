@@ -28,5 +28,5 @@ bool UBTD_CanAttack::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerCom
 		return false;
 	}
 
-	return (Target->GetDistanceTo(ControllingPawn) <= AttackRange);
+	return (Target->EnableAbility() && Target->GetDistanceTo(ControllingPawn) <= AttackRange);
 }

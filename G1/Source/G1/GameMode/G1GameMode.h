@@ -13,6 +13,7 @@
  * 
  */
 
+class AG1Character;
 struct FEventData;
 
 USTRUCT()
@@ -42,6 +43,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	bool CompleteTrigger = false;
+
+	UPROPERTY(VisibleAnywhere)
+	int TriggerCount = 0;
 };
 
 UCLASS()
@@ -68,6 +72,10 @@ public:
 	virtual void InitEventInstance();
 	virtual void PlayEventAction(FG1EventInstance* PlayEvent);
 	virtual void CheckElapsedTimeEvent();
+	virtual void CheckCharacterDeadEvent(AG1Character* DeadCharacter);
+
+public:/// Delegate 구독 함수
+	virtual void Delegate_OnCharacterDead(AG1Character* DeadCharacter);
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = ModeBase)

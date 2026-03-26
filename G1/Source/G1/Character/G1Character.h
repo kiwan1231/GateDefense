@@ -9,7 +9,12 @@
 #include "AbilitySystemInterface.h"
 #include "Interface/G1HighlightInterface.h"
 
+//#include "Delegates/Delegate.h"
+//#include "Delegates/DelegateCombinations.h"
+
 #include "G1Character.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterDead, AG1Character*);
 
 UCLASS()
 class G1_API AG1Character : public ACharacter, public IAbilitySystemInterface, public IG1HighlightInterface
@@ -111,4 +116,7 @@ public:
 
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);
+
+public:
+	FOnCharacterDead OnCharacterDead;
 };

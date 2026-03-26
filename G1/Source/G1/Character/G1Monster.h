@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/G1Character.h"
+
 #include "G1Monster.generated.h"
 
 /**

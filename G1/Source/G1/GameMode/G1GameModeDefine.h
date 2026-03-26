@@ -11,4 +11,6 @@ enum class EGameModeState : uint8
 	Intro,
 	Outro,
 	Playing,
+	GameOver,
+	GameClear,
 };

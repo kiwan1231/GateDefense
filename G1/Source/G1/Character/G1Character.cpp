@@ -152,6 +152,25 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 	}
 
 	State = ECharacterState::Dead;
+
+	// 충돌 비활성화 (선택)
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	OnCharacterDead.Broadcast(this);
+
+	// 일정 시간 후 삭제
+	SetLifeSpan(5.0f);
+
+	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
+	{
+		FName Key = Pair.Key;
+		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
+
+		if (Item != nullptr)
+		{
+			Item->SetLifeSpan(5.f);
+		}
+	}
 }
 
 void AG1Character::InitEquipment()
