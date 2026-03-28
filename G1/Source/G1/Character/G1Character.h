@@ -84,6 +84,7 @@ public: // equipment
 public: // ConditionData
 	virtual void UpdateConditionData(float DeltaTime);
 	virtual void AddConditionData(EConditionType Type, float DurationTime, float Value1);
+	virtual void CheckConditionEffect();
 
 public: // interface
 	virtual void InitAbilitySystem();
@@ -107,6 +108,7 @@ public:
 	bool InAttackState() const;
 	bool InAbilityState() const;
 	bool InDeadState() const;
+	bool InConditionEffectState() const;
 
 public:
 	virtual bool EnableMove() const;

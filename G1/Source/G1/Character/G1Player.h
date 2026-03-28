@@ -33,6 +33,7 @@ protected:
 	TObjectPtr<class USphereComponent> CameraPivotSphere;
 
 private:
+	TObjectPtr<class AG1PlayerController> Controller;
 	FVector SpringArmSocketOffset;
 	FVector SpringArmTargetOffset;
 
@@ -52,9 +53,13 @@ public:
 
 	virtual void UpdateCamera(float DeltaTime);
 
+public:
+	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker) override;
+
 protected: // interface
 	virtual void InitAbilitySystem() override;
 
 private:
 	FVector GetSpringArmEndLocation();
+	float GetHpRatio() const;
 };

@@ -43,6 +43,7 @@ void AG1Character::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UpdateConditionData(DeltaTime);
+	CheckConditionEffect();
 }
 
 void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType)
@@ -259,6 +260,31 @@ void AG1Character::AddConditionData(EConditionType Type, float DurationTime, flo
 			Data.int1 = 1;
 			ConditionDataList.Add(Data);
 		}
+
+		State = ECharacterState::ConditionEffect;
+	}
+}
+
+void AG1Character::CheckConditionEffect()
+{
+	if (State == ECharacterState::Dead)
+	{
+		return;
+	}
+
+	for (int32 i = 0; i < ConditionDataList.Num(); i++)
+	{
+		auto Type = ConditionDataList[i].Type;
+		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
+		{
+			State = ECharacterState::ConditionEffect;
+			return;
+		}
+	}
+
+	if (State == ECharacterState::ConditionEffect)
+	{
+		State = ECharacterState::Idle;
 	}
 }
 
@@ -345,20 +371,19 @@ bool AG1Character::InDeadState() const
 	return State == ECharacterState::Dead;
 }
 
+bool AG1Character::InConditionEffectState() const
+{
+	return State == ECharacterState::ConditionEffect;
+}
+
 bool AG1Character::EnableMove() const
 {
-	if (InAttackState() || InAbilityState() || InDeadState())
+	if (InAttackState() || 
+		InAbilityState() ||
+		InConditionEffectState() ||
+		InDeadState())
 	{
 		return false;
-	}
-
-	for (int32 i = 0; i < ConditionDataList.Num(); i++)
-	{
-		auto Type = ConditionDataList[i].Type;
-		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
-		{
-			return false;
-		}
 	}
 
 	return true;
@@ -366,18 +391,12 @@ bool AG1Character::EnableMove() const
 
 bool AG1Character::EnableJump() const
 {
-	if (InAttackState() || InAbilityState() || InDeadState())
+	if (InAttackState() || 
+		InAbilityState() ||
+		InConditionEffectState() ||
+		InDeadState())
 	{
 		return false;
-	}
-
-	for (int32 i = 0; i < ConditionDataList.Num(); i++)
-	{
-		auto Type = ConditionDataList[i].Type;
-		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
-		{
-			return false;
-		}
 	}
 
 	return true;
@@ -385,18 +404,12 @@ bool AG1Character::EnableJump() const
 
 bool AG1Character::EnableAttack() const
 {
-	if (InAttackState() || InAbilityState() || InDeadState())
+	if (InAttackState() ||
+		InAbilityState() ||
+		InConditionEffectState() ||
+		InDeadState())
 	{
 		return false;
-	}
-
-	for (int32 i = 0; i < ConditionDataList.Num(); i++)
-	{
-		auto Type = ConditionDataList[i].Type;
-		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
-		{
-			return false;
-		}
 	}
 
 	return true;
@@ -404,18 +417,12 @@ bool AG1Character::EnableAttack() const
 
 bool AG1Character::EnableAbility() const
 {
-	if (InAttackState() || InAbilityState() || InDeadState())
+	if (InAttackState() ||
+		InAbilityState() ||
+		InConditionEffectState() ||
+		InDeadState())
 	{
 		return false;
-	}
-
-	for (int32 i = 0; i < ConditionDataList.Num(); i++)
-	{
-		auto Type = ConditionDataList[i].Type;
-		if (Type == EConditionType::Hit || Type == EConditionType::Stun)
-		{
-			return false;
-		}
 	}
 
 	return true;

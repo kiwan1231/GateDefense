@@ -9,6 +9,7 @@
 #include "System/G1AssetManager.h"
 #include "Data/G1GameModeData.h"
 #include "Character/G1Monster.h"
+#include "Kismet/GameplayStatics.h"
 
 AG1GameMode::AG1GameMode()
 	: Super()
@@ -25,6 +26,13 @@ void AG1GameMode::BeginPlay()
 	ChangeState(EGameModeState::Intro);
 
 	ElapsedTime = 0.f;
+
+	APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	AG1Character* Player = Cast<AG1Character>(Pawn);
+	if (Player)
+	{
+		Player->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
+	}
 }
 
 void AG1GameMode::Tick(float DeltaTime)
@@ -127,6 +135,12 @@ void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 			{
 				Monster->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
 			}
+		}
+
+		else if (Action.ActionType == EEventActionType::GameOver)
+		{
+			//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()));
+			UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this, true)));
 		}
 	}
 }

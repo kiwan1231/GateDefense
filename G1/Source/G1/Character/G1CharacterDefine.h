@@ -13,6 +13,8 @@ enum class ECharacterState : uint8
 	Attack,
 	Ability,
 	Dead,
+
+	ConditionEffect,
 };
 
 UENUM(BlueprintType)

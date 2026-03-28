@@ -13,6 +13,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Utility/FMathExtension.h"
 #include "Animation/G1AnimInstance.h"
+#include "UI/Ingame/G1IngameSceneWidget.h"
+
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -37,6 +39,16 @@ void AG1PlayerController::BeginPlay()
 
 	G1Player = Cast<AG1Player>(GetCharacter());
 	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
+
+	if (IngameUIClass)
+	{
+		IngameUI = CreateWidget<UG1IngameSceneWidget>(this, IngameUIClass);
+
+		if (IngameUI)
+		{
+			IngameUI->AddToViewport();
+		}
+	}
 }
 
 void AG1PlayerController::SetupInputComponent()

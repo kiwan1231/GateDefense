@@ -77,4 +77,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
 
+public:
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<class UG1IngameSceneWidget> IngameUIClass;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UG1IngameSceneWidget> IngameUI;
 };

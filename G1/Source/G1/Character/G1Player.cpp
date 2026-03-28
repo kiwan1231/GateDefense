@@ -8,11 +8,17 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
+
 #include "Player/G1PlayerState.h"
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "AbilitySystem/Attributes/G1AttributeSet.h"
 #include "AbilitySystem/Attributes/G1PlayerSet.h"
 #include "Animation/AnimMontage.h"
+#include "UI/Ingame/G1PlayerUserWidget.h"
+#include "UI/Ingame/G1IngameSceneWidget.h"
+
+#include "Player/G1PlayerController.h"
 
 // Sets default values
 AG1Player::AG1Player()
@@ -63,6 +69,14 @@ void AG1Player::BeginPlay()
 	SpringArmTargetOffset = SpringArm->TargetOffset;
 	SpringArmSocketOffset = SpringArm->SocketOffset;
 	CameraPivotSphere->SetWorldLocation(GetSpringArmEndLocation());
+
+	Controller = Cast<AG1PlayerController>(GetController());
+
+	if (Controller && Controller->IngameUI && Controller->IngameUI->PlayerWidget)
+	{
+		Controller->IngameUI->PlayerWidget->SetName("juseal");
+		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
+	}
 }
 
 void AG1Player::PossessedBy(AController* NewController)
@@ -130,6 +144,16 @@ void AG1Player::UpdateCamera(float DeltaTime)
 	SpringArm->SetRelativeRotation(NewRot);
 }
 
+void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
+{
+	Super::OnDamaged(Damage, Attacker);
+
+	if (Controller && Controller->IngameUI)
+	{
+		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
+	}
+}
+
 void AG1Player::InitAbilitySystem()
 {
 	Super::InitAbilitySystem();
@@ -158,4 +182,11 @@ FVector AG1Player::GetSpringArmEndLocation()
 	FVector Backward = Rot.Vector() * -SpringArm->TargetArmLength;
 
 	return Start + Socket + Backward;
+}
+
+float AG1Player::GetHpRatio() const
+{
+	float Hp = AttributeSet->GetHealth();
+	float MaxHp = AttributeSet->GetMaxHealth();
+	return (Hp / MaxHp);
 }
