@@ -47,10 +47,10 @@ void UBTS_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 	{
 		for (FOverlapResult& OverlapResult : OverlapResults)
 		{
-			AG1Character* G1Character = Cast<AG1Character>(OverlapResult.GetActor());
-			if (G1Character)
+			AG1Character* G1EnemyCharacter = Cast<AG1Character>(OverlapResult.GetActor());
+			if (G1EnemyCharacter && G1EnemyCharacter->IsEnemyTeam(LocalPawn))
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, G1Character);
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, G1EnemyCharacter);
 				//DrawDebugSphere(World, Location, SearchRadius, 16, FColor::Green, false, 0.2f);
 				return;
 			}
