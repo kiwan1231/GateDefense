@@ -12,6 +12,7 @@
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameOver, EGameModeType);
 
 class AG1Character;
 struct FEventData;
@@ -74,10 +75,16 @@ public:
 	virtual void CheckElapsedTimeEvent();
 	virtual void CheckCharacterDeadEvent(AG1Character* DeadCharacter);
 
+public: /// Delegate 함수
+	FOnGameOver OnGameOver;
+
 public:/// Delegate 구독 함수
 	virtual void Delegate_OnCharacterDead(AG1Character* DeadCharacter);
 
 public:
+	UPROPERTY(BlueprintReadWrite, Category = ModeBase)
+	EGameModeType ModeType;
+
 	UPROPERTY(BlueprintReadWrite, Category = ModeBase)
 	EGameModeState ModeState;
 

@@ -14,3 +14,10 @@ enum class EGameModeState : uint8
 	GameOver,
 	GameClear,
 };
+
+UENUM(BlueprintType)
+enum class EGameModeType : uint8
+{
+	None,
+	MonsterWave,
+};

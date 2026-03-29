@@ -6,6 +6,7 @@
 AG1MonsterWaveMode::AG1MonsterWaveMode()
 	: Super()
 {
+	ModeType = EGameModeType::MonsterWave;
 }
 
 void AG1MonsterWaveMode::BeginPlay()

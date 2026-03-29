@@ -14,7 +14,9 @@
 #include "Utility/FMathExtension.h"
 #include "Animation/G1AnimInstance.h"
 #include "UI/Ingame/G1IngameSceneWidget.h"
-
+#include "UI/Ingame/G1GameOverSceneWidget.h"
+#include "GameMode/G1GameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -36,6 +38,9 @@ void AG1PlayerController::BeginPlay()
 			Subsystem->AddMappingContext(InputData->InputMappingContext, 0);
 		}
 	}
+
+	AG1GameMode* G1GameMode = Cast<AG1GameMode>(GetWorld()->GetAuthGameMode());
+	G1GameMode->OnGameOver.AddUObject(this, &AG1PlayerController::Delegate_OnGameOver);
 
 	G1Player = Cast<AG1Player>(GetCharacter());
 	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
@@ -332,5 +337,28 @@ void AG1PlayerController::SetCharacterState(ECharacterState InState)
 	if (G1Player)
 	{
 		G1Player->State = InState;
+	}
+}
+
+void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
+{
+	if (IngameUI)
+	{
+		IngameUI->RemoveFromViewport();
+	}
+
+	if (GameOverUIClass)
+	{
+		GameOverUI = CreateWidget<UG1GameOverSceneWidget>(this, GameOverUIClass);
+
+		if (GameOverUI)
+		{
+			GameOverUI->AddToViewport();
+
+			// 입력을 UI로 전환
+			FInputModeUIOnly InputMode;
+			InputMode.SetWidgetToFocus(GameOverUI->TakeWidget());
+			SetInputMode(InputMode);
+		}
 	}
 }

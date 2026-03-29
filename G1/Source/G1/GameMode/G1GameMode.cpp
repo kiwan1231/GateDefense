@@ -15,6 +15,7 @@ AG1GameMode::AG1GameMode()
 	: Super()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	ModeType = EGameModeType::None;
 }
 
 void AG1GameMode::BeginPlay()
@@ -139,8 +140,7 @@ void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 
 		else if (Action.ActionType == EEventActionType::GameOver)
 		{
-			//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()));
-			UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this, true)));
+			OnGameOver.Broadcast(ModeType);
 		}
 	}
 }

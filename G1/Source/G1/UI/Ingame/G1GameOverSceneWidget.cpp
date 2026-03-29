@@ -16,10 +16,10 @@ void UG1GameOverSceneWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	// 키 입력 받기 위해 필요
-	SetIsFocusable(true);
+	//SetIsFocusable(true);
 
 	// 포커스 강제로 줌
-	FSlateApplication::Get().SetKeyboardFocus(TakeWidget());
+	//FSlateApplication::Get().SetKeyboardFocus(TakeWidget());
 
 	ElapsedTime = 0;
 	Presskey->SetVisibility(ESlateVisibility::Hidden);

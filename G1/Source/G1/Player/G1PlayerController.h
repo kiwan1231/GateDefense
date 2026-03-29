@@ -8,6 +8,7 @@
 #include "Utility/G1GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "Data/G1PlayerInputData.h"
+#include "GameMode/G1GameModeDefine.h"
 
 #include "G1PlayerController.generated.h"
 
@@ -63,6 +64,9 @@ private:
 	ECharacterState GetCharacterState();
 	void SetCharacterState(ECharacterState InState);
 
+public:/// Delegate 구독 함수
+	virtual void Delegate_OnGameOver(EGameModeType GameModeType);
+
 private:
 	FVector CachedDestination;
 	float FollowTime;
@@ -82,4 +86,9 @@ public:
 	TSubclassOf<class UG1IngameSceneWidget> IngameUIClass;
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UG1IngameSceneWidget> IngameUI;
+
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<class UG1GameOverSceneWidget> GameOverUIClass;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UG1GameOverSceneWidget> GameOverUI;
 };
