@@ -60,7 +60,7 @@ void AG1Monster::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (OverlappedComponent == RHandHitBox || OverlappedComponent == LHandHitBox)
 	{
-		demagedPlayer->OnDamaged(AttributeSet->GetBaseDamage(), Cast<AG1Character>(this));
+		demagedPlayer->OnDamaged(AttributeSet->GetBaseDamage(), Cast<AG1Character>(this), SweepResult);
 	}
 }
 

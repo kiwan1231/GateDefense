@@ -115,7 +115,7 @@ UAbilitySystemComponent* AG1Character::GetAbilitySystemComponent() const
 	return AbilitySystem;
 }
 
-void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
+void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult)
 {
 	float Hp = AttributeSet->GetHealth();
 	float MaxHp = AttributeSet->GetMaxHealth();
@@ -138,17 +138,27 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
 
 		if (AnimInstance != nullptr)
 		{
-			G1PlayAnimMontage(AnimInstance->GetHitAnimMontage());
+			FVector Forward = GetActorForwardVector();
+			FVector Right = GetActorRightVector();
 
-			/*FName SectionName;
+			FVector HitDir = Attacker->GetActorLocation() - GetActorLocation();
+			HitDir.Z = 0.f; // 수평만 판단
+			HitDir.Normalize();
 
-			if (Front) SectionName = "Front";
-			else if (Back) SectionName = "Back";
-			else if (Left) SectionName = "Left";
-			else SectionName = "Right";
+			// 전후 판단 (내적)
+			float ForwardDot = FVector::DotProduct(Forward, HitDir);
 
-			AnimInstance->Montage_Play(HitMontage);
-			AnimInstance->Montage_JumpToSection(SectionName, HitMontage);*/
+			// 좌우 판단 (내적)
+			float RightDot = FVector::DotProduct(Right, HitDir);
+
+			FName SectionName = (FMath::Abs(ForwardDot) >= FMath::Abs(RightDot))
+								? (ForwardDot >= 0.f) ? "Hit_Front" : "Hit_Back"
+								: (RightDot >= -0.f) ? "Hit_Right" : "Hit_Left";
+
+
+			auto HitMontage = AnimInstance->GetHitAnimMontage();
+			G1PlayAnimMontage(HitMontage);
+			AnimInstance->Montage_JumpToSection(SectionName, HitMontage);
 		}
 	}
 

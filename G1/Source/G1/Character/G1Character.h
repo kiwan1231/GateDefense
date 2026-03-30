@@ -73,7 +73,7 @@ public:
 public:/// ability
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker);
+	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult);
 	virtual void OnDead(TObjectPtr<AG1Character> Attacker);
 
 public: // equipment

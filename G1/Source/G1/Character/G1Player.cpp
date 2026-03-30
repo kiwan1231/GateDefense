@@ -144,9 +144,9 @@ void AG1Player::UpdateCamera(float DeltaTime)
 	SpringArm->SetRelativeRotation(NewRot);
 }
 
-void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
+void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult)
 {
-	Super::OnDamaged(Damage, Attacker);
+	Super::OnDamaged(Damage, Attacker, SweepResult);
 
 	if (Controller && Controller->IngameUI)
 	{

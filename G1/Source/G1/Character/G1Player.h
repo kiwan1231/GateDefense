@@ -54,7 +54,7 @@ public:
 	virtual void UpdateCamera(float DeltaTime);
 
 public:
-	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker) override;
+	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult) override;
 
 protected: // interface
 	virtual void InitAbilitySystem() override;

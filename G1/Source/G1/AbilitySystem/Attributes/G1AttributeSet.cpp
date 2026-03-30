@@ -5,7 +5,7 @@
 
 UG1AttributeSet::UG1AttributeSet()
 {
-	InitHealth(100.f);
+	InitHealth(10000.f);
 	InitMaxHealth(100.f);
 	InitBaseDamage(10.f);
 }
