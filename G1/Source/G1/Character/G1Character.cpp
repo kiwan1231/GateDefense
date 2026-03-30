@@ -139,6 +139,16 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker)
 		if (AnimInstance != nullptr)
 		{
 			G1PlayAnimMontage(AnimInstance->GetHitAnimMontage());
+
+			/*FName SectionName;
+
+			if (Front) SectionName = "Front";
+			else if (Back) SectionName = "Back";
+			else if (Left) SectionName = "Left";
+			else SectionName = "Right";
+
+			AnimInstance->Montage_Play(HitMontage);
+			AnimInstance->Montage_JumpToSection(SectionName, HitMontage);*/
 		}
 	}
 

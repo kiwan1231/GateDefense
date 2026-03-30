@@ -66,9 +66,20 @@ void AG1EquipmentItem::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		return;
 	}
+
 	if (OverlappedComponent == CollisionBox)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Item Attack!!"))
+		FVector HitDir = (demagedPlayer->GetActorLocation() - ownerCharacter->GetActorLocation()).GetSafeNormal();
+		float ForwardDot = FVector::DotProduct(ownerCharacter->GetActorForwardVector(), HitDir);
+		float RightDot = FVector::DotProduct(ownerCharacter->GetActorRightVector(), HitDir);
+		/*if (FMath::Abs(ForwardDot) > FMath::Abs(RightDot))
+		{
+			HitDirType = (ForwardDot > 0) ? EHitDirection::Front : EHitDirection::Back;
+		}
+		else
+		{
+			HitDirType = (RightDot > 0) ? EHitDirection::Right : EHitDirection::Left;
+		}*/
 		demagedPlayer->OnDamaged(ownerCharacter->TotalDemage(), Cast<AG1Character>(this));
 	}
 }
