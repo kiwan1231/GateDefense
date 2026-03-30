@@ -16,7 +16,10 @@ void UG1GameOverSceneWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	// 키 입력 받기 위해 필요
-	//SetIsFocusable(true);
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(TakeWidget());
+	GetOwningPlayer()->SetInputMode(InputMode);
+	SetIsFocusable(true);
 
 	// 포커스 강제로 줌
 	//FSlateApplication::Get().SetKeyboardFocus(TakeWidget());

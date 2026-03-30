@@ -182,7 +182,7 @@ void AG1PlayerController::Input_Move_Complete(const FInputActionValue& InputValu
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
-	if (G1Player->EnableJump())
+	if (G1Player->EnableJump() == false)
 		return;
 
 	if (AG1Character* MyCharacter = Cast<AG1Character>(GetPawn()))
@@ -354,11 +354,6 @@ void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
 		if (GameOverUI)
 		{
 			GameOverUI->AddToViewport();
-
-			// 입력을 UI로 전환
-			FInputModeUIOnly InputMode;
-			InputMode.SetWidgetToFocus(GameOverUI->TakeWidget());
-			SetInputMode(InputMode);
 		}
 	}
 }
