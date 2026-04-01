@@ -14,6 +14,7 @@
 #include "G1CharacterConditionData.h"
 #include "Animation/G1AnimInstance.h"
 #include "Animation/AnimMontage.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -30,8 +31,14 @@ void AG1Character::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AnimInstance = Cast<UG1AnimInstance>(GetMesh()->GetAnimInstance());
-	
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		if (UAnimInstance* RawAnim = MeshComp->GetAnimInstance())
+		{
+			AnimInstance = Cast<UG1AnimInstance>(RawAnim);
+		}
+	}
+
 	AddCharacterAbilities();
 
 	InitEquipment();
@@ -66,10 +73,13 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 			}
 		}
 
-		else if (Montage == AnimInstance->GetDeathAnimMontage())
+		else if (IsValid(AnimInstance) && Montage == AnimInstance->GetDeathAnimMontage())
 		{
-			GetMesh()->bPauseAnims = true;
-			GetMesh()->SetComponentTickEnabled(false);
+			if (USkeletalMeshComponent* MeshComp = GetMesh())
+			{
+				MeshComp->bPauseAnims = true;
+				MeshComp->SetComponentTickEnabled(false);
+			}
 			AnimInstance->EnableAnimInstance = false;
 			SetActorTickEnabled(false);
 			AnimInstance->StopAllMontages(0.0f);
@@ -82,17 +92,15 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 	{
 		for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 		{
-			FName Key = Pair.Key;
 			TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
 
-			if (Item != nullptr)
+			if (IsValid(Item.Get()))
 			{
 				Item->SetWeaponCollisionEnabled(EventType == ECharacterAnimNotiType::OnQueryOnly);
 			}
 		}
 	}
 	
-
 	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
 	{
 		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -117,6 +125,12 @@ UAbilitySystemComponent* AG1Character::GetAbilitySystemComponent() const
 
 void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult)
 {
+	if (!IsValid(AttributeSet))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s OnDamaged: AttributeSet is null"), *GetName());
+		return;
+	}
+
 	float Hp = AttributeSet->GetHealth();
 	float MaxHp = AttributeSet->GetMaxHealth();
 
@@ -127,7 +141,7 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, co
 	{
 		OnDead(Attacker);
 
-		if (AnimInstance != nullptr)
+		if (IsValid(AnimInstance))
 		{
 			G1PlayAnimMontage(AnimInstance->GetDeathAnimMontage());
 		}
@@ -136,10 +150,16 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, co
 	{
 		AddConditionData(EConditionType::Hit, 0.5f, 1.f);
 
-		if (AnimInstance != nullptr)
+		if (IsValid(AnimInstance))
 		{
 			FVector Forward = GetActorForwardVector();
 			FVector Right = GetActorRightVector();
+
+			if (!IsValid(Attacker.Get()))
+			{
+				// 공격자 정보가 없으면 기본 전방 히트로 처리
+				return;
+			}
 
 			FVector HitDir = Attacker->GetActorLocation() - GetActorLocation();
 			HitDir.Z = 0.f; // 수평만 판단
@@ -175,7 +195,10 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 	State = ECharacterState::Dead;
 
 	// 충돌 비활성화 (선택)
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 
 	OnCharacterDead.Broadcast(this);
 
@@ -184,10 +207,9 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 
 	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 	{
-		FName Key = Pair.Key;
 		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
 
-		if (Item != nullptr)
+		if (IsValid(Item.Get()))
 		{
 			Item->SetLifeSpan(5.f);
 		}
@@ -206,17 +228,32 @@ void AG1Character::InitEquipment()
 
 			if (ItemInfo->EquipmentStaticMesh != nullptr)
 			{
-				AG1EquipmentItem* EquipItem = GetWorld()->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
-				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
-				EquipItem->SetOwner(this);
-				EquipObjectList.Add(ID, EquipItem);
+				UWorld* World = GetWorld();
+				if (!IsValid(World))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: World is null"), *GetName());
+					continue;
+				}
+
+				AG1EquipmentItem* EquipItem = World->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
+				if (IsValid(EquipItem) && IsValid(GetMesh()))
+				{
+					EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+					EquipItem->SetOwner(this);
+					EquipObjectList.Add(ID, EquipItem);
+				}
 			}
 
-			AbilitySystem->AddEquipmentGameplayEffect(ID);
+			if (IsValid(AbilitySystem))
+			{
+				AbilitySystem->AddEquipmentGameplayEffect(ID);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: AbilitySystem is null, can't add effect for %s"), *GetName(), *ID.ToString());
+			}
 		}
 	}
-
-	
 }
 
 void AG1Character::AddEquipment(const FName EquipID)
@@ -243,16 +280,6 @@ void AG1Character::UpdateConditionData(float DeltaTime)
 			ConditionDataList.RemoveAt(i);
 		}
 	}
-
-	//ConditionDataList.RemoveAll([DeltaTime](FG1ConditionData& Data)
-	//	{
-	//		if (Data.DurationTime == -1)
-	//			return false;
-	//
-	//		Data.DurationTime = FMath::Clamp(Data.DurationTime - DeltaTime, 0.0f, Data.DurationTime);
-	//
-	//		return Data.DurationTime == 0;
-	//	});*/
 }
 
 void AG1Character::AddConditionData(EConditionType Type, float DurationTime, float Value1)
@@ -316,13 +343,19 @@ void AG1Character::InitAbilitySystem()
 void AG1Character::Highlight()
 {
 	bHighlighted = true;
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(250);
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetRenderCustomDepth(true);
+		MeshComp->SetCustomDepthStencilValue(250);
+	}
 }
 void AG1Character::UnHighlight()
 {
 	bHighlighted = false;
-	GetMesh()->SetRenderCustomDepth(false);
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetRenderCustomDepth(false);
+	}
 }
 
 void AG1Character::AddCharacterAbilities()
@@ -338,7 +371,7 @@ void AG1Character::AddCharacterAbilities()
 
 void AG1Character::ActivateAbility(FGameplayTag AbilityTag)
 {
-	if (AbilitySystem)
+	if (IsValid(AbilitySystem))
 		AbilitySystem->ActivateAbility(AbilityTag);
 }
 
@@ -368,7 +401,11 @@ bool AG1Character::IsEnemyTeam(const AActor* Ohter) const
 
 float AG1Character::TotalDemage() const
 {
-	return AttributeSet->GetBaseDamage();
+	if (IsValid(AttributeSet))
+	{
+		return AttributeSet->GetBaseDamage();
+	}
+	return 0.0f;
 }
 
 void AG1Character::SetSatate(ECharacterState _State)
@@ -450,7 +487,7 @@ bool AG1Character::EnableAbility() const
 
 void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)
 {
-	if (AnimInstance != nullptr && Montage != nullptr)
+	if (IsValid(AnimInstance) && Montage != nullptr)
 	{
 		AnimInstance->Montage_Play(Montage);
 	}
