@@ -15,6 +15,8 @@
 #include "Animation/G1AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Item/G1DropItem.h"
+#include "Data/G1DropTableData.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -24,6 +26,8 @@ AG1Character::AG1Character()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TeamTag = G1GameplayTags::Team_None;
+
+	MonsterDropID = NAME_None;
 }
 
 // Called when the game starts or when spawned
@@ -200,11 +204,15 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
+	/// 죽을때 아이템 드랍
+	CreateDropItem(Attacker);
+
 	OnCharacterDead.Broadcast(this);
 
 	// 일정 시간 후 삭제
 	SetLifeSpan(5.0f);
 
+	/// 장착한 아이템도 삭제
 	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 	{
 		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
@@ -490,5 +498,59 @@ void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)
 	if (IsValid(AnimInstance) && Montage != nullptr)
 	{
 		AnimInstance->Montage_Play(Montage);
+	}
+}
+
+void AG1Character::CreateDropItem(TObjectPtr<AG1Character> DropItemOwner)
+{
+	if (MonsterDropID == NAME_None)
+	{
+		return;
+	}
+
+	const UG1DropTableData* DropData = UG1AssetManager::GetAssetByName<UG1DropTableData>("MonsterDropData");
+	if (DropData == nullptr)
+	{
+		return;
+	}
+
+	const UG1ItemData* ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+	if (ItemData == nullptr)
+	{
+		return;
+	}
+
+	TArray<FG1DropResult> Drops;
+	DropData->RollDrops(MonsterDropID, Drops);
+	for (const FG1DropResult& R : Drops)
+	{
+		const FG1ItemInfo* Info = ItemData->FindItemInfo(R.ItemID);
+		if (Info == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s CreateDropItem: No item info found for ItemID %s"), *GetName(), *R.ItemID.ToString());
+			continue;
+		}
+		if (IsValid(Info->DropStaticMeshClass) == false)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s CreateDropItem: Item %s will drop %d"), *GetName(), *R.ItemID.ToString(), R.Count);
+			continue;
+		}
+
+		UWorld* World = GetWorld();
+		if (World == nullptr)
+		{
+			continue;
+		}
+
+		FVector SpawnLoc = GetActorLocation(); // + 오프셋
+		FRotator SpawnRot = FRotator::ZeroRotator;
+
+		// 우선 DropActorClass 우선 사용
+		AG1DropItem* DropItem = World->SpawnActor<AG1DropItem>(Info->DropStaticMeshClass);
+		if (IsValid(DropItem) && IsValid(GetMesh()))
+		{
+			DropItem->SetActorLocation(SpawnLoc);
+			DropItem->SetActorRotation(SpawnRot);
+		}
 	}
 }

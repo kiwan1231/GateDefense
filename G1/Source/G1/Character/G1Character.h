@@ -32,6 +32,9 @@ public: /// ReadWrite
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag TeamTag;
 
+	UPROPERTY(BlueprintReadOnly)
+	FName MonsterDropID;
+
 protected: /// ReadOnly
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Ability)
 	TObjectPtr<class UG1AbilitySystem> AbilitySystem;
@@ -118,6 +121,7 @@ public:
 
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);
+	void CreateDropItem(TObjectPtr<AG1Character> DropItemOwner);
 
 public:
 	FOnCharacterDead OnCharacterDead;

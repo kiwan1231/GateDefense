@@ -134,6 +134,7 @@ void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 			AG1Monster* Monster = GetWorld()->SpawnActor<AG1Monster>(Action.SpawnMonster, Action.SpawnPos, FRotator::ZeroRotator);
 			if (Monster != nullptr)
 			{
+				Monster->MonsterDropID = Action.SpawnMonsterDropID;
 				Monster->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
 			}
 		}

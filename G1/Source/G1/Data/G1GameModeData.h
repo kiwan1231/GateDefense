@@ -47,6 +47,8 @@ public:
 	TSubclassOf<class AG1Monster> SpawnMonster;
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
 	FVector SpawnPos;
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
+	FName SpawnMonsterDropID;
 };
 
 USTRUCT()
