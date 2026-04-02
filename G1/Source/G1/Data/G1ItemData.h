@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -29,8 +29,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AG1EquipmentItem> EquipmentStaticMesh;
 
-	/*UPROPERTY(EditDefaultsOnly)
-	UStaticMesh* DropStaticMesh;*/
+	// 드랍(픽업)용 액터 클래스 — 월드에 떠있는 픽업을 위한 클래스
+	UPROPERTY(EditDefaultsOnly, Category = "Drop")
+	TSubclassOf<class AG1DropItem> DropStaticMeshClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UGameplayEffect> ItemEffect;

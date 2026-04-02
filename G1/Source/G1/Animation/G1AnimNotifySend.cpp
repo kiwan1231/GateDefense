@@ -14,9 +14,27 @@ void UG1AnimNotifySend::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	AG1Character* LocalCharacter = Cast<AG1Character>(MeshComp->GetOwner());
+	// 안전한 널 체크: MeshComp가 유효하지 않으면 더 이상 진행하지 않음
+	if (!MeshComp)
+	{
+		return;
+	}
+
+	AActor* Owner = MeshComp->GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
+
+	AG1Character* LocalCharacter = Cast<AG1Character>(Owner);
+	if (!LocalCharacter)
+	{
+		return;
+	}
+
+	// Animation이 Montage일 때만 처리
 	UAnimMontage* Montage = Cast<UAnimMontage>(Animation);
-	if (LocalCharacter && Montage)
+	if (Montage)
 	{
 		LocalCharacter->HandleGameplayEvent(Montage, EventTag, EventType);
 	}

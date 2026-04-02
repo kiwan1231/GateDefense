@@ -8,6 +8,9 @@
 #include "Character/G1Player.h"
 #include "Item/G1EquipmentItem.h"
 #include "Animation/AnimMontage.h"
+#include "System/G1AssetManager.h"
+#include "Item/G1DropItem.h"
+#include "Data/G1DropTableData.h"
 
 AG1Monster::AG1Monster()
 	: Super()
@@ -105,4 +108,42 @@ void AG1Monster::InitAbilitySystem()
 void AG1Monster::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType)
 {
 	Super::HandleGameplayEvent(Montage, EventTag, EventType);
+}
+
+void AG1Monster::OnDead(TObjectPtr<AG1Character> Attacker)
+{
+	Super::OnDead(Attacker);
+
+	if (const UG1DropTableData* DropData = UG1AssetManager::GetAssetByName<UG1DropTableData>("MonsterDropData"))
+	{
+		const UG1ItemData* ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+		if (ItemData == nullptr)
+		{
+			return;
+		}
+
+		TArray<FG1DropResult> Drops;
+		DropData->RollDrops(MonsterDropID, Drops);
+		for (const FG1DropResult& R : Drops)
+		{
+			if (const FG1ItemInfo* Info = ItemData->FindItemInfo(R.ItemID))
+			{
+				UWorld* World = GetWorld();
+				if (!World) continue;
+
+				FVector SpawnLoc = GetActorLocation(); // + 오프셋
+				FRotator SpawnRot = FRotator::ZeroRotator;
+
+				// 우선 DropActorClass 우선 사용
+				if (IsValid(Info->DropStaticMeshClass))
+				{
+					AG1DropItem* DropItem = World->SpawnActor<AG1DropItem>(Info->DropStaticMeshClass);
+					if (IsValid(DropItem) && IsValid(GetMesh()))
+					{
+
+					}
+				}
+			}
+		}
+	}
 }

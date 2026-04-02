@@ -24,6 +24,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	class UBoxComponent* LHandHitBox;
 
+public:
+	UPROPERTY(BlueprintReadOnly)
+	FName MonsterDropID;
+
 private:
 	UFUNCTION()
 	void OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -38,4 +42,6 @@ public:
 	virtual void InitAbilitySystem() override;
 
 	virtual void HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType);
+
+	virtual void OnDead(TObjectPtr<AG1Character> Attacker) override;
 };
