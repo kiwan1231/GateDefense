@@ -549,6 +549,7 @@ void AG1Character::CreateDropItem(TObjectPtr<AG1Character> DropItemOwner)
 		AG1DropItem* DropItem = World->SpawnActor<AG1DropItem>(Info->DropStaticMeshClass);
 		if (IsValid(DropItem) && IsValid(GetMesh()))
 		{
+			// 아이템 드랍할때 위로솟구치다가 바닥에 떨어지는 연출이 나게 드랍하는 기능 넣어줘	
 			DropItem->SetActorLocation(SpawnLoc);
 			DropItem->SetActorRotation(SpawnRot);
 		}
