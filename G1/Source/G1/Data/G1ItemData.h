@@ -24,6 +24,12 @@ public:
 	EItemRarity ItemRarity = EItemRarity::Common;
 
 	UPROPERTY(EditDefaultsOnly)
+	FText ItemName;
+
+	UPROPERTY(EditDefaultsOnly)
+	FText ItemDesc;
+
+	UPROPERTY(EditDefaultsOnly)
 	bool Stackable;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -47,7 +53,7 @@ class G1_API UG1ItemData : public UDataAsset
 	
 public:
 	const FG1ItemInfo* FindItemInfo(const FName& ItemID) const;
-
+	static FLinearColor GetRarityColor(EItemRarity Rarity);
 public:
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FG1ItemInfo> ItemDataList;

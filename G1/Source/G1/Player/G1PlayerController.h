@@ -91,4 +91,16 @@ public:
 	TSubclassOf<class UG1GameOverSceneWidget> GameOverUIClass;
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UG1GameOverSceneWidget> GameOverUI;
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<class UG1DropItemDescWidget> DropItemDescWidgetClass;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UG1DropItemDescWidget> DropItemDescWidget;
+	UPROPERTY(BlueprintReadOnly)
+	FName DropItemID;
+
+	void InitDropItemDescWidget();
+	void ShowDropItemDesc(const FVector& WorldLocation, FName ItemID);
+	void HideDropItemDesc();
 };

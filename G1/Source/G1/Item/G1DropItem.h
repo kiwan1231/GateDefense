@@ -35,11 +35,17 @@ protected:
 	UPROPERTY(Transient)
 	bool bHasLanded;
 
+	UPROPERTY(BlueprintReadOnly)
+	FName ItemID;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// --- 튜닝 파라미터 (에디터에서 조정 가능) ---
+	void SetDropItem(FName DropItemID);
+
+protected:
+
 
 	// 위로 솟구치는 임펄스 범위
 	UPROPERTY(EditAnywhere, Category = "Drop|Launch")
@@ -66,4 +72,12 @@ public:
 	// 착지 후 약간 위치 보정할 오프셋 거리
 	UPROPERTY(EditAnywhere, Category = "Drop|Behavior")
 	float LandOffsetFromGround;
+
+	// 드랍(픽업)용 액터 클래스 ? 월드에 떠있는 픽업을 위한 클래스
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<class UG1DropItemNameWidget> NameWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<class UWidgetComponent> NameWidgetComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<class USceneComponent> UiRootScene;
 };

@@ -15,8 +15,10 @@
 #include "Animation/G1AnimInstance.h"
 #include "UI/Ingame/G1IngameSceneWidget.h"
 #include "UI/Ingame/G1GameOverSceneWidget.h"
+#include "UI/Item/DropItem/G1DropItemDescWidget.h"
 #include "GameMode/G1GameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -30,6 +32,8 @@ AG1PlayerController::AG1PlayerController(const FObjectInitializer& ObjectInitial
 void AG1PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitDropItemDescWidget();
 
 	if (const UG1PlayerInputData* InputData = UG1AssetManager::GetAssetByName<UG1PlayerInputData>("Input_Common"))
 	{
@@ -355,5 +359,36 @@ void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
 		{
 			GameOverUI->AddToViewport();
 		}
+	}
+}
+
+void AG1PlayerController::InitDropItemDescWidget()
+{
+	if (DropItemDescWidgetClass)
+	{
+		DropItemDescWidget = CreateWidget<UG1DropItemDescWidget>(GetWorld(), DropItemDescWidgetClass);
+		if (DropItemDescWidget)
+		{
+			DropItemDescWidget->AddToViewport();
+			DropItemDescWidget->Hide();
+		}
+	}
+}
+
+void AG1PlayerController::ShowDropItemDesc(const FVector& WorldLocation, FName ItemID)
+{
+	if (DropItemDescWidget)
+	{
+		DropItemDescWidget->SetItem(ItemID);
+		DropItemDescWidget->UpdatePosition(WorldLocation);
+		DropItemDescWidget->Show();
+	}
+}
+
+void AG1PlayerController::HideDropItemDesc()
+{
+	if (DropItemDescWidget)
+	{
+		DropItemDescWidget->Hide();
 	}
 }

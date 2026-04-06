@@ -5,7 +5,12 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Components/SceneComponent.h"
+
 #include "Kismet/KismetMathLibrary.h"
+
+#include "UI/Item/DropItem/G1DropItemNameWidget.h"
 
 // Sets default values
 AG1DropItem::AG1DropItem()
@@ -26,6 +31,17 @@ AG1DropItem::AG1DropItem()
 	bDisablePhysicsOnLanded = true;
 
 	LandOffsetFromGround = 1.0f;
+
+	UiRootScene = CreateDefaultSubobject<USceneComponent>(TEXT("UIRootScene"));
+	NameWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameWidgetComponent"));
+	if (UiRootScene)
+	{
+		NameWidgetComponent->SetupAttachment(UiRootScene);
+	}
+	else
+	{
+		NameWidgetComponent->SetupAttachment(GetRootComponent());
+	}
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +49,16 @@ void AG1DropItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (NameWidgetComponent)
+	{
+		NameWidgetComponent->SetWidgetClass(NameWidgetClass);
+		NameWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		NameWidgetComponent->SetDrawSize(FVector2D(200, 40));
+		NameWidgetComponent->SetDrawAtDesiredSize(true);
+		NameWidgetComponent->SetRelativeLocation(FVector(0, 0, 100));
+	}
+	
+	/*
 	// 루트 컴포넌트를 프리미티브로 캐스트하여 물리/충돌 처리 준비
 	RootPrimComponent = Cast<UPrimitiveComponent>(GetRootComponent());
 	if (RootPrimComponent)
@@ -73,12 +99,15 @@ void AG1DropItem::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s BeginPlay: Root component is not a UPrimitiveComponent - fallback will try raycast landing"), *GetName());
 	}
+	*/
 }
 
 // Called every frame
 void AG1DropItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	return;
 
 	// 루트가 프리미티브가 아니고 아직 착지하지 않은 경우, 안전하게 라인트레이스로 착지 체크
 	if (!bHasLanded && RootPrimComponent == nullptr)
@@ -94,6 +123,21 @@ void AG1DropItem::Tick(float DeltaTime)
 		{
 			HandleLanded(Hit);
 		}
+	}
+}
+
+void AG1DropItem::SetDropItem(FName DropItemID)
+{
+	ItemID = DropItemID;
+
+	if (NameWidgetComponent == nullptr)
+	{
+		return;
+	}
+
+	if (UG1DropItemNameWidget* NameWidget = Cast<UG1DropItemNameWidget>(NameWidgetComponent->GetUserWidgetObject()))
+	{
+		NameWidget->SetItem(ItemID);
 	}
 }
 
