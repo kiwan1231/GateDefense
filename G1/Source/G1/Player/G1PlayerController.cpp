@@ -375,7 +375,7 @@ void AG1PlayerController::InitDropItemDescWidget()
 	}
 }
 
-void AG1PlayerController::ShowDropItemDesc(const FVector& WorldLocation, FName ItemID)
+void AG1PlayerController::ShowDropItemDesc(const FVector& WorldLocation, const FName ItemID)
 {
 	if (DropItemDescWidget)
 	{

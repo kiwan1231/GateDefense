@@ -101,6 +101,6 @@ public:
 	FName DropItemID;
 
 	void InitDropItemDescWidget();
-	void ShowDropItemDesc(const FVector& WorldLocation, FName ItemID);
+	void ShowDropItemDesc(const FVector& WorldLocation, const FName ItemID);
 	void HideDropItemDesc();
 };

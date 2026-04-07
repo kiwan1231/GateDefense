@@ -19,6 +19,9 @@
 #include "UI/Ingame/G1IngameSceneWidget.h"
 
 #include "Player/G1PlayerController.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "Item/G1DropItem.h"
 
 // Sets default values
 AG1Player::AG1Player()
@@ -92,6 +95,8 @@ void AG1Player::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UpdateCamera(DeltaTime);
+
+	FindNearestDropItem();
 }
 
 // Called to bind functionality to input
@@ -189,4 +194,40 @@ float AG1Player::GetHpRatio() const
 	float Hp = AttributeSet->GetHealth();
 	float MaxHp = AttributeSet->GetMaxHealth();
 	return (Hp / MaxHp);
+}
+
+void AG1Player::FindNearestDropItem()
+{
+	AG1DropItem* NearestItem = nullptr;
+	float MinDistSq = FLT_MAX;
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AG1DropItem::StaticClass(), FoundActors);
+
+	for (AActor* Actor : FoundActors)
+	{
+		AG1DropItem* Item = Cast<AG1DropItem>(Actor);
+		if (!Item) continue;
+
+		float DistSq = FVector::DistSquared(GetActorLocation(), Item->GetActorLocation());
+
+		if (DistSq <= MinDistSq)
+		{
+			MinDistSq = DistSq;
+			NearestItem = Item;
+		}
+	}
+
+	if (NearestDropItem == NearestItem)
+	{
+		return;
+	}
+	
+	Controller->HideDropItemDesc();
+	NearestDropItem = NearestItem;
+
+	if (NearestDropItem != nullptr)
+	{
+		Controller->ShowDropItemDesc(NearestItem->GetActorLocation(), NearestItem->GetItemID());
+	}
 }

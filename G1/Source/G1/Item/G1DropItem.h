@@ -80,4 +80,7 @@ protected:
 	TObjectPtr<class UWidgetComponent> NameWidgetComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<class USceneComponent> UiRootScene;
+
+public:
+	FName GetItemID() const { return ItemID; }
 };

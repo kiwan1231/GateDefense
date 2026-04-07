@@ -110,7 +110,7 @@ void AG1DropItem::Tick(float DeltaTime)
 	return;
 
 	// 루트가 프리미티브가 아니고 아직 착지하지 않은 경우, 안전하게 라인트레이스로 착지 체크
-	if (!bHasLanded && RootPrimComponent == nullptr)
+	/*if (!bHasLanded && RootPrimComponent == nullptr)
 	{
 		FVector Start = GetActorLocation();
 		FVector End = Start - FVector(0.f, 0.f, 300.f);
@@ -123,7 +123,7 @@ void AG1DropItem::Tick(float DeltaTime)
 		{
 			HandleLanded(Hit);
 		}
-	}
+	}*/
 }
 
 void AG1DropItem::SetDropItem(FName DropItemID)
@@ -149,11 +149,11 @@ void AG1DropItem::OnRootComponentHit(UPrimitiveComponent* HitComp, AActor* Other
 	}
 
 	// 충돌 법선의 Z 성분으로 바닥인지 판단 (평지에 가까울수록 Z가 큼)
-	const float ImpactZ = Hit.ImpactNormal.Z;
+	/*const float ImpactZ = Hit.ImpactNormal.Z;
 	if (ImpactZ >= GroundNormalZThreshold)
 	{
 		HandleLanded(Hit);
-	}
+	}*/
 	// 바닥이 아닐 경우(벽 등)에는 별도 처리 없이 물리 반응에 맡김
 }
 

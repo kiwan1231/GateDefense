@@ -32,10 +32,16 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USphereComponent> CameraPivotSphere;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DropItemCheckDistance;
+
 private:
 	TObjectPtr<class AG1PlayerController> Controller;
+
 	FVector SpringArmSocketOffset;
 	FVector SpringArmTargetOffset;
+
+	TObjectPtr<class AG1DropItem> NearestDropItem;
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,4 +68,5 @@ protected: // interface
 private:
 	FVector GetSpringArmEndLocation();
 	float GetHpRatio() const;
+	void FindNearestDropItem();
 };
