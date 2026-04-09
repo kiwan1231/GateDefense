@@ -94,6 +94,13 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<class UG1InventoryWidget> InventoryWidgetClass;
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UG1InventoryWidget> InventoryWidget;
+
+	/// DropItem
+public:
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<class UG1DropItemDescWidget> DropItemDescWidgetClass;
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UG1DropItemDescWidget> DropItemDescWidget;
@@ -103,4 +110,7 @@ public:
 	void InitDropItemDescWidget();
 	void ShowDropItemDesc(const FVector& WorldLocation, const FName ItemID);
 	void HideDropItemDesc();
+
+public:
+	void InitUserInterfaceWidget();
 };

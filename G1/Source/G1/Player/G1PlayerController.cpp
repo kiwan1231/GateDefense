@@ -13,9 +13,12 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Utility/FMathExtension.h"
 #include "Animation/G1AnimInstance.h"
+
 #include "UI/Ingame/G1IngameSceneWidget.h"
 #include "UI/Ingame/G1GameOverSceneWidget.h"
 #include "UI/Item/DropItem/G1DropItemDescWidget.h"
+#include "UI/Inventory/G1InventoryWidget.h"
+
 #include "GameMode/G1GameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
@@ -390,5 +393,28 @@ void AG1PlayerController::HideDropItemDesc()
 	if (DropItemDescWidget)
 	{
 		DropItemDescWidget->Hide();
+	}
+}
+
+void AG1PlayerController::InitUserInterfaceWidget()
+{
+	if (InventoryWidgetClass)
+	{
+		InventoryWidget = CreateWidget<UG1InventoryWidget>(GetWorld(), InventoryWidgetClass);
+		if (InventoryWidget)
+		{
+			InventoryWidget->AddToViewport();
+			InventoryWidget->Hide();
+		}
+	}
+
+	if (DropItemDescWidgetClass)
+	{
+		DropItemDescWidget = CreateWidget<UG1DropItemDescWidget>(GetWorld(), DropItemDescWidgetClass);
+		if (DropItemDescWidget)
+		{
+			DropItemDescWidget->AddToViewport();
+			DropItemDescWidget->Hide();
+		}
 	}
 }

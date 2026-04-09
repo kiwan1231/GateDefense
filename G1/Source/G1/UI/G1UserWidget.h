@@ -13,5 +13,11 @@ UCLASS()
 class G1_API UG1UserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	UG1UserWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+public:
+	void Show();
+	void Hide();
+
 };

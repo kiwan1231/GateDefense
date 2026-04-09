@@ -15,6 +15,11 @@ namespace G1GameplayTags
 
 namespace G1GameplayTags
 {
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Interface_Inventory);
+}
+
+namespace G1GameplayTags
+{
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_Begin);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_End);
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Montage_Attack_Start);
