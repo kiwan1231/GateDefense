@@ -14,11 +14,7 @@
 UG1InventoryEntryWidget::UG1InventoryEntryWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UG1ItemDragWidget> FindDragWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/Item/WBP_ItemDrag.WBP_ItemDrag_C'"));
-	if (FindDragWidgetClass.Succeeded())
-	{
-		DragWidgetClass = FindDragWidgetClass.Class;
-	}
+
 }
 
 void UG1InventoryEntryWidget::Init(UG1InventorySlotsWidget* InSlotsWidget, UG1Item2DInstance* InItemInstance, int32 InItemCount)
@@ -74,6 +70,12 @@ FReply UG1InventoryEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 void UG1InventoryEntryWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+
+	if (DragWidgetClass == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("DragWidgetClass IS NULL"));
+		return;
+	}
 
 	UG1ItemDragWidget* DragWidget = CreateWidget<UG1ItemDragWidget>(GetOwningPlayer(), DragWidgetClass);
 	FVector2D EntityWidgetSize = FVector2D(1 * 50, 1 * 50);

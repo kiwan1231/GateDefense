@@ -22,6 +22,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Item/G1DropItem.h"
+#include "Utility/FMathExtension.h"
 
 // Sets default values
 AG1Player::AG1Player()
@@ -208,8 +209,10 @@ void AG1Player::FindNearestDropItem()
 	{
 		AG1DropItem* Item = Cast<AG1DropItem>(Actor);
 		if (!Item) continue;
-
-		float DistSq = FVector::DistSquared(GetActorLocation(), Item->GetActorLocation());
+		
+		float DistSq = FVector::DistSquared(G1Extension::VectorDumpZ(GetActorLocation()), G1Extension::VectorDumpZ(Item->GetActorLocation()));
+		if (DistSq > DropItemCheckDistance * DropItemCheckDistance)
+			continue;
 
 		if (DistSq <= MinDistSq)
 		{

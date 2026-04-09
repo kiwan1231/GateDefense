@@ -50,20 +50,20 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UG1Item2DInstance> ItemInstance;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 
 	TSubclassOf<UG1ItemDragWidget> DragWidgetClass;
 protected:
 
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<USizeBox> SizeBox_Root;
+	TObjectPtr<USizeBox> SizeBox_Root;
 
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<UTextBlock> Text_Count;
+	TObjectPtr<UTextBlock> Text_Count;
 
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<UImage> Image_Icon;
+	TObjectPtr<UImage> Image_Icon;
 
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<UImage> Image_Hover;
+	TObjectPtr<UImage> Image_Hover;
 };
