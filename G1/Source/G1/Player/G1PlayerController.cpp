@@ -36,7 +36,7 @@ void AG1PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitDropItemDescWidget();
+	InitUserInterfaceWidget();
 
 	if (const UG1PlayerInputData* InputData = UG1AssetManager::GetAssetByName<UG1PlayerInputData>("Input_Common"))
 	{
@@ -51,16 +51,6 @@ void AG1PlayerController::BeginPlay()
 
 	G1Player = Cast<AG1Player>(GetCharacter());
 	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
-
-	if (IngameUIClass)
-	{
-		IngameUI = CreateWidget<UG1IngameSceneWidget>(this, IngameUIClass);
-
-		if (IngameUI)
-		{
-			IngameUI->AddToViewport();
-		}
-	}
 }
 
 void AG1PlayerController::SetupInputComponent()
@@ -83,6 +73,9 @@ void AG1PlayerController::SetupInputComponent()
 
 			auto TurnAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Turn);
 			EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Turn);
+			
+			auto OpenInventoryAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Interface_Inventory);
+			EnhancedInputComponent->BindAction(OpenInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::Input_OpenInventory);
 
 			/*auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
 			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);*/
@@ -257,6 +250,14 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 	}
 }
 
+void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValue)
+{
+	if (IngameUI != nullptr && IngameUI->IsValidLowLevel())
+	{
+		IngameUI->OnInputInventory();
+	}
+}
+
 //void AG1PlayerController::UpdateCharacterState(float DeltaTime)
 //{
 //	if (GetCharacterState() == ECharacterState::MoveAttack
@@ -365,19 +366,6 @@ void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
 	}
 }
 
-void AG1PlayerController::InitDropItemDescWidget()
-{
-	if (DropItemDescWidgetClass)
-	{
-		DropItemDescWidget = CreateWidget<UG1DropItemDescWidget>(GetWorld(), DropItemDescWidgetClass);
-		if (DropItemDescWidget)
-		{
-			DropItemDescWidget->AddToViewport();
-			DropItemDescWidget->Hide();
-		}
-	}
-}
-
 void AG1PlayerController::ShowDropItemDesc(const FVector& WorldLocation, const FName ItemID)
 {
 	if (DropItemDescWidget)
@@ -398,13 +386,13 @@ void AG1PlayerController::HideDropItemDesc()
 
 void AG1PlayerController::InitUserInterfaceWidget()
 {
-	if (InventoryWidgetClass)
+	if (IngameUIClass)
 	{
-		InventoryWidget = CreateWidget<UG1InventoryWidget>(GetWorld(), InventoryWidgetClass);
-		if (InventoryWidget)
+		IngameUI = CreateWidget<UG1IngameSceneWidget>(this, IngameUIClass);
+
+		if (IngameUI)
 		{
-			InventoryWidget->AddToViewport();
-			InventoryWidget->Hide();
+			IngameUI->AddToViewport();
 		}
 	}
 

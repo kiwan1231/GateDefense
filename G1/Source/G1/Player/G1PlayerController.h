@@ -55,6 +55,8 @@ private: // input function
 	void Input_Attack(const FInputActionValue& InputValue);
 	void Input_HitTarget(const FInputActionValue& InputValue);
 
+	void Input_OpenInventory(const FInputActionValue& InputValue);
+
 private:/// tick function
 	//void UpdateCharacterState(float DeltaTime);
 	void UpdateMovePoint(float DeltaTime);
@@ -92,12 +94,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class UG1GameOverSceneWidget> GameOverUI;
 
-public:
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<class UG1InventoryWidget> InventoryWidgetClass;
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<class UG1InventoryWidget> InventoryWidget;
-
 	/// DropItem
 public:
 	UPROPERTY(BlueprintReadWrite)
@@ -107,7 +103,6 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FName DropItemID;
 
-	void InitDropItemDescWidget();
 	void ShowDropItemDesc(const FVector& WorldLocation, const FName ItemID);
 	void HideDropItemDesc();
 

@@ -17,7 +17,16 @@ class G1_API UG1IngameSceneWidget : public UG1UserWidget
 public:
 	UG1IngameSceneWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+protected:
+	virtual void NativeConstruct() override;
+
 public:
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<class UG1PlayerUserWidget> PlayerWidget;
+
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UG1InventoryWidget> PlayerInventory;
+
+public:
+	void OnInputInventory();
 };

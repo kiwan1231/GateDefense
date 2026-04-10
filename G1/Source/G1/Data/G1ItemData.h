@@ -40,6 +40,9 @@ public:
 	TSubclassOf<class AG1DropItem> DropStaticMeshClass;
 
 	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UTexture2D> IconImage;
+
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UGameplayEffect> ItemEffect;
 };
 
