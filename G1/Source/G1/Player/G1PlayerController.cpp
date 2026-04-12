@@ -48,9 +48,19 @@ void AG1PlayerController::BeginPlay()
 
 	AG1GameMode* G1GameMode = Cast<AG1GameMode>(GetWorld()->GetAuthGameMode());
 	G1GameMode->OnGameOver.AddUObject(this, &AG1PlayerController::Delegate_OnGameOver);
+}
+
+void AG1PlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
 
 	G1Player = Cast<AG1Player>(GetCharacter());
 	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
+
+	if (IngameUI != nullptr)
+	{
+		IngameUI->PlayerInventory->OnInitInventory(G1Player);
+	}
 }
 
 void AG1PlayerController::SetupInputComponent()
@@ -74,6 +84,9 @@ void AG1PlayerController::SetupInputComponent()
 			auto TurnAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_Turn);
 			EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Turn);
 			
+			auto PickUpItemAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_ItemPickUp);
+			EnhancedInputComponent->BindAction(PickUpItemAction, ETriggerEvent::Triggered, this, &ThisClass::Input_PickUpItem);
+
 			auto OpenInventoryAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Interface_Inventory);
 			EnhancedInputComponent->BindAction(OpenInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::Input_OpenInventory);
 
@@ -255,6 +268,25 @@ void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValu
 	if (IngameUI != nullptr && IngameUI->IsValidLowLevel())
 	{
 		IngameUI->OnInputInventory();
+	}
+}
+
+void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)
+{
+	if (G1Player != nullptr)
+	{
+		if (G1Player->OnItemPickUp() == 0)
+		{
+			IngameUI->PlayerInventory->OnRefreshInventory();
+		}
+		else if (G1Player->OnItemPickUp() == -1)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Inventory is full"));
+		}
+		else
+		{
+			/// NearItem is not
+		}
 	}
 }
 

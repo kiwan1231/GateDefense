@@ -33,6 +33,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void StopMovement() override;
@@ -56,6 +57,7 @@ private: // input function
 	void Input_HitTarget(const FInputActionValue& InputValue);
 
 	void Input_OpenInventory(const FInputActionValue& InputValue);
+	void Input_PickUpItem(const FInputActionValue& InputValue);
 
 private:/// tick function
 	//void UpdateCharacterState(float DeltaTime);

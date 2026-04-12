@@ -19,6 +19,8 @@
 #include "UI/Ingame/G1IngameSceneWidget.h"
 
 #include "Player/G1PlayerController.h"
+#include "Player/G1PlayerInventory.h"
+
 #include "Kismet/GameplayStatics.h"
 
 #include "Item/G1DropItem.h"
@@ -73,6 +75,8 @@ void AG1Player::BeginPlay()
 	SpringArmTargetOffset = SpringArm->TargetOffset;
 	SpringArmSocketOffset = SpringArm->SocketOffset;
 	CameraPivotSphere->SetWorldLocation(GetSpringArmEndLocation());
+
+	Inventory = FindComponentByClass<UG1InventoryComponent>();
 
 	Controller = Cast<AG1PlayerController>(GetController());
 
@@ -159,6 +163,40 @@ void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const
 		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
 	}
 }
+
+/// <summary>
+/// 
+/// </summary>
+int AG1Player::OnItemPickUp()
+{
+	if (NearestDropItem == nullptr)
+	{
+		return 1;
+	}
+
+	if (Inventory == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("OnItemPickUp Error, Inventory is null"));
+		return 1;
+	}
+
+	if (Inventory->PickUpItem(NearestDropItem->GetItemID(), 1))
+	{
+		NearestDropItem->Destroy();
+		NearestDropItem = nullptr;
+		Controller->HideDropItemDesc();
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+//TArray<class FG1InventoryItemData> AG1Player::GetItems() const
+//{
+//	return Inventory->GetItems();
+//}
 
 void AG1Player::InitAbilitySystem()
 {

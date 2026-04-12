@@ -6,7 +6,6 @@
 #include "Character/G1Character.h"
 #include "Utility/G1GameplayTags.h"
 
-
 #include "G1Player.generated.h"
 
 struct FInputActionValue;
@@ -42,6 +41,7 @@ private:
 	FVector SpringArmTargetOffset;
 
 	TObjectPtr<class AG1DropItem> NearestDropItem;
+	TObjectPtr<class UG1InventoryComponent> Inventory;
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,6 +61,11 @@ public:
 
 public:
 	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult) override;
+
+	virtual int OnItemPickUp();
+
+//public:
+//	TArray<class FG1InventoryItemData> GetItems() const; 
 
 protected: // interface
 	virtual void InitAbilitySystem() override;
