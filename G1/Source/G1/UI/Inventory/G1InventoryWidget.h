@@ -18,6 +18,10 @@ public:
 	UG1InventoryWidget();
 
 protected:
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UG1InventorySlotsWidget> SlotsWidget;
+
+protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Player> G1Player;
 

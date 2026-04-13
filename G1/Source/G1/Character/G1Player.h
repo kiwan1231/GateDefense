@@ -9,6 +9,7 @@
 #include "G1Player.generated.h"
 
 struct FInputActionValue;
+struct FG1InventoryItemData;
 
 /**
  * 
@@ -64,8 +65,8 @@ public:
 
 	virtual int OnItemPickUp();
 
-//public:
-//	TArray<class FG1InventoryItemData> GetItems() const; 
+public:
+	TArray<FG1InventoryItemData> GetItems() const; 
 
 protected: // interface
 	virtual void InitAbilitySystem() override;

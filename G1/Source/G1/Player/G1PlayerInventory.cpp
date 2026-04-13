@@ -146,7 +146,7 @@ FG1InventoryItemData* UG1InventoryComponent::GetItem(const int32 X, const int32 
 	return Items.IsValidIndex(Index) ? &Items[Index] : nullptr;
 }
 
-//TArray<FG1InventoryItemData> UG1InventoryComponent::GetItems() const
-//{
-//	return Items;
-//}
+TArray<FG1InventoryItemData> UG1InventoryComponent::GetItems() const
+{
+	return Items;
+}

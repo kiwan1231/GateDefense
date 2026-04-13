@@ -193,10 +193,10 @@ int AG1Player::OnItemPickUp()
 	}
 }
 
-//TArray<class FG1InventoryItemData> AG1Player::GetItems() const
-//{
-//	return Inventory->GetItems();
-//}
+TArray<FG1InventoryItemData> AG1Player::GetItems() const
+{
+	return Inventory->GetItems();
+}
 
 void AG1Player::InitAbilitySystem()
 {

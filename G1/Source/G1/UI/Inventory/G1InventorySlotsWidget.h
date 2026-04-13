@@ -37,13 +37,13 @@ private:
 	void FinishDrag();
 
 protected:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UG1InventorySlotWidget> SlotWidgetClass;
 
 	UPROPERTY()
 	TArray<TObjectPtr<UG1InventorySlotWidget>> SlotWidgets;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UG1InventoryEntryWidget> EntryWidgetClass;
 
 	UPROPERTY()

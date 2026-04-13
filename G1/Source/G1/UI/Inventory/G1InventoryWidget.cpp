@@ -4,6 +4,7 @@
 #include "UI/Inventory/G1InventoryWidget.h"
 
 #include "Character/G1Player.h"
+#include "Player/G1PlayerInventory.h"
 
 UG1InventoryWidget::UG1InventoryWidget()
 	: Super()
@@ -25,24 +26,16 @@ void UG1InventoryWidget::OnRefreshInventory()
 	{
 		return;
 	}
-	/*
-	auto Items = G1Player->GetItems();
+	
+	if (SlotsWidget == nullptr)
+	{
+		return;
+	}
+
+	const TArray<FG1InventoryItemData>& Items = G1Player->GetItems();
 	for (int i = 0; i < Items.Num(); i++)
 	{
-		if (Items[i].ItemID == FName::IsNone)
-		{
-			if (Items[i].Count > Count)
-			{
-				Items[i].Count -= Count;
-			}
-			else
-			{
-				Items[i].ItemID = NAME_None;
-				Items[i].IsStackable = false;
-				Items[i].Count = 0;
-			}
-			break;
-		}
+		
 	}
-	*/
+	
 }

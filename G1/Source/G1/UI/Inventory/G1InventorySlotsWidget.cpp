@@ -17,7 +17,7 @@
 UG1InventorySlotsWidget::UG1InventorySlotsWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UG1InventorySlotWidget> FindSlotWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/Item/Inventory/WBP_InventorySlot.WBP_InventorySlot_C'"));
+	/*ConstructorHelpers::FClassFinder<UG1InventorySlotWidget> FindSlotWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/Item/Inventory/WBP_InventorySlot.WBP_InventorySlot_C'"));
 
 	if (FindSlotWidgetClass.Succeeded())
 	{
@@ -29,7 +29,7 @@ UG1InventorySlotsWidget::UG1InventorySlotsWidget(const FObjectInitializer& Objec
 	if (FindEntryWidgetClass.Succeeded())
 	{
 		EntryWidgetClass = FindEntryWidgetClass.Class;
-	}
+	}*/
 }
 
 void UG1InventorySlotsWidget::NativeConstruct()
