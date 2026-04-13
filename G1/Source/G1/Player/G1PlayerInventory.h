@@ -42,6 +42,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SizeY = 4;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FIntPoint  InventorySize;
+
 	// 실제 데이터 (SizeX * SizeY)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FG1InventoryItemData> Items;
@@ -56,5 +59,5 @@ public:
 	void RemoveItem(const int32 X, const int32 Y, const int32 Count);
 	int32 GetIndex(const int32 X, const int32 Y);// 인덱스 계산 함수
 	FG1InventoryItemData* GetItem(const int32 X, const int32 Y);// 특정 위치 접근
-	TArray<FG1InventoryItemData> GetItems() const;
+	const TArray<FG1InventoryItemData>& GetItems() const;
 };

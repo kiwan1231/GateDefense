@@ -2,6 +2,7 @@
 
 
 #include "UI/Inventory/G1InventoryWidget.h"
+#include "UI/Inventory/G1InventorySlotsWidget.h"
 
 #include "Character/G1Player.h"
 #include "Player/G1PlayerInventory.h"
@@ -32,10 +33,5 @@ void UG1InventoryWidget::OnRefreshInventory()
 		return;
 	}
 
-	const TArray<FG1InventoryItemData>& Items = G1Player->GetItems();
-	for (int i = 0; i < Items.Num(); i++)
-	{
-		
-	}
-	
+	SlotsWidget->InitInventorySlots(G1Player);
 }

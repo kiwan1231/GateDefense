@@ -52,9 +52,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUniformGridPanel> GridPanel_Slots;
 
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AG1Player> G1Player;
+
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> CanvasPanel_Entries;
+
+public:
+	void InitInventorySlots(class AG1Player* Player);
 
 private:
 	FIntPoint PrevDragOverSlotPos = FIntPoint::ZeroValue;

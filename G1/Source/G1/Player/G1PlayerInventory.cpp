@@ -8,7 +8,8 @@
 UG1InventoryComponent::UG1InventoryComponent()
 	: Super()
 {
-
+	InventorySize.X = 5;
+	InventorySize.Y = 4;
 }
 
 void UG1InventoryComponent::BeginPlay()
@@ -17,7 +18,7 @@ void UG1InventoryComponent::BeginPlay()
 
 	ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
-	Items.SetNum(SizeX * SizeY);
+	Items.SetNum(InventorySize.X * InventorySize.Y);
 	for (auto& Item : Items)
 	{
 		Item.ItemID = NAME_None;
@@ -42,8 +43,8 @@ bool UG1InventoryComponent::PickUpItem(const FName ItemID, const int32 Count)
 
 		else if (bFoundStackable == false && Items[i].ItemID.IsNone())
 		{
-			X = i % SizeX;
-			Y = i / SizeX;
+			X = i % InventorySize.X;
+			Y = i / InventorySize.X;
 			bFoundStackable = true;
 		}
 	}
@@ -137,7 +138,7 @@ void UG1InventoryComponent::RemoveItem(const int32 X, const int32 Y, const int32
 
 int32 UG1InventoryComponent::GetIndex(const int32 X, const int32 Y)
 {
-	return Y * SizeX + X;
+	return (Y * InventorySize.X) + X;
 }
 
 FG1InventoryItemData* UG1InventoryComponent::GetItem(const int32 X, const int32 Y)
@@ -146,7 +147,7 @@ FG1InventoryItemData* UG1InventoryComponent::GetItem(const int32 X, const int32 
 	return Items.IsValidIndex(Index) ? &Items[Index] : nullptr;
 }
 
-TArray<FG1InventoryItemData> UG1InventoryComponent::GetItems() const
+const TArray<FG1InventoryItemData>& UG1InventoryComponent::GetItems() const
 {
 	return Items;
 }
