@@ -19,7 +19,10 @@ UG1InventoryComponent::UG1InventoryComponent()
 void UG1InventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void UG1InventoryComponent::InitPlayerInventory()
+{
 	ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	UG1InventorySubsystem* Inventory = Cast<UG1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UG1InventorySubsystem::StaticClass()));

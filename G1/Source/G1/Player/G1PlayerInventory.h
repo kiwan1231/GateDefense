@@ -33,6 +33,8 @@ private:
 	class UG1ItemData* ItemData;
 	
 public:
+	void InitPlayerInventory();
+
 	bool PickUpItem(const FName ItemID, const int32 Count);
 	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
 	void RemoveItem(const FName ItemID, const int32 Count);

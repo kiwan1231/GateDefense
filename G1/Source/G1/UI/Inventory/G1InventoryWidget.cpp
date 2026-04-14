@@ -16,9 +16,14 @@ void UG1InventoryWidget::OnInitInventory(AG1Player* Player)
 {
 	G1Player = Player;
 
-	IsInit = true;
+	if (SlotsWidget == nullptr)
+	{
+		return;
+	}
 
-	OnRefreshInventory();
+	SlotsWidget->InitInventorySlots(G1Player);
+
+	IsInit = true;
 }
 
 void UG1InventoryWidget::OnRefreshInventory()
@@ -27,11 +32,4 @@ void UG1InventoryWidget::OnRefreshInventory()
 	{
 		return;
 	}
-	
-	if (SlotsWidget == nullptr)
-	{
-		return;
-	}
-
-	SlotsWidget->InitInventorySlots(G1Player);
 }

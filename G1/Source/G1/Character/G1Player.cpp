@@ -64,7 +64,6 @@ AG1Player::AG1Player()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
 }
 
 // Called when the game starts or when spawned
@@ -75,8 +74,16 @@ void AG1Player::BeginPlay()
 	SpringArmTargetOffset = SpringArm->TargetOffset;
 	SpringArmSocketOffset = SpringArm->SocketOffset;
 	CameraPivotSphere->SetWorldLocation(GetSpringArmEndLocation());
+}
+
+void AG1Player::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	InitAbilitySystem();
 
 	Inventory = FindComponentByClass<UG1InventoryComponent>();
+	Inventory->InitPlayerInventory();
 
 	Controller = Cast<AG1PlayerController>(GetController());
 
@@ -85,13 +92,6 @@ void AG1Player::BeginPlay()
 		Controller->IngameUI->PlayerWidget->SetName("juseal");
 		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
 	}
-}
-
-void AG1Player::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-
-	InitAbilitySystem();
 }
 
 // Called every frame
@@ -158,9 +158,9 @@ void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const
 {
 	Super::OnDamaged(Damage, Attacker, SweepResult);
 
-	if (Controller && Controller->IngameUI)
+	if (Controller && Controller->GetIngameUI())
 	{
-		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
+		Controller->GetIngameUI()->PlayerWidget->SetHpRatio(GetHpRatio());
 	}
 }
 

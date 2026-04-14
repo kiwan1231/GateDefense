@@ -110,4 +110,7 @@ public:
 
 public:
 	void InitUserInterfaceWidget();
+
+public:
+	TObjectPtr<class UG1IngameSceneWidget> GetIngameUI();
 };

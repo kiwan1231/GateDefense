@@ -57,9 +57,9 @@ void AG1PlayerController::OnPossess(APawn* InPawn)
 	G1Player = Cast<AG1Player>(GetCharacter());
 	MeshComponent = G1Player->FindComponentByClass<USkeletalMeshComponent>();
 
-	if (IngameUI != nullptr)
+	if (GetIngameUI() != nullptr)
 	{
-		IngameUI->PlayerInventory->OnInitInventory(G1Player);
+		GetIngameUI()->PlayerInventory->OnInitInventory(G1Player);
 	}
 }
 
@@ -265,9 +265,9 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValue)
 {
-	if (IngameUI != nullptr && IngameUI->IsValidLowLevel())
+	if (GetIngameUI() != nullptr && GetIngameUI()->IsValidLowLevel())
 	{
-		IngameUI->OnInputInventory();
+		GetIngameUI()->OnInputInventory();
 	}
 }
 
@@ -277,7 +277,7 @@ void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)
 	{
 		if (G1Player->OnItemPickUp() == 0)
 		{
-			IngameUI->PlayerInventory->OnRefreshInventory();
+			GetIngameUI()->PlayerInventory->OnRefreshInventory();
 		}
 		else if (G1Player->OnItemPickUp() == -1)
 		{
@@ -382,9 +382,9 @@ void AG1PlayerController::SetCharacterState(ECharacterState InState)
 
 void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
 {
-	if (IngameUI)
+	if (GetIngameUI())
 	{
-		IngameUI->RemoveFromViewport();
+		GetIngameUI()->RemoveFromViewport();
 	}
 
 	if (GameOverUIClass)
@@ -418,16 +418,6 @@ void AG1PlayerController::HideDropItemDesc()
 
 void AG1PlayerController::InitUserInterfaceWidget()
 {
-	if (IngameUIClass)
-	{
-		IngameUI = CreateWidget<UG1IngameSceneWidget>(this, IngameUIClass);
-
-		if (IngameUI)
-		{
-			IngameUI->AddToViewport();
-		}
-	}
-
 	if (DropItemDescWidgetClass)
 	{
 		DropItemDescWidget = CreateWidget<UG1DropItemDescWidget>(GetWorld(), DropItemDescWidgetClass);
@@ -437,4 +427,22 @@ void AG1PlayerController::InitUserInterfaceWidget()
 			DropItemDescWidget->Hide();
 		}
 	}
+}
+
+TObjectPtr<class UG1IngameSceneWidget> AG1PlayerController::GetIngameUI()
+{
+	if (IngameUI == nullptr)
+	{
+		if (IngameUIClass)
+		{
+			IngameUI = CreateWidget<UG1IngameSceneWidget>(this, IngameUIClass);
+
+			if (IngameUI)
+			{
+				IngameUI->AddToViewport();
+			}
+		}
+	}
+
+	return IngameUI;
 }
