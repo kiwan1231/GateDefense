@@ -193,9 +193,9 @@ int AG1Player::OnItemPickUp()
 	}
 }
 
-TArray<FG1InventoryItemData> AG1Player::GetItems() const
+const TObjectPtr<class UG1InventoryComponent>& AG1Player::GetInventoryComponent() const
 {
-	return Inventory->GetItems();
+	return Inventory;
 }
 
 void AG1Player::InitAbilitySystem()

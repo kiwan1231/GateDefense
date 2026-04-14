@@ -5,4 +5,5 @@
 
 UG1DragDropOperation::UG1DragDropOperation(const FObjectInitializer& ObjectInitializer)
 {
+	
 }

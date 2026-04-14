@@ -57,7 +57,10 @@ public:
 	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
 	void RemoveItem(const FName ItemID, const int32 Count);
 	void RemoveItem(const int32 X, const int32 Y, const int32 Count);
+
+public:
 	int32 GetIndex(const int32 X, const int32 Y);// 인덱스 계산 함수
 	FG1InventoryItemData* GetItem(const int32 X, const int32 Y);// 특정 위치 접근
 	const TArray<FG1InventoryItemData>& GetItems() const;
+	const FIntPoint& GetInventorySize() const;
 };

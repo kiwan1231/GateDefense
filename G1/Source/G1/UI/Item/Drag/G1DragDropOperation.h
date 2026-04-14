@@ -7,6 +7,8 @@
 
 #include "G1DragDropOperation.generated.h"
 
+struct FG1InventoryItemData;
+
 /**
  * 
  */
@@ -23,5 +25,6 @@ public:
 public:
 	UPROPERTY()
 	TObjectPtr<class UG1Item2DInstance> ItemInstance;
+
 	FVector2D DeltaWidgetPos = FVector2D::ZeroVector;
 };

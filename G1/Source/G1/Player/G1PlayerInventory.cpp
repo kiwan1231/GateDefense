@@ -151,3 +151,8 @@ const TArray<FG1InventoryItemData>& UG1InventoryComponent::GetItems() const
 {
 	return Items;
 }
+
+const FIntPoint& UG1InventoryComponent::GetInventorySize() const
+{
+	return InventorySize;
+}

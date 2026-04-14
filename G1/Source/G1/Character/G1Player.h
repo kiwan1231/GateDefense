@@ -66,7 +66,7 @@ public:
 	virtual int OnItemPickUp();
 
 public:
-	TArray<FG1InventoryItemData> GetItems() const; 
+	const TObjectPtr<class UG1InventoryComponent>& GetInventoryComponent() const;
 
 protected: // interface
 	virtual void InitAbilitySystem() override;
