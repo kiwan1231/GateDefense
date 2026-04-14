@@ -9,6 +9,9 @@
 #include "Subsystems/SubsystemBlueprintLibrary.h"
 #include "Item/G1InventorySubsystem.h"
 
+#include "Character/G1Player.h"
+#include "Player/G1PlayerController.h"
+
 UG1InventoryComponent::UG1InventoryComponent()
 	: Super()
 {
@@ -21,8 +24,11 @@ void UG1InventoryComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UG1InventoryComponent::InitPlayerInventory()
+void UG1InventoryComponent::InitPlayerInventory(AG1Player* _G1Player, AG1PlayerController* _PlayerController)
 {
+	G1Player = _G1Player;
+	PlayerController = _PlayerController;
+
 	ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	UG1InventorySubsystem* Inventory = Cast<UG1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UG1InventorySubsystem::StaticClass()));

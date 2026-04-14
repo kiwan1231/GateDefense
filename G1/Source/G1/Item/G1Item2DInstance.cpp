@@ -20,7 +20,9 @@ void UG1Item2DInstance::Init(int32 x, int32 y, FName _ItemID, int32 _Count, UG1I
 	auto ItemInfo = _ItemData->FindItemInfo(_ItemID);
 	if (ItemInfo)
 	{
+		ItemType = ItemInfo->ItemType;
 		ItemRarity = ItemInfo->ItemRarity;
 		bIsStackable = ItemInfo->Stackable;
+		IconImage = ItemInfo->IconImage;
 	}
 }

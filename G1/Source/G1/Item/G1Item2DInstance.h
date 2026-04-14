@@ -29,9 +29,13 @@ public:
 	UPROPERTY()
 	FName ItemID = NAME_None;
 	UPROPERTY()
+	EItemType ItemType = EItemType::None;
+	UPROPERTY()
 	EItemRarity ItemRarity = EItemRarity::Common;
 	UPROPERTY()
 	int32 Count = 1;
 	UPROPERTY()
 	bool bIsStackable = false;
+	UPROPERTY()
+	TSoftObjectPtr<UTexture2D> IconImage;
 };

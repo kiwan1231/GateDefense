@@ -22,6 +22,9 @@ void UG1InventoryEntryWidget::Init(UG1InventorySlotsWidget* InSlotsWidget, UG1It
 	SlotsWidget = InSlotsWidget;
 	ItemInstance = InItemInstance;
 	ItemCount = InItemCount;
+
+	UTexture2D* Texture = InItemInstance->IconImage.LoadSynchronous();
+	Image_Icon->SetBrushFromTexture(Texture);
 }
 
 void UG1InventoryEntryWidget::NativeConstruct()

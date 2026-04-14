@@ -82,10 +82,10 @@ void AG1Player::PossessedBy(AController* NewController)
 
 	InitAbilitySystem();
 
-	Inventory = FindComponentByClass<UG1InventoryComponent>();
-	Inventory->InitPlayerInventory();
-
 	Controller = Cast<AG1PlayerController>(GetController());
+
+	Inventory = FindComponentByClass<UG1InventoryComponent>();
+	Inventory->InitPlayerInventory(this, Controller);
 
 	if (Controller && Controller->IngameUI && Controller->IngameUI->PlayerWidget)
 	{
