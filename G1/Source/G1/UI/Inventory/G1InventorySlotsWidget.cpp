@@ -137,7 +137,7 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 
 	auto InventoryComponent = G1Player->GetInventoryComponent();
 	auto InventorySize = InventoryComponent->GetInventorySize();
-	auto InventoryItems = InventoryComponent->GetItems();
+	auto InventoryItems = InventoryComponent->GetInventoryItems();
 
 	SlotWidgets.SetNum(InventoryItems.Num());
 	for (int i = 0; i < InventoryItems.Num(); i++)
@@ -150,34 +150,10 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 	EntryWidgets.SetNum(InventoryItems.Num());
 	for (int i = 0; i < InventoryItems.Num(); i++)
 	{
-
+		if (InventoryItems[i] != nullptr)
+		{
+			FIntPoint ItemSlotPos = FIntPoint(i % X_COUNT, i / X_COUNT);
+			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
+		}
 	}
-
-	UG1InventorySubsystem* Inventory = Cast<UG1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UG1InventorySubsystem::StaticClass()));
-
-	const TArray<TObjectPtr<UG1Item2DInstance>>& Items = Inventory->GetItems();
-
-	for (int32 i = 0; i < Items.Num(); i++)
-	{
-		const TObjectPtr<UG1Item2DInstance>& Item = Items[i];
-		FIntPoint ItemSlotPos = FIntPoint(i % X_COUNT, i / X_COUNT);
-		OnInventoryEntryChanged(ItemSlotPos, Item);
-	}
-
-	/*
-	
-
-	EntryWidgets.SetNum(X_COUNT * Y_COUNT);
-
-	UG1InventorySubsystem* Inventory = Cast<UG1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UG1InventorySubsystem::StaticClass()));
-
-	const TArray<TObjectPtr<UG1Item2DInstance>>& Items = Inventory->GetItems();
-
-	for (int32 i = 0; i < Items.Num(); i++)
-	{
-		const TObjectPtr<UG1Item2DInstance>& Item = Items[i];
-		FIntPoint ItemSlotPos = FIntPoint(i % X_COUNT, i / X_COUNT);
-		OnInventoryEntryChanged(ItemSlotPos, Item);
-	}
-	*/
 }

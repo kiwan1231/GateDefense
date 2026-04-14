@@ -9,20 +9,7 @@
 
 #include "G1PlayerInventory.generated.h"
 
-USTRUCT(BlueprintType)
-struct FG1InventoryItemData
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	FName ItemID;
-
-	UPROPERTY()
-	bool IsStackable;
-
-	UPROPERTY()
-	int32 Count;
-};
+class UG1Item2DInstance;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class G1_API UG1InventoryComponent : public UActorComponent
@@ -37,21 +24,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 SizeX = 5;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 SizeY = 4;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FIntPoint  InventorySize;
 
-	// 실제 데이터 (SizeX * SizeY)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FG1InventoryItemData> Items;
+	TArray<TObjectPtr<UG1Item2DInstance>> InventoryItems;
 
 private:
 	class UG1ItemData* ItemData;
-
+	
 public:
 	bool PickUpItem(const FName ItemID, const int32 Count);
 	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
@@ -60,7 +40,7 @@ public:
 
 public:
 	int32 GetIndex(const int32 X, const int32 Y);// 인덱스 계산 함수
-	FG1InventoryItemData* GetItem(const int32 X, const int32 Y);// 특정 위치 접근
-	const TArray<FG1InventoryItemData>& GetItems() const;
+	TObjectPtr<UG1Item2DInstance> GetItem(const int32 X, const int32 Y);// 특정 위치 접근
+	TArray<TObjectPtr<UG1Item2DInstance>> GetInventoryItems() const;
 	const FIntPoint& GetInventorySize() const;
 };

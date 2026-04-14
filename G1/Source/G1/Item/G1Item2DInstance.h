@@ -8,6 +8,7 @@
 
 #include "G1Item2DInstance.generated.h"
 
+class UG1ItemData;
 /**
  * 
  */
@@ -20,11 +21,17 @@ public:
 	UG1Item2DInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
-	void Init(int32 InItemID);
+	void Init(int32 x, int32 y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData);
 
 public:
 	UPROPERTY()
-	int32 ItemID = 0;
+	FIntPoint InventorySlotPos;
+	UPROPERTY()
+	FName ItemID = NAME_None;
 	UPROPERTY()
 	EItemRarity ItemRarity = EItemRarity::Common;
+	UPROPERTY()
+	int32 Count = 1;
+	UPROPERTY()
+	bool bIsStackable = false;
 };
