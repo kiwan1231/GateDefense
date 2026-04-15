@@ -54,7 +54,7 @@ void UG1InventorySlotsWidget::NativeConstruct()
 
 void UG1InventorySlotsWidget::OnInventoryEntryChanged(const FIntPoint& ItemSlotPos, TObjectPtr<UG1Item2DInstance> Item)
 {
-	int32 SlotIndex = ItemSlotPos.Y * X_COUNT + ItemSlotPos.X;
+	int32 SlotIndex = (ItemSlotPos.Y * InventorySize.X) + ItemSlotPos.X;
 
 	if (UG1InventoryEntryWidget* EntryWidget = EntryWidgets[SlotIndex])
 	{
@@ -66,12 +66,16 @@ void UG1InventorySlotsWidget::OnInventoryEntryChanged(const FIntPoint& ItemSlotP
 	}
 	else
 	{
+		FVector2D GridSize = GridPanel_Slots->GetCachedGeometry().GetLocalSize();
+		float CellSizeX = GridSize.X / InventorySize.X;
+		float CellSizeY = GridSize.Y / InventorySize.Y;
+
 		EntryWidget = CreateWidget<UG1InventoryEntryWidget>(GetOwningPlayer(), EntryWidgetClass);
 		EntryWidgets[SlotIndex] = EntryWidget;
 
 		UCanvasPanelSlot* CanvasPanelSlot = CanvasPanel_Entries->AddChildToCanvas(EntryWidget);
 		CanvasPanelSlot->SetAutoSize(true);
-		CanvasPanelSlot->SetPosition(FVector2D(ItemSlotPos.X * 50, ItemSlotPos.Y * 50));
+		CanvasPanelSlot->SetPosition(FVector2D(ItemSlotPos.X * CellSizeX, ItemSlotPos.Y * CellSizeY));
 
 		EntryWidget->Init(this, Item, 1);
 	}
@@ -115,6 +119,8 @@ bool UG1InventorySlotsWidget::NativeOnDrop(const FGeometry& InGeometry, const FD
 	FVector2D MouseWidgetPos = InGeometry.AbsoluteToLocal(InDragDropEvent.GetScreenSpacePosition());
 	FVector2D ToWidgetPos = MouseWidgetPos - DragDrop->DeltaWidgetPos;
 	FIntPoint ToItemSlotPos = FIntPoint(ToWidgetPos.X / InventoryItem::UnitInventorySlotSize.X, ToWidgetPos.Y / InventoryItem::UnitInventorySlotSize.Y);
+	ToItemSlotPos.X = FMath::Clamp(ToItemSlotPos.X, 0, InventorySize.X - 1);
+	ToItemSlotPos.Y = FMath::Clamp(ToItemSlotPos.Y, 0, InventorySize.Y - 1);
 
 	// TODO
 	if (DragDrop->FromItemSlotPos != ToItemSlotPos)
@@ -136,7 +142,7 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 	G1Player = Player;
 
 	auto InventoryComponent = G1Player->GetInventoryComponent();
-	auto InventorySize = InventoryComponent->GetInventorySize();
+	InventorySize = InventoryComponent->GetInventorySize();
 	auto InventoryItems = InventoryComponent->GetInventoryItems();
 
 	InventoryComponent->OnCreateInventoryItem.AddUObject(this, &UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem);
@@ -148,7 +154,7 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 	{
 		UG1InventorySlotWidget* SlotWidget = CreateWidget<UG1InventorySlotWidget>(GetOwningPlayer(), SlotWidgetClass);
 		SlotWidgets[i] = SlotWidget;
-		GridPanel_Slots->AddChildToUniformGrid(SlotWidget, i / X_COUNT, i % X_COUNT);
+		GridPanel_Slots->AddChildToUniformGrid(SlotWidget, i / InventorySize.X, i % InventorySize.X);
 	}
 
 	EntryWidgets.SetNum(InventoryItems.Num());
@@ -156,7 +162,7 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 	{
 		if (InventoryItems[i] != nullptr)
 		{
-			FIntPoint ItemSlotPos = FIntPoint(i % X_COUNT, i / X_COUNT);
+			FIntPoint ItemSlotPos = FIntPoint(i % InventorySize.X, i / InventorySize.X);
 			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
 		}
 	}

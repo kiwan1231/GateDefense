@@ -193,6 +193,10 @@ int AG1Player::OnItemPickUp()
 	}
 }
 
+void AG1Player::OnItemMove(FIntPoint prePos, FIntPoint movePos)
+{
+}
+
 const TObjectPtr<class UG1InventoryComponent>& AG1Player::GetInventoryComponent() const
 {
 	return Inventory;

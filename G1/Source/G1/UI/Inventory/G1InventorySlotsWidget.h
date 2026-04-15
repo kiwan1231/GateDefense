@@ -69,7 +69,6 @@ public:
 	void Delegate_OnInventoryItemCount(class AG1Player*, FIntPoint ItemSlotPos, int32 ItemCount);
 
 private:
+	FIntPoint InventorySize = FIntPoint::ZeroValue;
 	FIntPoint PrevDragOverSlotPos = FIntPoint::ZeroValue;
-	const int X_COUNT = 10;
-	const int Y_COUNT = 5;
 };

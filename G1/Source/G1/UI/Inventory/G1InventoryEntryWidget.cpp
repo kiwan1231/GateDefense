@@ -88,7 +88,8 @@ void UG1InventoryEntryWidget::NativeOnDragDetected(const FGeometry& InGeometry, 
 
 	UG1ItemDragWidget* DragWidget = CreateWidget<UG1ItemDragWidget>(GetOwningPlayer(), DragWidgetClass);
 	FVector2D EntityWidgetSize = FVector2D(1 * 50, 1 * 50);
-	DragWidget->Init(EntityWidgetSize, nullptr, ItemCount);
+	UTexture2D* Texture = ItemInstance->IconImage.LoadSynchronous();
+	DragWidget->Init(EntityWidgetSize, Texture, ItemCount);
 
 	UG1DragDropOperation* DragDrop = NewObject<UG1DragDropOperation>();
 	DragDrop->DefaultDragVisual = DragWidget;

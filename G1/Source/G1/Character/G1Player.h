@@ -64,6 +64,7 @@ public:
 	virtual void OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult) override;
 
 	virtual int OnItemPickUp();
+	virtual void OnItemMove(FIntPoint prePos, FIntPoint movePos);
 
 public:
 	const TObjectPtr<class UG1InventoryComponent>& GetInventoryComponent() const;
