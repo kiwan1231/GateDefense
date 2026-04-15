@@ -63,6 +63,11 @@ private:
 public:
 	void InitInventorySlots(class AG1Player* Player);
 
+public:
+	void Delegate_OnCreateInventoryItem(class AG1Player* Player, FIntPoint ItemSlotPos);
+	void Delegate_OnRemoveInventoryItem(class AG1Player* Player, FIntPoint ItemSlotPos);
+	void Delegate_OnInventoryItemCount(class AG1Player*, FIntPoint ItemSlotPos, int32 ItemCount);
+
 private:
 	FIntPoint PrevDragOverSlotPos = FIntPoint::ZeroValue;
 	const int X_COUNT = 10;

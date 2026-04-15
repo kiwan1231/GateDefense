@@ -62,17 +62,22 @@ bool UG1InventoryComponent::PickUpItem(const FName ItemID, const int32 Count)
 
 	for (int i = 0; i < InventoryItems.Num(); i ++)
 	{
-		if (InventoryItems[i]->bIsStackable && InventoryItems[i]->ItemID.IsEqual(ItemID))
+		if (InventoryItems[i] == nullptr)
 		{
-			InventoryItems[i]->Count += Count;
-			return true;
+			if (bFoundStackable == false)
+			{
+				X = i % InventorySize.X;
+				Y = i / InventorySize.X;
+				bFoundStackable = true;
+			}
 		}
-
-		else if (bFoundStackable == false && InventoryItems[i] == nullptr)
+		else
 		{
-			X = i % InventorySize.X;
-			Y = i / InventorySize.X;
-			bFoundStackable = true;
+			if (InventoryItems[i]->bIsStackable && InventoryItems[i]->ItemID.IsEqual(ItemID))
+			{
+				InventoryItems[i]->Count += Count;
+				return true;
+			}
 		}
 	}
 
@@ -101,10 +106,12 @@ void UG1InventoryComponent::AddItem(const int32 X, const int32 Y, const FName It
 	{
 		InventoryItems[Index] = NewObject<UG1Item2DInstance>(this);
 		InventoryItems[Index]->Init(X, Y, ItemID, Count, ItemData);
+		OnCreateInventoryItem.Broadcast(G1Player, InventoryItems[Index]->InventorySlotPos);
 	}
 	else if (InventoryItems[Index]->ItemID.IsEqual(ItemID) && InventoryItems[Index]->bIsStackable)
 	{
 		InventoryItems[Index]->Count += Count;
+		OnInventoryItemCount.Broadcast(G1Player, InventoryItems[Index]->InventorySlotPos, InventoryItems[Index]->Count);
 	}
 	else
 	{
@@ -127,11 +134,15 @@ void UG1InventoryComponent::RemoveItem(const FName ItemID, const int32 Count)
 			if (InventoryItems[i]->Count > Count)
 			{
 				InventoryItems[i]->Count -= Count;
+				OnInventoryItemCount.Broadcast(G1Player, InventoryItems[i]->InventorySlotPos, InventoryItems[i]->Count);
 			}
 			else
 			{
+				auto RemovedItemPos = InventoryItems[i]->InventorySlotPos;
 				InventoryItems[i] = nullptr;
+				OnRemoveInventoryItem.Broadcast(G1Player, RemovedItemPos);
 			}
+
 			break;
 		}
 	}
@@ -150,10 +161,13 @@ void UG1InventoryComponent::RemoveItem(const int32 X, const int32 Y, const int32
 	if (InventoryItems[Index]->Count > Count)
 	{
 		InventoryItems[Index]->Count -= Count;
+		OnInventoryItemCount.Broadcast(G1Player, InventoryItems[Index]->InventorySlotPos, InventoryItems[Index]->Count);
 	}
 	else
 	{
+		auto RemovedItemPos = InventoryItems[Index]->InventorySlotPos;
 		InventoryItems[Index] = nullptr;
+		OnRemoveInventoryItem.Broadcast(G1Player, RemovedItemPos);
 	}
 }
 

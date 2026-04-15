@@ -265,10 +265,46 @@ void AG1PlayerController::Input_HitTarget(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValue)
 {
-	if (GetIngameUI() != nullptr && GetIngameUI()->IsValidLowLevel())
+	TObjectPtr<UG1IngameSceneWidget> InGameUI = GetIngameUI();
+	if (InGameUI == nullptr || InGameUI->IsValidLowLevel() == false)
+		return;
+
+	TObjectPtr<UG1InventoryWidget> PlayerInventory = InGameUI->PlayerInventory;
+	if (PlayerInventory == nullptr || PlayerInventory->IsValidLowLevel() == false)
+		return;
+
+	if (PlayerInventory->IsVisible())
+	{
+		PlayerInventory->Hide();
+
+		FInputModeGameAndUI InputMode;
+		SetInputMode(InputMode);
+
+		// 付快胶 包访 可记 汗备
+		bShowMouseCursor = false;
+		//bEnableClickEvents = false;
+		//bEnableMouseOverEvents = false;
+	}
+	else
+	{
+		PlayerInventory->Show();
+
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(PlayerInventory->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		InputMode.SetHideCursorDuringCapture(false);
+
+		SetInputMode(InputMode);
+
+		bShowMouseCursor = true;
+		//bEnableClickEvents = true;
+		//bEnableMouseOverEvents = true;
+	}
+
+	/*if (GetIngameUI() != nullptr && GetIngameUI()->IsValidLowLevel())
 	{
 		GetIngameUI()->OnInputInventory();
-	}
+	}*/
 }
 
 void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)

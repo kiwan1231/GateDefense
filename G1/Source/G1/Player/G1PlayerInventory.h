@@ -9,7 +9,13 @@
 
 #include "G1PlayerInventory.generated.h"
 
+
 class UG1Item2DInstance;
+class AG1Player;
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCreateInventoryItem, AG1Player*, FIntPoint);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRemoveInventoryItem, AG1Player*, FIntPoint);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnInventoryItemCount, AG1Player*, FIntPoint, int32);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class G1_API UG1InventoryComponent : public UActorComponent
@@ -30,12 +36,12 @@ protected:
 	TArray<TObjectPtr<UG1Item2DInstance>> InventoryItems;
 
 private:
-	class AG1Player* G1Player;
+	AG1Player* G1Player;
 	class AG1PlayerController* PlayerController;
 	class UG1ItemData* ItemData;
 	
 public:
-	void InitPlayerInventory(class AG1Player* _G1Player, class AG1PlayerController* _PlayerController);
+	void InitPlayerInventory(AG1Player* _G1Player, class AG1PlayerController* _PlayerController);
 
 	bool PickUpItem(const FName ItemID, const int32 Count);
 	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
@@ -47,4 +53,9 @@ public:
 	TObjectPtr<UG1Item2DInstance> GetItem(const int32 X, const int32 Y);// 특정 위치 접근
 	TArray<TObjectPtr<UG1Item2DInstance>> GetInventoryItems() const;
 	const FIntPoint& GetInventorySize() const;
+
+public:
+	FOnCreateInventoryItem OnCreateInventoryItem;
+	FOnRemoveInventoryItem OnRemoveInventoryItem;
+	FOnInventoryItemCount OnInventoryItemCount;
 };

@@ -27,6 +27,12 @@ void UG1InventoryEntryWidget::Init(UG1InventorySlotsWidget* InSlotsWidget, UG1It
 	Image_Icon->SetBrushFromTexture(Texture);
 }
 
+void UG1InventoryEntryWidget::UpdateItemCount(int32 NewItemCount)
+{
+	ItemCount = NewItemCount;
+	Text_Count->SetText((ItemCount >= 2) ? FText::AsNumber(ItemCount) : FText::GetEmpty());
+}
+
 void UG1InventoryEntryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -110,4 +116,16 @@ void UG1InventoryEntryWidget::RefreshItemCount(int32 NewItemCount)
 {
 	ItemCount = NewItemCount;
 	Text_Count->SetText((ItemCount >= 2) ? FText::AsNumber(ItemCount) : FText::GetEmpty());
+}
+
+FIntPoint UG1InventoryEntryWidget::GetSlotPos()
+{
+	if (ItemInstance == nullptr)
+	{
+		return FIntPoint();
+	}
+	else
+	{
+		return ItemInstance->InventorySlotPos;
+	}
 }

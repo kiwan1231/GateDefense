@@ -27,6 +27,8 @@ public:
 public:
 	void Init(UG1InventorySlotsWidget* InSlotsWidget, UG1Item2DInstance* InItemInstance, int32 InItemCount);
 
+	void UpdateItemCount(int32 NewItemCount);
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
@@ -66,4 +68,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image_Hover;
+
+public:
+	FIntPoint GetSlotPos();
 };

@@ -139,6 +139,10 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 	auto InventorySize = InventoryComponent->GetInventorySize();
 	auto InventoryItems = InventoryComponent->GetInventoryItems();
 
+	InventoryComponent->OnCreateInventoryItem.AddUObject(this, &UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem);
+	InventoryComponent->OnRemoveInventoryItem.AddUObject(this, &UG1InventorySlotsWidget::Delegate_OnRemoveInventoryItem);
+	InventoryComponent->OnInventoryItemCount.AddUObject(this, &UG1InventorySlotsWidget::Delegate_OnInventoryItemCount);
+
 	SlotWidgets.SetNum(InventoryItems.Num());
 	for (int i = 0; i < InventoryItems.Num(); i++)
 	{
@@ -156,4 +160,43 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
 		}
 	}
+}
+
+void UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem(AG1Player* Player, FIntPoint ItemSlotPos)
+{
+	if (G1Player != Player)
+		return;
+
+	auto InventoryComponent = G1Player->GetInventoryComponent();
+	auto InventoryItems = InventoryComponent->GetInventoryItems();
+
+	for (int i = 0; i < InventoryItems.Num(); i++)
+	{
+		if (InventoryItems[i] != nullptr && InventoryItems[i]->InventorySlotPos == ItemSlotPos)
+		{
+			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
+		}
+	}
+}
+
+void UG1InventorySlotsWidget::Delegate_OnRemoveInventoryItem(AG1Player* Player, FIntPoint ItemSlotPos)
+{
+	if (G1Player != Player)
+		return;
+
+	for (int i = 0; i < EntryWidgets.Num(); i++)
+	{
+		if (EntryWidgets[i] == nullptr)
+			continue;
+
+		if (EntryWidgets[i]->GetSlotPos() == ItemSlotPos)
+		{
+			EntryWidgets[i] = nullptr;
+			break;
+		}
+	}
+}
+
+void UG1InventorySlotsWidget::Delegate_OnInventoryItemCount(AG1Player* Player, FIntPoint ItemSlotPos, int32 ItemCount)
+{
 }
