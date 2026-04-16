@@ -66,11 +66,24 @@ FReply UG1InventoryEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 
 	const FIntPoint UnitInventorySlotSize = FIntPoint(50, 50);
 
+	/*
 	FVector2D MouseWidgetPos = SlotsWidget->GetCachedGeometry().AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
 	FVector2D ItemWidgetPos = SlotsWidget->GetCachedGeometry().AbsoluteToLocal(InGeometry.LocalToAbsolute(UnitInventorySlotSize / 2.f));
 	FIntPoint ItemSlotPos = FIntPoint(ItemWidgetPos.X / UnitInventorySlotSize.X, ItemWidgetPos.Y / UnitInventorySlotSize.Y);
 
 	CachedFromSlotPos = ItemSlotPos;
+	CachedDeltaWidgetPos = MouseWidgetPos - ItemWidgetPos;
+	*/
+
+	CachedFromSlotPos = ItemInstance->InventorySlotPos;
+
+	FVector2D MouseWidgetPos = SlotsWidget->GetCachedGeometry().AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
+
+	FVector2D ItemWidgetPos = FVector2D(
+		CachedFromSlotPos.X * UnitInventorySlotSize.X + UnitInventorySlotSize.X * 0.5f,
+		CachedFromSlotPos.Y * UnitInventorySlotSize.Y + UnitInventorySlotSize.Y * 0.5f
+	);
+
 	CachedDeltaWidgetPos = MouseWidgetPos - ItemWidgetPos;
 
 	return Replay;

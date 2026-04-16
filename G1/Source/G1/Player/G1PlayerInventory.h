@@ -47,6 +47,7 @@ public:
 	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
 	void RemoveItem(const FName ItemID, const int32 Count);
 	void RemoveItem(const int32 X, const int32 Y, const int32 Count);
+	void MoveItem(const FIntPoint& PrePos, const FIntPoint& MovePos);
 
 public:
 	int32 GetIndex(const int32 X, const int32 Y);// 인덱스 계산 함수

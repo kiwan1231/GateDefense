@@ -125,8 +125,9 @@ bool UG1InventorySlotsWidget::NativeOnDrop(const FGeometry& InGeometry, const FD
 	// TODO
 	if (DragDrop->FromItemSlotPos != ToItemSlotPos)
 	{
-		OnInventoryEntryChanged(DragDrop->FromItemSlotPos, nullptr);
-		OnInventoryEntryChanged(ToItemSlotPos, DragDrop->ItemInstance);
+		G1Player->OnItemMove(DragDrop->FromItemSlotPos, ToItemSlotPos);
+		/*OnInventoryEntryChanged(DragDrop->FromItemSlotPos, nullptr);
+		OnInventoryEntryChanged(ToItemSlotPos, DragDrop->ItemInstance);*/
 	}
 
 	return false;
@@ -180,7 +181,23 @@ void UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem(AG1Player* Player, 
 	{
 		if (InventoryItems[i] != nullptr && InventoryItems[i]->InventorySlotPos == ItemSlotPos)
 		{
-			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
+			int32 SlotIndex = (ItemSlotPos.Y * InventorySize.X) + ItemSlotPos.X;
+
+			UG1InventoryEntryWidget* EntryWidget = EntryWidgets[SlotIndex];
+			FVector2D GridSize = GridPanel_Slots->GetCachedGeometry().GetLocalSize();
+			float CellSizeX = GridSize.X / InventorySize.X;
+			float CellSizeY = GridSize.Y / InventorySize.Y;
+
+			EntryWidget = CreateWidget<UG1InventoryEntryWidget>(GetOwningPlayer(), EntryWidgetClass);
+			EntryWidgets[SlotIndex] = EntryWidget;
+
+			UCanvasPanelSlot* CanvasPanelSlot = CanvasPanel_Entries->AddChildToCanvas(EntryWidget);
+			CanvasPanelSlot->SetAutoSize(true);
+			CanvasPanelSlot->SetPosition(FVector2D(ItemSlotPos.X * CellSizeX, ItemSlotPos.Y * CellSizeY));
+
+			EntryWidget->Init(this, InventoryItems[i], 1);
+			UE_LOG(LogTemp, Log, TEXT("Test Delegate_OnCreateInventoryItem x : %d y : %d"), ItemSlotPos.X, ItemSlotPos.Y);
+			break;
 		}
 	}
 }
@@ -190,19 +207,35 @@ void UG1InventorySlotsWidget::Delegate_OnRemoveInventoryItem(AG1Player* Player, 
 	if (G1Player != Player)
 		return;
 
-	for (int i = 0; i < EntryWidgets.Num(); i++)
-	{
-		if (EntryWidgets[i] == nullptr)
-			continue;
+	int32 SlotIndex = (ItemSlotPos.Y * InventorySize.X) + ItemSlotPos.X;
+	UG1InventoryEntryWidget* EntryWidget = EntryWidgets[SlotIndex];
 
-		if (EntryWidgets[i]->GetSlotPos() == ItemSlotPos)
-		{
-			EntryWidgets[i] = nullptr;
-			break;
-		}
+	if (EntryWidget != nullptr)
+	{
+		CanvasPanel_Entries->RemoveChild(EntryWidget);
+		EntryWidgets[SlotIndex] = nullptr;
+		UE_LOG(LogTemp, Log, TEXT("Test Delegate_OnRemoveInventoryItem x : %d y : %d"), ItemSlotPos.X, ItemSlotPos.Y);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Delegate_OnRemoveInventoryItem Error, not item"));
 	}
 }
 
 void UG1InventorySlotsWidget::Delegate_OnInventoryItemCount(AG1Player* Player, FIntPoint ItemSlotPos, int32 ItemCount)
 {
+	if (G1Player != Player)
+		return;
+
+	int32 SlotIndex = (ItemSlotPos.Y * InventorySize.X) + ItemSlotPos.X;
+	UG1InventoryEntryWidget* EntryWidget = EntryWidgets[SlotIndex];
+
+	if (EntryWidget != nullptr)
+	{
+		EntryWidgets[SlotIndex]->UpdateItemCount(ItemCount);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Delegate_OnInventoryItemCount Error, not item"));
+	}
 }

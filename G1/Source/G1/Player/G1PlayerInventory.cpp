@@ -171,6 +171,57 @@ void UG1InventoryComponent::RemoveItem(const int32 X, const int32 Y, const int32
 	}
 }
 
+void UG1InventoryComponent::MoveItem(const FIntPoint& PrePos, const FIntPoint& MovePos)
+{
+	int32 PreIndex = GetIndex(PrePos.X, PrePos.Y);
+	int32 MoveIndex = GetIndex(MovePos.X, MovePos.Y);
+
+	if (InventoryItems[PreIndex] == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UG1InventoryComponent::MoveItem: No item at PrePos (%d, %d)"), PrePos.X, PrePos.Y);
+		return;
+	}
+
+	UG1Item2DInstance* FromItem = InventoryItems[PreIndex];
+	UG1Item2DInstance* ToItem = InventoryItems[MoveIndex];
+
+	// 1. 이동 위치가 비어있는 경우
+	if (ToItem == nullptr)
+	{
+		InventoryItems[MoveIndex] = FromItem;
+		InventoryItems[PreIndex] = nullptr;
+
+		FromItem->InventorySlotPos = MovePos;
+
+		OnRemoveInventoryItem.Broadcast(G1Player, PrePos);
+		OnCreateInventoryItem.Broadcast(G1Player, MovePos);
+	}
+	// 2. 같은 아이템 + 스택 가능
+	else if (FromItem->ItemID.IsEqual(ToItem->ItemID) && FromItem->bIsStackable)
+	{
+		ToItem->Count += FromItem->Count;
+
+		InventoryItems[PreIndex] = nullptr;
+
+		OnRemoveInventoryItem.Broadcast(G1Player, PrePos);
+		OnInventoryItemCount.Broadcast(G1Player, MovePos, ToItem->Count);
+	}
+	// 3. 다른 아이템 → Swap
+	else
+	{
+		InventoryItems[PreIndex] = ToItem;
+		InventoryItems[MoveIndex] = FromItem;
+
+		// 위치 갱신
+		ToItem->InventorySlotPos = PrePos;
+		FromItem->InventorySlotPos = MovePos;
+
+		// UI 갱신
+		OnCreateInventoryItem.Broadcast(G1Player, PrePos);
+		OnCreateInventoryItem.Broadcast(G1Player, MovePos);
+	}
+}
+
 int32 UG1InventoryComponent::GetIndex(const int32 X, const int32 Y)
 {
 	return (Y * InventorySize.X) + X;

@@ -195,6 +195,13 @@ int AG1Player::OnItemPickUp()
 
 void AG1Player::OnItemMove(FIntPoint prePos, FIntPoint movePos)
 {
+	if (Inventory == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("OnItemMove Error, Inventory is null"));
+		return;
+	}
+
+	Inventory->MoveItem(prePos, movePos);
 }
 
 const TObjectPtr<class UG1InventoryComponent>& AG1Player::GetInventoryComponent() const
