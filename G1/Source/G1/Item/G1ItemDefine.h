@@ -30,6 +30,14 @@ enum class EEquipmentType : uint8
 	Weapon,
 };
 
+UENUM(BlueprintType)
+enum class EItemSlotType : uint8
+{
+	None,
+	Inventory,
+	Equip,
+};
+
 namespace InventoryItem
 {
 	const FIntPoint UnitInventorySlotSize = FIntPoint(50.f, 50.f);

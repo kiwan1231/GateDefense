@@ -9,6 +9,8 @@
 #include "AbilitySystemInterface.h"
 #include "Interface/G1HighlightInterface.h"
 
+#include "Item/G1ItemDefine.h"
+
 //#include "Delegates/Delegate.h"
 //#include "Delegates/DelegateCombinations.h"
 

@@ -31,6 +31,10 @@ protected:
 	TWeakObjectPtr<class AG1Character> ownerCharacter;
 
 public:
+	UPROPERTY(BlueprintReadOnly)
+	FName ItemID;
+
+public:
 	void SetOwner(class AG1Character* owner);
 	void SetWeaponCollisionEnabled(bool Enabled);
 

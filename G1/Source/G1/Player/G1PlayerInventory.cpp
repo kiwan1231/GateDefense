@@ -8,6 +8,7 @@
 
 #include "Subsystems/SubsystemBlueprintLibrary.h"
 #include "Item/G1InventorySubsystem.h"
+#include "Item/G1ItemDefine.h"
 
 #include "Character/G1Player.h"
 #include "Player/G1PlayerController.h"
@@ -50,7 +51,7 @@ void UG1InventoryComponent::InitPlayerInventory(AG1Player* _G1Player, AG1PlayerC
 		}
 
 		InventoryItems[i] = NewObject<UG1Item2DInstance>(this);
-		InventoryItems[i]->Init(i % InventorySize.X, i / InventorySize.X, ItemDatas[i].ItemID, ItemDatas[i].Count, ItemData);
+		InventoryItems[i]->Init(EItemSlotType::Inventory, i % InventorySize.X, i / InventorySize.X, ItemDatas[i].ItemID, ItemDatas[i].Count, ItemData);
 	}
 }
 
@@ -105,7 +106,7 @@ void UG1InventoryComponent::AddItem(const int32 X, const int32 Y, const FName It
 	if (InventoryItems[Index] == nullptr)
 	{
 		InventoryItems[Index] = NewObject<UG1Item2DInstance>(this);
-		InventoryItems[Index]->Init(X, Y, ItemID, Count, ItemData);
+		InventoryItems[Index]->Init(EItemSlotType::Inventory, X, Y, ItemID, Count, ItemData);
 		OnCreateInventoryItem.Broadcast(G1Player, InventoryItems[Index]->InventorySlotPos);
 	}
 	else if (InventoryItems[Index]->ItemID.IsEqual(ItemID) && InventoryItems[Index]->bIsStackable)

@@ -21,9 +21,11 @@ public:
 	UG1Item2DInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
-	void Init(int32 x, int32 y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData);
+	void Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData);
 
 public:
+	UPROPERTY()
+	EItemSlotType ItemSlotType = EItemSlotType::None;
 	UPROPERTY()
 	FIntPoint InventorySlotPos;
 	UPROPERTY()

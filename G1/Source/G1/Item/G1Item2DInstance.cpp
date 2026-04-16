@@ -10,9 +10,9 @@ UG1Item2DInstance::UG1Item2DInstance(const FObjectInitializer& ObjectInitializer
 
 }
 
-void UG1Item2DInstance::Init(int32 x, int32 y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData)
+void UG1Item2DInstance::Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData)
 {
-	InventorySlotPos = FIntPoint(x, y);
+	InventorySlotPos = FIntPoint(_X, _Y);
 
 	ItemID = _ItemID;
 	Count = _Count;

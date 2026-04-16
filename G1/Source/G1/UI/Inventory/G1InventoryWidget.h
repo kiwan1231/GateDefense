@@ -21,6 +21,9 @@ protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<class UG1InventorySlotsWidget> SlotsWidget;
 
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UG1EquipSlotWidget> WeaponSlotWidget;
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<class AG1Player> G1Player;
