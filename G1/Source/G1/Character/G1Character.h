@@ -54,7 +54,7 @@ protected: /// ReadOnly
 	TArray<FName> EquipmentList;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Equip)
-	TMap<FName, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
+	TMap<EEquipmentType, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
 
 	UPROPERTY()
 	TArray<struct FG1CharacterConditionData> ConditionDataList;

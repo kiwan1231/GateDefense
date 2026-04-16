@@ -4,13 +4,13 @@
 #include "Item/G1EquipmentItem.h"
 #include "Character/G1Character.h"
 #include "Components/BoxComponent.h"
+#include "Data/G1ItemData.h"
 
 // Sets default values
 AG1EquipmentItem::AG1EquipmentItem()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +37,11 @@ void AG1EquipmentItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AG1EquipmentItem::InitEquipment(FName _ItemID)
+{
+	ItemID = _ItemID;
 }
 
 void AG1EquipmentItem::SetOwner(AG1Character* owner)

@@ -94,9 +94,15 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 	else if (EventTag == G1GameplayTags::Event_Montage_Attack_Start
 				|| EventTag == G1GameplayTags::Event_Montage_Attack_End)
 	{
-		for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
+		for (const TPair<EEquipmentType, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 		{
+			EEquipmentType Type = Pair.Key;
 			TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
+
+			if (Type != EEquipmentType::Weapon)
+			{
+				continue;
+			}
 
 			if (IsValid(Item.Get()))
 			{
@@ -213,7 +219,7 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 	SetLifeSpan(5.0f);
 
 	/// 장착한 아이템도 삭제
-	for (const TPair<FName, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
+	for (const TPair<EEquipmentType, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 	{
 		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
 
@@ -248,7 +254,9 @@ void AG1Character::InitEquipment()
 				{
 					EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
 					EquipItem->SetOwner(this);
-					EquipObjectList.Add(ID, EquipItem);
+					EquipItem->InitEquipment(ID);
+
+					EquipObjectList.Add(EEquipmentType::Weapon, EquipItem);
 				}
 			}
 
