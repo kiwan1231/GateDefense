@@ -30,7 +30,7 @@ void UG1InventoryComponent::InitPlayerInventory(AG1Player* _G1Player, AG1PlayerC
 	G1Player = _G1Player;
 	PlayerController = _PlayerController;
 
-	ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	UG1InventorySubsystem* Inventory = Cast<UG1InventorySubsystem>(USubsystemBlueprintLibrary::GetWorldSubsystem(this, UG1InventorySubsystem::StaticClass()));
 	if (Inventory == nullptr)
@@ -55,13 +55,13 @@ void UG1InventoryComponent::InitPlayerInventory(AG1Player* _G1Player, AG1PlayerC
 	}
 }
 
-bool UG1InventoryComponent::PickUpItem(const FName ItemID, const int32 Count)
+bool UG1InventoryComponent::InventoryAddItem(const FName ItemID, const int32 Count)
 {
 	/// 중첩이 아닌경우 추가될 위치 저장
 	int X = 0; int Y = 0;
 	bool bFoundStackable = false;
 
-	for (int i = 0; i < InventoryItems.Num(); i ++)
+	for (int i = 0; i < InventoryItems.Num(); i++)
 	{
 		if (InventoryItems[i] == nullptr)
 		{
@@ -84,17 +84,20 @@ bool UG1InventoryComponent::PickUpItem(const FName ItemID, const int32 Count)
 
 	if (bFoundStackable)
 	{
-		AddItem(X, Y, ItemID, Count);
+		SlotAddItem(X, Y, ItemID, Count);
 		return true;
 	}
 	else
 	{
 		return false;
 	}
+	return false;
 }
 
-void UG1InventoryComponent::AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count)
+void UG1InventoryComponent::SlotAddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count)
 {
+	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+
 	if (ItemData == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UG1InventoryComponent::AddItem: ItemData is null"));
@@ -122,6 +125,8 @@ void UG1InventoryComponent::AddItem(const int32 X, const int32 Y, const FName It
 
 void UG1InventoryComponent::RemoveItem(const FName ItemID, const int32 Count)
 {
+	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+
 	if (ItemData == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UG1InventoryComponent::RemoveItem: ItemData is null"));
@@ -151,6 +156,8 @@ void UG1InventoryComponent::RemoveItem(const FName ItemID, const int32 Count)
 
 void UG1InventoryComponent::RemoveItem(const int32 X, const int32 Y, const int32 Count)
 {
+	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+
 	if (ItemData == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UG1InventoryComponent::RemoveItem: ItemData is null"));

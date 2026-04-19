@@ -92,8 +92,5 @@ public:
 	float ElapsedTime = 0.f;
 
 	UPROPERTY()
-	class UG1GameModeData* GameModeData = nullptr;
-
-	UPROPERTY()
 	TArray<FG1EventInstance> EventInstanceList;
 };

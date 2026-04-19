@@ -26,7 +26,7 @@ public:
 	static void Initialize();
 
 	template<typename AssetType>
-	static AssetType* GetAssetByName(const FName& AssetName);
+	static const AssetType* GetAssetByName(const FName& AssetName);
 
 	/// 동기
 	static void LoadSyncByPath(const FSoftObjectPath& AssetPath);
@@ -57,8 +57,15 @@ private:
 };
 
 template<typename AssetType>
-AssetType* UG1AssetManager::GetAssetByName(const FName& AssetName)
+const AssetType* UG1AssetManager::GetAssetByName(const FName& AssetName)
 {
+	// 캐시 먼저 확인
+	auto CachedAsset = Get().NameToLoadedAsset.Find(AssetName);
+	if (CachedAsset != nullptr)
+	{
+		return Cast<AssetType>(*CachedAsset);
+	}
+
 	UG1PrimaryDataAsset* AssetData = Get().LoadedAssetData;
 	check(AssetData);
 

@@ -62,6 +62,8 @@ private:
 
 public:
 	void InitInventorySlots(class AG1Player* Player);
+	bool IsDrag();
+	void OnEquiptSlotItem(TObjectPtr<UG1InventoryEntryWidget> SlotEntry);
 
 public:
 	void Delegate_OnCreateInventoryItem(class AG1Player* Player, FIntPoint ItemSlotPos);

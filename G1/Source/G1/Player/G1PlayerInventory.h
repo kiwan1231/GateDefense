@@ -38,13 +38,12 @@ protected:
 private:
 	AG1Player* G1Player;
 	class AG1PlayerController* PlayerController;
-	class UG1ItemData* ItemData;
-	
+
 public:
 	void InitPlayerInventory(AG1Player* _G1Player, class AG1PlayerController* _PlayerController);
 
-	bool PickUpItem(const FName ItemID, const int32 Count);
-	void AddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
+	bool InventoryAddItem(const FName ItemID, const int32 Count);
+	void SlotAddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count);
 	void RemoveItem(const FName ItemID, const int32 Count);
 	void RemoveItem(const int32 X, const int32 Y, const int32 Count);
 	void MoveItem(const FIntPoint& PrePos, const FIntPoint& MovePos);

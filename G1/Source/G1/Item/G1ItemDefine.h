@@ -28,6 +28,7 @@ enum class EEquipmentType : uint8
 {
 	None,
 	Weapon,
+	Shield
 };
 
 UENUM(BlueprintType)

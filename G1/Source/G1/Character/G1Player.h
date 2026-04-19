@@ -10,6 +10,7 @@
 
 struct FInputActionValue;
 struct FG1InventoryItemData;
+class UG1Item2DInstance;
 
 /**
  * 
@@ -65,6 +66,10 @@ public:
 
 	virtual int OnItemPickUp();
 	virtual void OnItemMove(FIntPoint prePos, FIntPoint movePos);
+
+public:
+	void EquipItemFromInventory(FIntPoint ItemSlotPos);
+	void UnequipItemToInventory(EEquipmentType EquipType);
 
 public:
 	const TObjectPtr<class UG1InventoryComponent>& GetInventoryComponent() const;

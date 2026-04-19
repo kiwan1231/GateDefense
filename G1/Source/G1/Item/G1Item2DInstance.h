@@ -21,7 +21,7 @@ public:
 	UG1Item2DInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
-	void Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData);
+	void Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, const UG1ItemData* _ItemData);
 
 public:
 	UPROPERTY()
@@ -32,6 +32,8 @@ public:
 	FName ItemID = NAME_None;
 	UPROPERTY()
 	EItemType ItemType = EItemType::None;
+	UPROPERTY()
+	EEquipmentType EquipType = EEquipmentType::None;
 	UPROPERTY()
 	EItemRarity ItemRarity = EItemRarity::Common;
 	UPROPERTY()

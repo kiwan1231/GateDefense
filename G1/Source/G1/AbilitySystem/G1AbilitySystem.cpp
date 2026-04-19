@@ -24,10 +24,7 @@ void UG1AbilitySystem::AddCharacterAbilities(const TArray<TSubclassOf<class UGam
 
 void UG1AbilitySystem::AddEquipmentGameplayEffect(const FName EquipID)
 {
-	if (ItemData == nullptr)
-	{
-		ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
-	}
+	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	const FG1ItemInfo* ItemInfo = ItemData->FindItemInfo(EquipID);
 	if (ItemInfo != nullptr && ItemInfo->ItemEffect != nullptr)

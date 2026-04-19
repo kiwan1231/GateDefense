@@ -101,7 +101,7 @@ void AG1GameMode::ChangeState(EGameModeState State)
 
 void AG1GameMode::InitEventInstance()
 {
-	GameModeData = UG1AssetManager::GetAssetByName<UG1GameModeData>("GameModeData_Common");
+	auto GameModeData = UG1AssetManager::GetAssetByName<UG1GameModeData>("GameModeData_Common");
 
 	EventInstanceList.Empty();
 

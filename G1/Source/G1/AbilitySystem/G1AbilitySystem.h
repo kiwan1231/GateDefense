@@ -31,5 +31,5 @@ public:
 	TMap<FName, FActiveGameplayEffectHandle> EquipHandles;
 
 private:
-	UG1ItemData* ItemData = nullptr;
+
 };

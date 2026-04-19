@@ -24,6 +24,9 @@ public:
 	EItemRarity ItemRarity = EItemRarity::Common;
 
 	UPROPERTY(EditDefaultsOnly)
+	EEquipmentType EquipType = EEquipmentType::None;
+
+	UPROPERTY(EditDefaultsOnly)
 	FText ItemName;
 
 	UPROPERTY(EditDefaultsOnly)

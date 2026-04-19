@@ -10,7 +10,7 @@ UG1Item2DInstance::UG1Item2DInstance(const FObjectInitializer& ObjectInitializer
 
 }
 
-void UG1Item2DInstance::Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, UG1ItemData* _ItemData)
+void UG1Item2DInstance::Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, const UG1ItemData* _ItemData)
 {
 	InventorySlotPos = FIntPoint(_X, _Y);
 
@@ -18,8 +18,19 @@ void UG1Item2DInstance::Init(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FN
 	Count = _Count;
 
 	auto ItemInfo = _ItemData->FindItemInfo(_ItemID);
-	if (ItemInfo)
+	if (ItemInfo == nullptr)
 	{
+		ItemSlotType = EItemSlotType::None;
+		EquipType = EEquipmentType::None;
+		ItemType = EItemType::None;
+		ItemRarity = EItemRarity::Common;
+		bIsStackable = false;
+		IconImage = nullptr;
+	}
+	else
+	{
+		ItemSlotType = EItemSlotType::None;
+		EquipType = ItemInfo->EquipType;
 		ItemType = ItemInfo->ItemType;
 		ItemRarity = ItemInfo->ItemRarity;
 		bIsStackable = ItemInfo->Stackable;

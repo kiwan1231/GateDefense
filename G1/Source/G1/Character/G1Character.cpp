@@ -232,52 +232,74 @@ void AG1Character::OnDead(TObjectPtr<AG1Character> Attacker)
 
 void AG1Character::InitEquipment()
 {
-	if (const UG1ItemData* ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon"))
+	auto WeaponItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+	if (WeaponItemData == nullptr)
 	{
-		for (const FName ID : EquipmentList)
-		{
-			const FG1ItemInfo* ItemInfo = ItemData->FindItemInfo(ID);
-			if (ItemInfo == nullptr)
-				continue;
+		UE_LOG(LogTemp, Log, TEXT("InitEquipment Error, Item_Weapon Asset Load Fail"));
+		return;
+	}
 
-			if (ItemInfo->EquipmentStaticMesh != nullptr)
-			{
-				UWorld* World = GetWorld();
-				if (!IsValid(World))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: World is null"), *GetName());
-					continue;
-				}
+	for (const TPair<EEquipmentType, FName>& Pair : EquipmentMap)
+	{
+		EEquipmentType Type = Pair.Key;
+		FName ItemID = Pair.Value;
 
-				AG1EquipmentItem* EquipItem = World->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
-				if (IsValid(EquipItem) && IsValid(GetMesh()))
-				{
-					EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
-					EquipItem->SetOwner(this);
-					EquipItem->InitEquipment(ID);
-
-					EquipObjectList.Add(EEquipmentType::Weapon, EquipItem);
-				}
-			}
-
-			if (IsValid(AbilitySystem))
-			{
-				AbilitySystem->AddEquipmentGameplayEffect(ID);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: AbilitySystem is null, can't add effect for %s"), *GetName(), *ID.ToString());
-			}
-		}
+		AddEquipment(ItemID);
 	}
 }
 
-void AG1Character::AddEquipment(const FName EquipID)
+bool AG1Character::AddEquipment(const FName EquipID)
 {
+	auto WeaponItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
+
+	const FG1ItemInfo* ItemInfo = WeaponItemData->FindItemInfo(EquipID);
+	if (ItemInfo == nullptr)
+	{
+		return false;
+	}
+
+	if (ItemInfo->EquipmentStaticMesh != nullptr)
+	{
+		UWorld* World = GetWorld();
+		if (!IsValid(World))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: World is null"), *GetName());
+			return false;
+		}
+
+		AG1EquipmentItem* EquipItem = World->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
+		if (IsValid(EquipItem) && IsValid(GetMesh()))
+		{
+			EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+			EquipItem->SetOwner(this);
+			EquipItem->InitEquipment(EquipID);
+
+			EquipObjectList.Add(ItemInfo->EquipType, EquipItem);
+
+			OnAddEquipment.Broadcast(this, EquipID);
+		}
+	}
+
+	if (IsValid(AbilitySystem))
+	{
+		AbilitySystem->AddEquipmentGameplayEffect(EquipID);
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: AbilitySystem is null, can't add effect for %s"), *GetName(), *EquipID.ToString());
+		return false;
+	}
 }
 
-void AG1Character::RemoveEquipment(const FName EquipID)
+void AG1Character::RemoveEquipment(const EEquipmentType EquipType)
 {
+	auto EquipItem = EquipObjectList[EquipType];
+
+	EquipItem->Destroy();
+	EquipObjectList[EquipType] = nullptr;
+
+	OnRemoveEquipment.Broadcast(this, EquipType);
 }
 
 void AG1Character::UpdateConditionData(float DeltaTime)

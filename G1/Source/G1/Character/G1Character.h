@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "G1CharacterDefine.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
@@ -17,6 +18,9 @@
 #include "G1Character.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterDead, AG1Character*);
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAddEquipment, AG1Character*, FName);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRemoveEquipment, AG1Character*, EEquipmentType);
 
 UCLASS()
 class G1_API AG1Character : public ACharacter, public IAbilitySystemInterface, public IG1HighlightInterface
@@ -51,7 +55,7 @@ protected: /// ReadOnly
 	bool bHighlighted = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
-	TArray<FName> EquipmentList;
+	TMap<EEquipmentType, FName> EquipmentMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Equip)
 	TMap<EEquipmentType, TObjectPtr<class AG1EquipmentItem>> EquipObjectList;
@@ -62,6 +66,9 @@ protected: /// ReadOnly
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class UG1AnimInstance> AnimInstance;
+
+private:
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -83,8 +90,8 @@ public:/// ability
 
 public: // equipment
 	void InitEquipment();
-	virtual void AddEquipment(const FName EquipID);
-	virtual void RemoveEquipment(const FName EquipID);
+	virtual bool AddEquipment(const FName EquipID);
+	virtual void RemoveEquipment(const EEquipmentType EquipType);
 
 public: // ConditionData
 	virtual void UpdateConditionData(float DeltaTime);
@@ -96,8 +103,7 @@ public: // interface
 	virtual void Highlight();
 	virtual void UnHighlight();
 
-public: /// public ±â´É ÇÔ¼ö
-
+public: 
 	// ¾îºô¸®Æ¼ ½Àµæ
 	void AddCharacterAbilities();
 	// ¾îºô¸®Æ¼ ½ÇÇà
@@ -126,5 +132,8 @@ private:
 	void CreateDropItem(TObjectPtr<AG1Character> DropItemOwner);
 
 public:
+	/// Delegate
 	FOnCharacterDead OnCharacterDead;
+	FOnAddEquipment OnAddEquipment;
+	FOnRemoveEquipment OnRemoveEquipment;
 };

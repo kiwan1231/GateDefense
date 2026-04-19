@@ -71,4 +71,5 @@ protected:
 
 public:
 	FIntPoint GetSlotPos();
+	TObjectPtr<UG1Item2DInstance> GetItemInstance() const { return ItemInstance; }
 };

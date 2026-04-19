@@ -20,6 +20,8 @@
 UG1InventorySlotsWidget::UG1InventorySlotsWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	PrevDragOverSlotPos = FIntPoint(-1, -1);
+
 	/*ConstructorHelpers::FClassFinder<UG1InventorySlotWidget> FindSlotWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/Item/Inventory/WBP_InventorySlot.WBP_InventorySlot_C'"));
 
 	if (FindSlotWidgetClass.Succeeded())
@@ -167,6 +169,19 @@ void UG1InventorySlotsWidget::InitInventorySlots(AG1Player* Player)
 			OnInventoryEntryChanged(InventoryItems[i]->InventorySlotPos, InventoryItems[i]);
 		}
 	}
+}
+
+bool UG1InventorySlotsWidget::IsDrag()
+{
+	return (PrevDragOverSlotPos.X == -1 && PrevDragOverSlotPos.Y == -1) == false;
+}
+
+void UG1InventorySlotsWidget::OnEquiptSlotItem(TObjectPtr<UG1InventoryEntryWidget> SlotEntry)
+{
+	if (G1Player == nullptr)
+		return;
+
+	G1Player->EquipItemFromInventory(SlotEntry->GetItemInstance()->InventorySlotPos);
 }
 
 void UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem(AG1Player* Player, FIntPoint ItemSlotPos)

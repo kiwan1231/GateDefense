@@ -24,6 +24,9 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Item/G1DropItem.h"
+#include "Item/G1Item2DInstance.h"
+#include "Item/G1EquipmentItem.h"
+
 #include "Utility/FMathExtension.h"
 
 // Sets default values
@@ -180,7 +183,7 @@ int AG1Player::OnItemPickUp()
 		return 1;
 	}
 
-	if (Inventory->PickUpItem(NearestDropItem->GetItemID(), 1))
+	if (Inventory->InventoryAddItem(NearestDropItem->GetItemID(), 1))
 	{
 		NearestDropItem->Destroy();
 		NearestDropItem = nullptr;
@@ -202,6 +205,45 @@ void AG1Player::OnItemMove(FIntPoint prePos, FIntPoint movePos)
 	}
 
 	Inventory->MoveItem(prePos, movePos);
+}
+
+void AG1Player::EquipItemFromInventory(FIntPoint ItemSlotPos)
+{
+	TObjectPtr<UG1Item2DInstance> InvenItem = Inventory->GetItem(ItemSlotPos.X, ItemSlotPos.Y);
+
+	if (InvenItem == nullptr || InvenItem->ItemType != EItemType::Equipment)
+	{
+		return;
+	}
+
+	/// 기존 장비 인벤토리로 이동
+	UnequipItemToInventory(InvenItem->EquipType);
+
+	/// 장비 장착
+	if (AddEquipment(InvenItem->ItemID))
+	{
+		Inventory->RemoveItem(ItemSlotPos.X, ItemSlotPos.Y, 1);
+		return;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AG1Player::EquipItemFromInventory: Failed to add equipment %s"), *InvenItem->ItemID.ToString());
+		return;
+	}
+}
+
+void AG1Player::UnequipItemToInventory(EEquipmentType EquipType)
+{
+	if (EquipObjectList[EquipType] == nullptr)
+	{
+		return;
+	}
+
+	TObjectPtr<class AG1EquipmentItem> Item = EquipObjectList[EquipType];
+	Inventory->InventoryAddItem(Item->ItemID, 1);
+
+	Item->Destroy();
+	EquipObjectList[EquipType] = nullptr;
 }
 
 const TObjectPtr<class UG1InventoryComponent>& AG1Player::GetInventoryComponent() const

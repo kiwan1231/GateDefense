@@ -58,22 +58,20 @@ FReply UG1InventoryEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 {
 	FReply Replay = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton && SlotsWidget->IsDrag() == false)
+	{
+		SlotsWidget->OnEquiptSlotItem(this);
+
+		return Replay;
+	}
+
 	/// 드래그 체크
 	if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
 	{
 		Replay.DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
 	}
-
+	
 	const FIntPoint UnitInventorySlotSize = FIntPoint(50, 50);
-
-	/*
-	FVector2D MouseWidgetPos = SlotsWidget->GetCachedGeometry().AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
-	FVector2D ItemWidgetPos = SlotsWidget->GetCachedGeometry().AbsoluteToLocal(InGeometry.LocalToAbsolute(UnitInventorySlotSize / 2.f));
-	FIntPoint ItemSlotPos = FIntPoint(ItemWidgetPos.X / UnitInventorySlotSize.X, ItemWidgetPos.Y / UnitInventorySlotSize.Y);
-
-	CachedFromSlotPos = ItemSlotPos;
-	CachedDeltaWidgetPos = MouseWidgetPos - ItemWidgetPos;
-	*/
 
 	CachedFromSlotPos = ItemInstance->InventorySlotPos;
 
