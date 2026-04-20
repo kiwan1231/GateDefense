@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/G1GameplayAbility_Attack.h"
 #include "Character/G1Player.h"
 
+#include "Animation/G1AnimInstance.h"
+
 UG1GameplayAbility_Attack::UG1GameplayAbility_Attack(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -26,7 +28,41 @@ void UG1GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 	if (AttackMontage)
 	{
 		AG1Player* Player = Cast<AG1Player>(ActorInfo->AvatarActor);
-		Player->PlayAnimMontage(AttackMontage);
+
+		UG1AnimInstance* AnimInstance = nullptr;
+
+		if (USkeletalMeshComponent* MeshComp = Player->GetMesh())
+		{
+			if (UAnimInstance* RawAnim = MeshComp->GetAnimInstance())
+			{
+				AnimInstance = Cast<UG1AnimInstance>(RawAnim);
+			}
+		}
+
+		if (AnimInstance != nullptr)
+		{
+			if (AnimInstance->Montage_IsPlaying(AttackMontage))
+			{
+				if(AnimInstance->Montage_GetCurrentSection(AttackMontage) == "First")
+				{
+					AnimInstance->Montage_JumpToSection("Second", AttackMontage);
+				}
+				else if (AnimInstance->Montage_GetCurrentSection(AttackMontage) == "Second")
+				{
+					AnimInstance->Montage_JumpToSection("Thrid", AttackMontage);
+				}
+				else
+				{
+
+				}
+			}
+			else
+			{
+				Player->PlayAnimMontage(AttackMontage, 1.0f, "First");
+			}
+		}
+
+		//Player->PlayAnimMontage(AttackMontage);
 	}
 }
 
