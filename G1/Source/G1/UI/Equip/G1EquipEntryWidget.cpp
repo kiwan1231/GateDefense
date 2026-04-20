@@ -20,14 +20,7 @@ void UG1EquipEntryWidget::Init(UG1Item2DInstance* _InItemInstance, EEquipmentTyp
 {
 	ItemInstance = _InItemInstance;
 
-	UTexture2D* Texture = nullptr;
-
-	if (_InItemInstance->IconImage.IsNull() == false)
-	{
-		Texture = _InItemInstance->IconImage.LoadSynchronous();
-	}
-
-	Image_Icon->SetBrushFromTexture(Texture);
+	UpdateIconByItemInstance();
 }
 
 void UG1EquipEntryWidget::SetItemInstance(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, const UG1ItemData* _ItemData)
@@ -36,19 +29,13 @@ void UG1EquipEntryWidget::SetItemInstance(EItemSlotType _ItemSlotType, int32 _X,
 	{
 		ItemInstance->Init(_ItemSlotType, _X, _Y, _ItemID, _Count, _ItemData);
 
-		UTexture2D* Texture = nullptr;
-
-		if (ItemInstance->IconImage.IsNull() == false)
-		{
-			Texture = ItemInstance->IconImage.LoadSynchronous();
-		}
-
-		Image_Icon->SetBrushFromTexture(Texture);
+		UpdateIconByItemInstance();
 	}
 }
 
 void UG1EquipEntryWidget::NativeConstruct()
 {
+	UpdateIconByItemInstance();
 }
 
 FReply UG1EquipEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -56,4 +43,23 @@ FReply UG1EquipEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry,
 	FReply Replay = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
 	return Replay;
+}
+
+void UG1EquipEntryWidget::RefreshWidgetOpacity(bool bClearlyVisible)
+{
+	SetRenderOpacity(bClearlyVisible ? 1.f : 0.5f);
+}
+
+void UG1EquipEntryWidget::UpdateIconByItemInstance()
+{
+	if (ItemInstance != nullptr && ItemInstance->IconImage .IsNull() == false)
+	{
+		UTexture2D* Texture = ItemInstance->IconImage.LoadSynchronous();
+		Image_Icon->SetBrushFromTexture(Texture);
+		RefreshWidgetOpacity(true);
+	}
+	else
+	{
+		RefreshWidgetOpacity(false);
+	}
 }

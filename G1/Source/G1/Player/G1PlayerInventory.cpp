@@ -91,7 +91,6 @@ bool UG1InventoryComponent::InventoryAddItem(const FName ItemID, const int32 Cou
 	{
 		return false;
 	}
-	return false;
 }
 
 void UG1InventoryComponent::SlotAddItem(const int32 X, const int32 Y, const FName ItemID, const int32 Count)
