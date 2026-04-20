@@ -121,6 +121,14 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 	}*/
 }
 
+void AG1Character::HandleEventAnimNotifyStateBegin(UAnimMontage* Montage, FGameplayTag EventTag)
+{
+}
+
+void AG1Character::HandleEventAnimNotifyStateEnd(UAnimMontage* Montage, FGameplayTag EventTag)
+{
+}
+
 // Called to bind functionality to input
 void AG1Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

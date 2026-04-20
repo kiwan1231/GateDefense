@@ -28,6 +28,12 @@ namespace G1GameplayTags
 
 namespace G1GameplayTags
 {
+	UE_DEFINE_GAMEPLAY_TAG(Event_AnimNotiState_Montage, "Event.AnimNotiState.Montage");
+	UE_DEFINE_GAMEPLAY_TAG(Event_AnimNotiState_Attack, "Event.AnimNotiState.Attack");
+}
+
+namespace G1GameplayTags
+{
 	UE_DEFINE_GAMEPLAY_TAG(Ability_Attack, "Ability.Attack");
 }
 

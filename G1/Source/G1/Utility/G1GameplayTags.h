@@ -29,6 +29,12 @@ namespace G1GameplayTags
 
 namespace G1GameplayTags
 {
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_AnimNotiState_Montage);
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_AnimNotiState_Attack);
+}
+
+namespace G1GameplayTags
+{
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Attack);
 }
 

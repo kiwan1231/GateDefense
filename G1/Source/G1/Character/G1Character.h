@@ -78,6 +78,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void HandleGameplayEvent(class UAnimMontage* Montage, FGameplayTag EventTag, ECharacterAnimNotiType EventType);
+	virtual void HandleEventAnimNotifyStateBegin(class UAnimMontage* Montage, FGameplayTag EventTag);
+	virtual void HandleEventAnimNotifyStateEnd(class UAnimMontage* Montage, FGameplayTag EventTag);
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
