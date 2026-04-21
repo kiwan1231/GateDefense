@@ -34,6 +34,13 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FName ItemID;
 
+	UPROPERTY()
+	TSet<AActor*> HitActors;
+
+	FVector PrevLocation;
+	FQuat   PrevRotation;
+	bool bIsAttacking;
+
 public:
 	void InitEquipment(FName _ItemID);
 	void SetOwner(class AG1Character* owner);
@@ -42,4 +49,6 @@ public:
 private:
 	UFUNCTION()
 	void OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void PerformAttackTrace();
 };

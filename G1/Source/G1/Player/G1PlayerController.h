@@ -67,6 +67,7 @@ private:/// tick function
 private:
 	ECharacterState GetCharacterState();
 	void SetCharacterState(ECharacterState InState);
+	bool EnablePlayerInput();
 
 public:/// Delegate 구독 함수
 	virtual void Delegate_OnGameOver(EGameModeType GameModeType);

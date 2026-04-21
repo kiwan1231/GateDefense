@@ -37,6 +37,10 @@ void AG1EquipmentItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (bIsAttacking)
+    {
+        PerformAttackTrace();
+    }
 }
 
 void AG1EquipmentItem::InitEquipment(FName _ItemID)
@@ -51,10 +55,14 @@ void AG1EquipmentItem::SetOwner(AG1Character* owner)
 
 void AG1EquipmentItem::SetWeaponCollisionEnabled(bool Enabled)
 {
-	if (CollisionBox)
+	HitActors.Empty();
+    bIsAttacking = Enabled;
+
+	/*if (CollisionBox)
 	{
+		CollisionBox->SetGenerateOverlapEvents(true);
 		CollisionBox->SetCollisionEnabled(Enabled ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	}
+	}*/
 }
 
 void AG1EquipmentItem::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -76,4 +84,68 @@ void AG1EquipmentItem::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent,
 	{
 		demagedPlayer->OnDamaged(ownerCharacter->TotalDemage(), Cast<AG1Character>(ownerCharacter), SweepResult);
 	}
+}
+
+void AG1EquipmentItem::PerformAttackTrace()
+{
+    if (!CollisionBox) return;
+
+    FVector CurrentLocation = CollisionBox->GetComponentLocation();
+    FQuat   CurrentRotation = CollisionBox->GetComponentQuat();
+
+    // 첫 프레임 초기화
+    if (PrevLocation.IsZero())
+    {
+        PrevLocation = CurrentLocation;
+        PrevRotation = CurrentRotation;
+        return;
+    }
+
+    TArray<FHitResult> HitResults;
+
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(ownerCharacter.Get());
+
+    FVector BoxExtent = CollisionBox->GetScaledBoxExtent();
+
+    bool bHit = GetWorld()->SweepMultiByChannel(
+        HitResults,
+        PrevLocation,
+        CurrentLocation,
+        CurrentRotation,
+        ECC_Pawn,
+        FCollisionShape::MakeBox(BoxExtent),
+        Params
+    );
+
+    if (bHit)
+    {
+        for (auto& Hit : HitResults)
+        {
+            AActor* HitActor = Hit.GetActor();
+
+            if (!HitActor) continue;
+            if (HitActors.Contains(HitActor)) continue;
+
+            AG1Character* Damaged = Cast<AG1Character>(HitActor);
+            if (!Damaged) continue;
+
+            if (Damaged->State == ECharacterState::Dead) continue;
+            if (!ownerCharacter->IsEnemyTeam(HitActor)) continue;
+
+            Damaged->OnDamaged(
+                ownerCharacter->TotalDemage(),
+                Cast<AG1Character>(ownerCharacter),
+                Hit
+            );
+
+            HitActors.Add(HitActor);
+        }
+    }
+
+    // 디버그 (박스 이동 경로)
+    DrawDebugBox(GetWorld(), CurrentLocation, BoxExtent, CurrentRotation, FColor::Red, false, 0.1f);
+
+    PrevLocation = CurrentLocation;
+    PrevRotation = CurrentRotation;
 }

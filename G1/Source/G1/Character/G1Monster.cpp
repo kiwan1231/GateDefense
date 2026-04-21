@@ -53,6 +53,7 @@ void AG1Monster::OnAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 
 	}*/
+	
 	AG1Player* demagedPlayer = Cast<AG1Player>(OtherActor);
 	if (demagedPlayer == nullptr || demagedPlayer->State == ECharacterState::Dead)
 	{

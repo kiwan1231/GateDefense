@@ -122,6 +122,9 @@ void AG1PlayerController::HandleGameplayEvent(FGameplayTag EventTag)
 
 void AG1PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
+	if(EnablePlayerInput() == false)
+		return;
+
 	if (G1Player->EnableMove() == false)
 		return;
 
@@ -195,6 +198,9 @@ void AG1PlayerController::Input_Move_Complete(const FInputActionValue& InputValu
 
 void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
+	if (EnablePlayerInput() == false)
+		return;
+
 	if (G1Player->EnableJump() == false)
 		return;
 
@@ -206,6 +212,9 @@ void AG1PlayerController::Input_Jump(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 {
+	if (EnablePlayerInput() == false)
+		return;
+
 	if (G1Player->EnableMove() == false)
 		return;
 
@@ -218,7 +227,9 @@ void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("Test Montage Input_Attack"));
+	if (EnablePlayerInput() == false)
+		return;
+
 	if (G1Player->EnableAbility() == false)
 		return;
 
@@ -310,6 +321,9 @@ void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValu
 
 void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)
 {
+	if (EnablePlayerInput() == false)
+		return;
+
 	if (G1Player != nullptr)
 	{
 		if (G1Player->OnItemPickUp() == 0)
@@ -415,6 +429,24 @@ void AG1PlayerController::SetCharacterState(ECharacterState InState)
 	{
 		G1Player->State = InState;
 	}
+}
+
+bool AG1PlayerController::EnablePlayerInput()
+{
+	if (GetIngameUI())
+	{
+		if (GetIngameUI()->PlayerInventory->IsVisible())
+		{
+			return false;
+		}
+	}
+
+	if (GameOverUI && GameOverUI->IsVisible())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
