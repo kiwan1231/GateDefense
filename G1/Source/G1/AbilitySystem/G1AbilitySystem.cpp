@@ -22,6 +22,31 @@ void UG1AbilitySystem::AddCharacterAbilities(const TArray<TSubclassOf<class UGam
 	}
 }
 
+void UG1AbilitySystem::AddItemAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& ItemAbilities)
+{
+	for (auto& AbilityClass : ItemAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+
+		FGameplayAbilitySpecHandle SpecHandle = GiveAbility(AbilitySpec);
+
+		SpecHandles.Add(SpecHandle);
+	}
+}
+
+void UG1AbilitySystem::RemoveItemAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& ItemAbilities)
+{
+	for (auto& AbilityClass : ItemAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+
+		FGameplayAbilitySpecHandle SpecHandle = GiveAbility(AbilitySpec);
+
+		if (SpecHandles.Contains(SpecHandle))
+			SpecHandles.Remove(SpecHandle);
+	}
+}
+
 void UG1AbilitySystem::AddEquipmentGameplayEffect(const FName EquipID)
 {
 	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");

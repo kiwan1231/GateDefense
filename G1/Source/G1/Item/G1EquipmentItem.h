@@ -31,6 +31,10 @@ protected:
 	TWeakObjectPtr<class AG1Character> ownerCharacter;
 
 public:
+	UPROPERTY(BlueprintReadWrite, Category = Ability)
+	TArray<TSubclassOf<class UGameplayAbility>> ItemAbilities;
+
+public:
 	UPROPERTY(BlueprintReadOnly)
 	FName ItemID;
 

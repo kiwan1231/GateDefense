@@ -43,7 +43,7 @@ void AG1Character::BeginPlay()
 		}
 	}
 
-	AddCharacterAbilities();
+	//AddCharacterAbilities();
 
 	InitEquipment();
 }
@@ -268,6 +268,13 @@ void AG1Character::InitEquipment()
 
 bool AG1Character::AddEquipment(const FName EquipID)
 {
+	UG1AbilitySystem* AS = Cast<UG1AbilitySystem>(AbilitySystem);
+	if (AS == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InitEquipment: UG1AbilitySystem is null"));
+		return false;
+	}
+
 	auto WeaponItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	const FG1ItemInfo* ItemInfo = WeaponItemData->FindItemInfo(EquipID);
@@ -281,7 +288,7 @@ bool AG1Character::AddEquipment(const FName EquipID)
 		UWorld* World = GetWorld();
 		if (!IsValid(World))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: World is null"), *GetName());
+			UE_LOG(LogTemp, Warning, TEXT("InitEquipment: World is null"));
 			return false;
 		}
 
@@ -294,6 +301,8 @@ bool AG1Character::AddEquipment(const FName EquipID)
 
 			EquipObjectList.Add(ItemInfo->EquipType, EquipItem);
 
+			AS->AddItemAbilities(EquipItem->ItemAbilities);
+
 			OnAddEquipment.Broadcast(this, EquipID);
 		}
 	}
@@ -305,14 +314,26 @@ bool AG1Character::AddEquipment(const FName EquipID)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s InitEquipment: AbilitySystem is null, can't add effect for %s"), *GetName(), *EquipID.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("InitEquipment: AbilitySystem is null, can't add effect for %s"), *EquipID.ToString());
 		return false;
 	}
 }
 
 void AG1Character::RemoveEquipment(const EEquipmentType EquipType)
 {
-	auto EquipItem = EquipObjectList[EquipType];
+	TObjectPtr<AG1EquipmentItem> EquipItem = EquipObjectList[EquipType];
+	if (EquipItem == nullptr)
+	{
+		return;
+	}
+	UG1AbilitySystem* AS = Cast<UG1AbilitySystem>(AbilitySystem);
+	if (AS == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s RemoveEquipment: UG1AbilitySystem is null"), *GetName());
+		return;
+	}
+
+	AS->RemoveItemAbilities(EquipItem->ItemAbilities);
 
 	EquipItem->Destroy();
 	EquipObjectList[EquipType] = nullptr;

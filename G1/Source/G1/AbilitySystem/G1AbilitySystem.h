@@ -20,6 +20,8 @@ class G1_API UG1AbilitySystem : public UAbilitySystemComponent
 	
 public:
 	void AddCharacterAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& StartupAbilities);
+	void AddItemAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& ItemAbilities);
+	void RemoveItemAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& ItemAbilities);
 
 	void AddEquipmentGameplayEffect(const FName EquipID);
 	void RemoveEquipmentGameplayEffect(const FName EquipID);
