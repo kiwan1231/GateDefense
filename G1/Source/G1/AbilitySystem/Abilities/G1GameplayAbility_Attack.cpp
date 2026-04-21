@@ -45,11 +45,13 @@ void UG1GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 			{
 				if(AnimInstance->Montage_GetCurrentSection(AttackMontage) == "First")
 				{
-					AnimInstance->Montage_JumpToSection("Second", AttackMontage);
+					AnimInstance->Montage_SetNextSection("First", "Second", AttackMontage);
+					UE_LOG(LogTemp, Log, TEXT("Test Montage Second"));
 				}
 				else if (AnimInstance->Montage_GetCurrentSection(AttackMontage) == "Second")
 				{
-					AnimInstance->Montage_JumpToSection("Thrid", AttackMontage);
+					AnimInstance->Montage_SetNextSection("Second", "Third", AttackMontage);//Montage_JumpToSection
+					UE_LOG(LogTemp, Log, TEXT("Test Montage Third"));
 				}
 				else
 				{
@@ -59,6 +61,7 @@ void UG1GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 			else
 			{
 				Player->PlayAnimMontage(AttackMontage, 1.0f, "First");
+				UE_LOG(LogTemp, Log, TEXT("Test Montage First"));
 			}
 		}
 

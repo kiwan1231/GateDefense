@@ -110,23 +110,33 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 			}
 		}
 	}
-	
-	/*if (EventType == ECharacterAnimNotiType::OnQueryOnly)
-	{
-		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-	else if (EventType == ECharacterAnimNotiType::NoCollision)
-	{
-		RHandHitBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}*/
 }
 
 void AG1Character::HandleEventAnimNotifyStateBegin(UAnimMontage* Montage, FGameplayTag EventTag)
 {
+	if (EventTag == G1GameplayTags::Event_AnimNotiState_Montage)
+	{
+		SetSatate(ECharacterState::Ability);
+	}
+	else if (EventTag == G1GameplayTags::Event_AnimNotiState_Attack)
+	{
+		SetWeaponCollisionEnabled(true);
+	}
 }
 
 void AG1Character::HandleEventAnimNotifyStateEnd(UAnimMontage* Montage, FGameplayTag EventTag)
 {
+	if (EventTag == G1GameplayTags::Event_AnimNotiState_Montage)
+	{
+		if (State == ECharacterState::Ability)
+		{
+			SetSatate(ECharacterState::Idle);
+		}
+	}
+	else if (EventTag == G1GameplayTags::Event_AnimNotiState_Attack)
+	{
+		SetWeaponCollisionEnabled(false);
+	}
 }
 
 // Called to bind functionality to input
@@ -529,6 +539,25 @@ bool AG1Character::EnableAbility() const
 	}
 
 	return true;
+}
+
+void AG1Character::SetWeaponCollisionEnabled(bool Enabled)
+{
+	for (const TPair<EEquipmentType, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
+	{
+		EEquipmentType Type = Pair.Key;
+		TObjectPtr<AG1EquipmentItem> Item = Pair.Value;
+
+		if (Type != EEquipmentType::Weapon)
+		{
+			continue;
+		}
+
+		if (IsValid(Item.Get()))
+		{
+			Item->SetWeaponCollisionEnabled(Enabled);
+		}
+	}
 }
 
 void AG1Character::G1PlayAnimMontage(UAnimMontage* Montage)

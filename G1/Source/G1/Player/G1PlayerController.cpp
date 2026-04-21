@@ -218,6 +218,7 @@ void AG1PlayerController::Input_Turn(const FInputActionValue& InputValue)
 
 void AG1PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
+	UE_LOG(LogTemp, Log, TEXT("Test Montage Input_Attack"));
 	if (G1Player->EnableAbility() == false)
 		return;
 

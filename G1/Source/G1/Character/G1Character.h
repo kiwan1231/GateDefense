@@ -129,6 +129,9 @@ public:
 	virtual bool EnableAttack() const;
 	virtual bool EnableAbility() const;
 
+protected:
+	void SetWeaponCollisionEnabled(bool Enabled);
+
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);
 	void CreateDropItem(TObjectPtr<AG1Character> DropItemOwner);
