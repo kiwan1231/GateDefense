@@ -295,7 +295,15 @@ bool AG1Character::AddEquipment(const FName EquipID)
 		AG1EquipmentItem* EquipItem = World->SpawnActor<AG1EquipmentItem>(ItemInfo->EquipmentStaticMesh);
 		if (IsValid(EquipItem) && IsValid(GetMesh()))
 		{
-			EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+			if (ItemInfo->EquipType == EEquipmentType::Weapon)
+			{
+				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+			}
+			else
+			{
+				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("shield_Socket"));
+			}
+
 			EquipItem->SetOwner(this);
 			EquipItem->InitEquipment(EquipID);
 

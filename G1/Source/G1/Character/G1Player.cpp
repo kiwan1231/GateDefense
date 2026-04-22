@@ -234,7 +234,7 @@ void AG1Player::EquipItemFromInventory(FIntPoint ItemSlotPos)
 
 void AG1Player::UnequipItemToInventory(EEquipmentType EquipType)
 {
-	if (EquipObjectList[EquipType] == nullptr)
+	if (EquipObjectList.Contains(EquipType) == false || EquipObjectList[EquipType] == nullptr)
 	{
 		return;
 	}
