@@ -5,8 +5,11 @@
 #include "Components/UniformGridPanel.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+
 #include "UI/Inventory/G1InventorySlotWidget.h"
+#include "UI/Equip/G1EquipEntryWidget.h"
 #include "G1InventoryEntryWidget.h"
+
 #include "Subsystems/SubsystemBlueprintLibrary.h"
 #include "Item/G1InventorySubsystem.h"
 #include "UI/Item/Drag/G1DragDropOperation.h"
@@ -182,6 +185,14 @@ void UG1InventorySlotsWidget::OnEquiptSlotItem(TObjectPtr<UG1InventoryEntryWidge
 		return;
 
 	G1Player->EquipItemFromInventory(SlotEntry->GetItemInstance()->InventorySlotPos);
+}
+
+void UG1InventorySlotsWidget::OnUnEquiptSlotItem(TObjectPtr<UG1EquipEntryWidget> SlotEntry)
+{
+	if (G1Player == nullptr)
+		return;
+
+	G1Player->UnequipItemToInventory(SlotEntry->GetEquipType());
 }
 
 void UG1InventorySlotsWidget::Delegate_OnCreateInventoryItem(AG1Player* Player, FIntPoint ItemSlotPos)

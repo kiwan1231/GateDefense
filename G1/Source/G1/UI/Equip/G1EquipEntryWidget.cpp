@@ -3,6 +3,8 @@
 
 #include "UI/Equip/G1EquipEntryWidget.h"
 
+#include "UI/Inventory/G1InventorySlotsWidget.h"
+
 #include "Data/G1ItemData.h"
 
 #include "Components/Image.h"
@@ -16,9 +18,13 @@ UG1EquipEntryWidget::UG1EquipEntryWidget(const FObjectInitializer& ObjectInitial
 	EquipType = EEquipmentType::None;
 }
 
-void UG1EquipEntryWidget::Init(UG1Item2DInstance* _InItemInstance, EEquipmentType _Type)
+void UG1EquipEntryWidget::Init(UG1InventorySlotsWidget* InSlotsWidget, UG1Item2DInstance* _InItemInstance, EEquipmentType _Type)
 {
+	SlotsWidget = InSlotsWidget;
+
 	ItemInstance = _InItemInstance;
+
+	EquipType = _Type;
 
 	UpdateIconByItemInstance();
 }
@@ -41,6 +47,13 @@ void UG1EquipEntryWidget::NativeConstruct()
 FReply UG1EquipEntryWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	FReply Replay = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+
+	if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
+	{
+		SlotsWidget->OnUnEquiptSlotItem(this);
+
+		return Replay;
+	}
 
 	return Replay;
 }

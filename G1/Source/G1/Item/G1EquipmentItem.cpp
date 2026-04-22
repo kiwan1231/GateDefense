@@ -144,7 +144,7 @@ void AG1EquipmentItem::PerformAttackTrace()
     }
 
     // 디버그 (박스 이동 경로)
-    DrawDebugBox(GetWorld(), CurrentLocation, BoxExtent, CurrentRotation, FColor::Red, false, 0.1f);
+    //DrawDebugBox(GetWorld(), CurrentLocation, BoxExtent, CurrentRotation, FColor::Red, false, 0.1f);
 
     PrevLocation = CurrentLocation;
     PrevRotation = CurrentRotation;

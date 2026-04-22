@@ -242,8 +242,7 @@ void AG1Player::UnequipItemToInventory(EEquipmentType EquipType)
 	TObjectPtr<class AG1EquipmentItem> Item = EquipObjectList[EquipType];
 	Inventory->InventoryAddItem(Item->ItemID, 1);
 
-	Item->Destroy();
-	EquipObjectList[EquipType] = nullptr;
+	RemoveEquipment(EquipType);
 }
 
 const TObjectPtr<class UG1InventoryComponent>& AG1Player::GetInventoryComponent() const

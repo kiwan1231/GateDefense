@@ -30,13 +30,14 @@ void UG1AbilitySystem::AddItemAbilities(const TArray<TSubclassOf<class UGameplay
 
 		FGameplayAbilitySpecHandle SpecHandle = GiveAbility(AbilitySpec);
 
-		SpecHandles.Add(SpecHandle);
+		if (SpecHandles.Contains(SpecHandle) == false)
+			SpecHandles.Add(SpecHandle);
 	}
 }
 
 void UG1AbilitySystem::RemoveItemAbilities(const TArray<TSubclassOf<class UGameplayAbility>>& ItemAbilities)
 {
-	for (auto& AbilityClass : ItemAbilities)
+	/*for (auto& AbilityClass : ItemAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 
@@ -44,6 +45,30 @@ void UG1AbilitySystem::RemoveItemAbilities(const TArray<TSubclassOf<class UGamep
 
 		if (SpecHandles.Contains(SpecHandle))
 			SpecHandles.Remove(SpecHandle);
+	}*/
+
+	TArray<FGameplayAbilitySpecHandle> HandlesToRemove;
+
+	for (const FGameplayAbilitySpecHandle& Handle : SpecHandles)
+	{
+		FGameplayAbilitySpec* Spec = FindAbilitySpecFromHandle(Handle);
+		if (!Spec) continue;
+
+		// Spec의 Ability 클래스 가져오기
+		TSubclassOf<UGameplayAbility> AbilityClass = Spec->Ability->GetClass();
+
+		// ItemAbilities에 포함되어 있는지 체크
+		if (ItemAbilities.Contains(AbilityClass))
+		{
+			ClearAbility(Handle);
+			HandlesToRemove.Add(Handle);
+		}
+	}
+
+	// 제거된 Handle만 리스트에서 삭제
+	for (const FGameplayAbilitySpecHandle& Handle : HandlesToRemove)
+	{
+		SpecHandles.Remove(Handle);
 	}
 }
 

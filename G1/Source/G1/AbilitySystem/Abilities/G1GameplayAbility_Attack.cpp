@@ -39,29 +39,6 @@ void UG1GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 			}
 		}
 
-		//if (AnimInstance != nullptr)
-		//{
-		//	if (AnimInstance->Montage_IsPlaying(AttackMontage))
-		//	{
-		//		if(AnimInstance->Montage_GetCurrentSection(AttackMontage) == "First")
-		//		{
-		//			AnimInstance->Montage_SetNextSection("First", "Second", AttackMontage);
-		//		}
-		//		else if (AnimInstance->Montage_GetCurrentSection(AttackMontage) == "Second")
-		//		{
-		//			AnimInstance->Montage_SetNextSection("Second", "Third", AttackMontage);//Montage_JumpToSection
-		//		}
-		//		else
-		//		{
-
-		//		}
-		//	}
-		//	else
-		//	{
-		//		Player->PlayAnimMontage(AttackMontage, 1.0f, "First");
-		//	}
-		//}
-
 		if (AnimInstance != nullptr)
 		{
 			if (AnimInstance->Montage_IsPlaying(AttackMontage))

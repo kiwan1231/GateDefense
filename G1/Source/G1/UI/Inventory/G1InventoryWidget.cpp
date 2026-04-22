@@ -44,12 +44,12 @@ void UG1InventoryWidget::OnInitInventory(AG1Player* Player)
 	if (WeaponEntryWidget != nullptr)
 	{
 		auto Item2DInstance = NewObject<UG1Item2DInstance>(this);
-		WeaponEntryWidget->Init(Item2DInstance, EEquipmentType::Weapon);
+		WeaponEntryWidget->Init(SlotsWidget, Item2DInstance, EEquipmentType::Weapon);
 	}
 	if (ShieldEntryWidget != nullptr)
 	{
 		auto Item2DInstance = NewObject<UG1Item2DInstance>(this);
-		ShieldEntryWidget->Init(Item2DInstance, EEquipmentType::Shield);
+		ShieldEntryWidget->Init(SlotsWidget, Item2DInstance, EEquipmentType::Shield);
 	}
 	EquipEntryMap.Add(EEquipmentType::Weapon, WeaponEntryWidget);
 	EquipEntryMap.Add(EEquipmentType::Shield, ShieldEntryWidget);

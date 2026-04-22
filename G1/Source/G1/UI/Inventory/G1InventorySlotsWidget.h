@@ -12,7 +12,7 @@ class UUniformGridPanel;
 class UG1InventoryEntryWidget;
 class UG1Item2DInstance;
 class UCanvasPanel;
-
+class UG1EquipEntryWidget;
 /**
  * 
  */
@@ -64,6 +64,7 @@ public:
 	void InitInventorySlots(class AG1Player* Player);
 	bool IsDrag();
 	void OnEquiptSlotItem(TObjectPtr<UG1InventoryEntryWidget> SlotEntry);
+	void OnUnEquiptSlotItem(TObjectPtr<UG1EquipEntryWidget> SlotEntry);
 
 public:
 	void Delegate_OnCreateInventoryItem(class AG1Player* Player, FIntPoint ItemSlotPos);

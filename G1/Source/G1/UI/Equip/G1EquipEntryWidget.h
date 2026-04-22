@@ -28,7 +28,7 @@ public:
 	UG1EquipEntryWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
-	void Init(UG1Item2DInstance* _InItemInstance, EEquipmentType _Type);
+	void Init(UG1InventorySlotsWidget* InSlotsWidget, UG1Item2DInstance* _InItemInstance, EEquipmentType _Type);
 	void SetItemInstance(EItemSlotType _ItemSlotType, int32 _X, int32 _Y, FName _ItemID, int32 _Count, const UG1ItemData* _ItemData);
 protected:
 	virtual void NativeConstruct() override;
@@ -36,7 +36,11 @@ protected:
 
 	void RefreshWidgetOpacity(bool bClearlyVisible);
 	void UpdateIconByItemInstance();
+
 protected:
+	UPROPERTY()
+	TObjectPtr<UG1InventorySlotsWidget> SlotsWidget;
+
 	UPROPERTY()
 	TObjectPtr<UG1Item2DInstance> ItemInstance;
 	UPROPERTY()
