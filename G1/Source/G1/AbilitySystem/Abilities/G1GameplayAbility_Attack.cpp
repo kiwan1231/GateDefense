@@ -39,30 +39,74 @@ void UG1GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle
 			}
 		}
 
+		//if (AnimInstance != nullptr)
+		//{
+		//	if (AnimInstance->Montage_IsPlaying(AttackMontage))
+		//	{
+		//		if(AnimInstance->Montage_GetCurrentSection(AttackMontage) == "First")
+		//		{
+		//			AnimInstance->Montage_SetNextSection("First", "Second", AttackMontage);
+		//		}
+		//		else if (AnimInstance->Montage_GetCurrentSection(AttackMontage) == "Second")
+		//		{
+		//			AnimInstance->Montage_SetNextSection("Second", "Third", AttackMontage);//Montage_JumpToSection
+		//		}
+		//		else
+		//		{
+
+		//		}
+		//	}
+		//	else
+		//	{
+		//		Player->PlayAnimMontage(AttackMontage, 1.0f, "First");
+		//	}
+		//}
+
 		if (AnimInstance != nullptr)
 		{
 			if (AnimInstance->Montage_IsPlaying(AttackMontage))
 			{
-				if(AnimInstance->Montage_GetCurrentSection(AttackMontage) == "First")
-				{
-					AnimInstance->Montage_SetNextSection("First", "Second", AttackMontage);
-				}
-				else if (AnimInstance->Montage_GetCurrentSection(AttackMontage) == "Second")
-				{
-					AnimInstance->Montage_SetNextSection("Second", "Third", AttackMontage);//Montage_JumpToSection
-				}
-				else
-				{
+				FName CurrentSection = AnimInstance->Montage_GetCurrentSection(AttackMontage);
 
+				for (const FG1MontageSectionData& Data : AttackMontageSectionDatas)
+				{
+					if (Data.CurSectionName == CurrentSection)
+					{
+						if (Data.NextSectionName == NAME_None)
+							continue;
+
+						switch (Data.NextPlayType)
+						{
+						case EAbilityMontagePlayType::Normal:
+							Player->PlayAnimMontage(AttackMontage, 1.0f, Data.NextSectionName);
+							break;
+
+						case EAbilityMontagePlayType::JumpToSection:
+							AnimInstance->Montage_JumpToSection(Data.NextSectionName, AttackMontage);
+							break;
+
+						case EAbilityMontagePlayType::SetNextSection:
+							AnimInstance->Montage_SetNextSection(Data.CurSectionName, Data.NextSectionName, AttackMontage);
+							break;
+						}
+
+						break;
+					}
 				}
 			}
 			else
 			{
-				Player->PlayAnimMontage(AttackMontage, 1.0f, "First");
+				// 첫 섹션 자동 시작 (배열 기준)
+				if (AttackMontageSectionDatas.Num() > 0)
+				{
+					Player->PlayAnimMontage(AttackMontage,1.0f,AttackMontageSectionDatas[0].CurSectionName);
+				}
+				else
+				{
+					Player->PlayAnimMontage(AttackMontage);
+				}
 			}
 		}
-
-		//Player->PlayAnimMontage(AttackMontage);
 	}
 }
 
