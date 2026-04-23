@@ -21,7 +21,7 @@ public:
 
 public:
 	void SetName(const FString& Name);
-	void SetHpRatio(float Ratio);
+	void SetHpRatio(float CurHp, float MaxHp);
 
 protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
@@ -29,4 +29,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<class UProgressBar> HpBar;
+
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UTextBlock> CurrentHP;
+
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UTextBlock> MaxHP;
 };

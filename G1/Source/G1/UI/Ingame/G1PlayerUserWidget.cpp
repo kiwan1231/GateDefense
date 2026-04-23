@@ -24,10 +24,20 @@ void UG1PlayerUserWidget::SetName(const FString& Name)
 	}
 }
 
-void UG1PlayerUserWidget::SetHpRatio(float Ratio)
+void UG1PlayerUserWidget::SetHpRatio(float CurHp, float MaxHp)
 {
+	if (CurrentHP != nullptr)
+	{
+		CurrentHP->SetText(FText::FromString(FString::SanitizeFloat(CurHp)));
+	}
+
+	if (MaxHP != nullptr)
+	{
+		MaxHP->SetText(FText::FromString(FString::SanitizeFloat(MaxHp)));
+	}
+
 	if (HpBar != nullptr)
 	{
-		HpBar->SetPercent(Ratio);
+		HpBar->SetPercent(CurHp / MaxHp);
 	}
 }

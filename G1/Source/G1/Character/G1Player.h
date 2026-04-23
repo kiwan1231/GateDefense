@@ -81,4 +81,8 @@ private:
 	FVector GetSpringArmEndLocation();
 	float GetHpRatio() const;
 	void FindNearestDropItem();
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> FadedActors;
+	void MakeActorTransparent(TObjectPtr<AActor> Actor, bool bTrans);
 };

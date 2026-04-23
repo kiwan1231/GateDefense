@@ -8,7 +8,10 @@
 #include "System/G1AssetManager.h"
 #include "Data/G1ItemData.h"
 #include "Item/G1EquipmentItem.h"
+
 #include "Components/SceneComponent.h"
+#include "Components/WidgetComponent.h"
+
 #include "Engine/EngineTypes.h"
 #include "Utility/G1GameplayTags.h"
 #include "G1CharacterConditionData.h"
@@ -17,6 +20,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Item/G1DropItem.h"
 #include "Data/G1DropTableData.h"
+
+#include "UI/G1HpBarWidget.h"
 
 // Sets default values
 AG1Character::AG1Character()
@@ -28,6 +33,9 @@ AG1Character::AG1Character()
 	TeamTag = G1GameplayTags::Team_None;
 
 	MonsterDropID = NAME_None;
+
+	HpBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HpBarComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +43,16 @@ void AG1Character::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (HpBarClass->IsValidLowLevel())
+	{
+		HpBarComponent->SetWidgetClass(HpBarClass);
+		HpBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		HpBarComponent->SetDrawAtDesiredSize(true);
+		HpBarComponent->SetRelativeLocation(FVector(0, 0, 100));
+	}
+
+	UpdateHp();
+
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
 		if (UAnimInstance* RawAnim = MeshComp->GetAnimInstance())
@@ -164,6 +182,8 @@ void AG1Character::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, co
 
 	Hp = FMath::Clamp(Hp - Damage, 0, MaxHp);
 	AttributeSet->SetHealth(Hp);
+
+	UpdateHp();
 
 	if (Hp == 0)
 	{
@@ -568,6 +588,34 @@ bool AG1Character::EnableAbility() const
 	}
 
 	return true;
+}
+
+void AG1Character::UpdateHp()
+{
+	if (AttributeSet == nullptr)
+	{
+		return;
+	}
+
+	float Hp = AttributeSet->GetHealth();
+	float MaxHp = AttributeSet->GetMaxHealth();
+
+	if (HpBarComponent)
+	{
+		if (Hp <= 0)
+		{
+			HpBarComponent->SetHiddenInGame(true);
+		}
+		else
+		{
+			UG1HpBarWidget* HpBar = Cast<UG1HpBarWidget>(HpBarComponent->GetUserWidgetObject());
+			if (HpBar)
+			{
+				float Ratio = static_cast<float>(Hp) / MaxHp;
+				HpBar->SetHpRatio(Ratio);
+			}
+		}
+	}
 }
 
 void AG1Character::SetWeaponCollisionEnabled(bool Enabled)

@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 #include "Player/G1PlayerState.h"
 #include "AbilitySystem/G1AbilitySystem.h"
@@ -67,6 +68,11 @@ AG1Player::AG1Player()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	if (HpBarComponent != nullptr)
+	{
+		HpBarComponent->SetHiddenInGame(true);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -90,10 +96,14 @@ void AG1Player::PossessedBy(AController* NewController)
 	Inventory = FindComponentByClass<UG1InventoryComponent>();
 	Inventory->InitPlayerInventory(this, Controller);
 
-	if (Controller && Controller->IngameUI && Controller->IngameUI->PlayerWidget)
+	auto InGameUI = Controller->GetIngameUI();
+	if (InGameUI != nullptr && InGameUI->PlayerWidget != nullptr)
 	{
 		Controller->IngameUI->PlayerWidget->SetName("juseal");
-		Controller->IngameUI->PlayerWidget->SetHpRatio(GetHpRatio());
+
+		float Hp = AttributeSet->GetHealth();
+		float MaxHp = AttributeSet->GetMaxHealth();
+		Controller->IngameUI->PlayerWidget->SetHpRatio(Hp, MaxHp);
 	}
 }
 
@@ -120,21 +130,41 @@ void AG1Player::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag EventTag
 
 void AG1Player::UpdateCamera(float DeltaTime)
 {
+	for (int i = FadedActors.Num() - 1; i >= 0; --i)
+	{
+		if (FadedActors[i] == nullptr)
+		{
+			FadedActors.RemoveAt(i);
+			continue;
+		}
+
+		MakeActorTransparent(FadedActors[i], false);
+	}
+
 	FVector Start = GetActorLocation() + SpringArmTargetOffset;
 	FVector End = CameraPivotSphere->GetComponentLocation();
 
-	FHitResult Hit;
+	TArray<FHitResult> Hits;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(
-		Hit,
+	bool bHit = GetWorld()->LineTraceMultiByChannel(
+		Hits,
 		Start,
 		End,
 		ECC_Visibility,
 		Params
 	);
 
+	if (bHit)
+	{
+		for (auto Hit : Hits)
+		{
+			MakeActorTransparent(Hit.GetActor(), true);
+		}
+	}
+
+	/*
 	float TargetPitch;
 
 	if (bHit)
@@ -155,6 +185,7 @@ void AG1Player::UpdateCamera(float DeltaTime)
 	FRotator NewRot = FMath::RInterpTo(CurrentRot, TargetRot, DeltaTime, 5.f);
 
 	SpringArm->SetRelativeRotation(NewRot);
+	*/
 }
 
 void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const FHitResult& SweepResult)
@@ -163,7 +194,9 @@ void AG1Player::OnDamaged(int32 Damage, TObjectPtr<AG1Character> Attacker, const
 
 	if (Controller && Controller->GetIngameUI())
 	{
-		Controller->GetIngameUI()->PlayerWidget->SetHpRatio(GetHpRatio());
+		float Hp = AttributeSet->GetHealth();
+		float MaxHp = AttributeSet->GetMaxHealth();
+		Controller->GetIngameUI()->PlayerWidget->SetHpRatio(Hp, MaxHp);
 	}
 }
 
@@ -322,5 +355,35 @@ void AG1Player::FindNearestDropItem()
 	if (NearestDropItem != nullptr)
 	{
 		Controller->ShowDropItemDesc(NearestItem->GetActorLocation(), NearestItem->GetItemID());
+	}
+}
+
+void AG1Player::MakeActorTransparent(TObjectPtr<AActor> Actor, bool bTrans)
+{
+	/*
+	TArray<UStaticMeshComponent*> TempMeshes;
+	Actor->GetComponents<UStaticMeshComponent>(TempMeshes);
+
+	for (auto* TempMesh : TempMeshes)
+	{
+		for (int32 i = 0; i < TempMesh->GetNumMaterials(); i++)
+		{
+			UMaterialInstanceDynamic* DynMat = TempMesh->CreateAndSetMaterialInstanceDynamic(i);
+			if (DynMat)
+			{
+				DynMat->SetScalarParameterValue("Opacity", bTrans ? 0.3f : 1.f);
+			}
+		}
+	}
+	*/
+	if (bTrans && FadedActors.Contains(Actor) == false)
+	{
+		Actor->SetActorHiddenInGame(true);
+		FadedActors.Add(Actor);
+	}
+	else if (bTrans == false && FadedActors.Contains(Actor))
+	{
+		Actor->SetActorHiddenInGame(false);
+		FadedActors.Remove(Actor);
 	}
 }

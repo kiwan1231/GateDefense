@@ -41,7 +41,14 @@ public: /// ReadWrite
 	UPROPERTY(BlueprintReadOnly)
 	FName MonsterDropID;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UWidgetComponent> HpBarComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class UUserWidget> HpBarClass;
+
 protected: /// ReadOnly
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Ability)
 	TObjectPtr<class UG1AbilitySystem> AbilitySystem;
 
@@ -128,10 +135,10 @@ public:
 	virtual bool EnableJump() const;
 	virtual bool EnableAttack() const;
 	virtual bool EnableAbility() const;
-
+	virtual void UpdateHp();
 protected:
 	void SetWeaponCollisionEnabled(bool Enabled);
-
+	
 private:
 	void G1PlayAnimMontage(class UAnimMontage* Montage);
 	void CreateDropItem(TObjectPtr<AG1Character> DropItemOwner);
