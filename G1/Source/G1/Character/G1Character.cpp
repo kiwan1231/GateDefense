@@ -81,6 +81,11 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 	{
 		if (EventType == ECharacterAnimNotiType::InAbilityState)
 		{
+			if (InDeadState())
+			{
+				return;
+			}
+
 			SetSatate(ECharacterState::Ability);
 		}
 	}
@@ -112,6 +117,11 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 	else if (EventTag == G1GameplayTags::Event_Montage_Attack_Start
 				|| EventTag == G1GameplayTags::Event_Montage_Attack_End)
 	{
+		if (InDeadState())
+		{
+			return;
+		}
+
 		for (const TPair<EEquipmentType, TObjectPtr<AG1EquipmentItem>>& Pair : EquipObjectList)
 		{
 			EEquipmentType Type = Pair.Key;
@@ -132,6 +142,11 @@ void AG1Character::HandleGameplayEvent(UAnimMontage* Montage, FGameplayTag Event
 
 void AG1Character::HandleEventAnimNotifyStateBegin(UAnimMontage* Montage, FGameplayTag EventTag)
 {
+	if (InDeadState())
+	{
+		return;
+	}
+
 	if (EventTag == G1GameplayTags::Event_AnimNotiState_Montage)
 	{
 		SetSatate(ECharacterState::Ability);
@@ -144,6 +159,11 @@ void AG1Character::HandleEventAnimNotifyStateBegin(UAnimMontage* Montage, FGamep
 
 void AG1Character::HandleEventAnimNotifyStateEnd(UAnimMontage* Montage, FGameplayTag EventTag)
 {
+	if (InDeadState())
+	{
+		return;
+	}
+
 	if (EventTag == G1GameplayTags::Event_AnimNotiState_Montage)
 	{
 		if (State == ECharacterState::Ability)

@@ -26,7 +26,7 @@ void UG1AnimNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 	}
 
 	AG1Character* OwnerCharacter = Cast<AG1Character>(Owner);
-	if (!OwnerCharacter)
+	if (!OwnerCharacter || OwnerCharacter->InDeadState())
 	{
 		return;
 	}

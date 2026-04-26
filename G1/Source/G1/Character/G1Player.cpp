@@ -160,6 +160,13 @@ void AG1Player::UpdateCamera(float DeltaTime)
 	{
 		for (auto Hit : Hits)
 		{
+			AActor* HitActor = Hit.GetActor();
+			ECollisionChannel Channel = HitActor->GetRootComponent()->GetCollisionObjectType();
+
+			/// 몬스터는 제외
+			if (Channel == ECollisionChannel::ECC_GameTraceChannel2)
+				continue;
+
 			MakeActorTransparent(Hit.GetActor(), true);
 		}
 	}

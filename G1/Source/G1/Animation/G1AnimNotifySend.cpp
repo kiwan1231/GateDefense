@@ -26,8 +26,8 @@ void UG1AnimNotifySend::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 		return;
 	}
 
-	AG1Character* LocalCharacter = Cast<AG1Character>(Owner);
-	if (!LocalCharacter)
+	AG1Character* Character = Cast<AG1Character>(Owner);
+	if (!Character)
 	{
 		return;
 	}
@@ -36,6 +36,6 @@ void UG1AnimNotifySend::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	UAnimMontage* Montage = Cast<UAnimMontage>(Animation);
 	if (Montage)
 	{
-		LocalCharacter->HandleGameplayEvent(Montage, EventTag, EventType);
+		Character->HandleGameplayEvent(Montage, EventTag, EventType);
 	}
 }
