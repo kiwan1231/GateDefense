@@ -48,7 +48,7 @@ void AG1EquipmentItem::InitEquipment(FName _ItemID)
 	ItemID = _ItemID;
 }
 
-void AG1EquipmentItem::SetOwner(AG1Character* owner)
+void AG1EquipmentItem::EquipItemSetOwner(AG1Character* owner)
 {
 	ownerCharacter = owner;
 }

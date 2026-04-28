@@ -15,7 +15,7 @@ struct FG1ItemInfo
 
 public:
 	UPROPERTY(EditDefaultsOnly)
-	FName ItemID;
+	FName ItemID = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly)
 	EItemType ItemType = EItemType::None;
@@ -27,13 +27,13 @@ public:
 	EEquipmentType EquipType = EEquipmentType::None;
 
 	UPROPERTY(EditDefaultsOnly)
-	FText ItemName;
+	FText ItemName = FText::FromString(TEXT("EMPTY"));
 
 	UPROPERTY(EditDefaultsOnly)
-	FText ItemDesc;
+	FText ItemDesc = FText::FromString(TEXT("EMPTY"));;
 
 	UPROPERTY(EditDefaultsOnly)
-	bool Stackable;
+	bool Stackable = false;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AG1EquipmentItem> EquipmentStaticMesh;

@@ -50,7 +50,7 @@ void UG1AssetManager::LoadSyncByPath(const FSoftObjectPath& AssetPath)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Fatal, TEXT("error"));
+			//UE_LOG(LogTemp, Fatal, TEXT("LoadSyncByPath Error %s"), *AssetPath.ToString());
 		}
 	}
 }

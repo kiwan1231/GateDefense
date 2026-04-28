@@ -14,13 +14,13 @@ struct FG1InventoryItemData
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FName ItemID;
+	FName ItemID = NAME_None;
 
 	UPROPERTY()
-	bool IsStackable;
+	bool IsStackable = false;
 
 	UPROPERTY()
-	int32 Count;
+	int32 Count = 0;
 };
 
 class UG1Item2DInstance;

@@ -69,27 +69,25 @@ void AG1GameMode::CheckState(float DeltaTime)
 
 	else if (ModeState == EGameModeState::Playing)
 	{
-		AG1PlayerState* PS = GetGameState<AG1PlayerState>();
-		if (PS)
+		APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		AG1PlayerState* PS = PC ? Cast<AG1PlayerState>(PC->PlayerState) : nullptr;
+		//APlayerController* PC = Cast<APlayerController>(PS->GetOwner());
+		if (PC == nullptr)
 		{
-			APlayerController* PC = Cast<APlayerController>(PS->GetOwner());
-			if (PC == nullptr)
-			{
-				UE_LOG(LogG1, Error, TEXT("APlayerController is not Search"));
-				return;
-			}
+			UE_LOG(LogG1, Error, TEXT("APlayerController is not Search"));
+			return;
+		}
 
-			AG1Player* Player = Cast<AG1Player>(PS->GetPawn());
-			if (Player == nullptr)
-			{
-				UE_LOG(LogG1, Error, TEXT("AG1Player is not Search"));
-				return;
-			}
+		AG1Player* Player = Cast<AG1Player>(PS->GetPawn());
+		if (Player == nullptr)
+		{
+			UE_LOG(LogG1, Error, TEXT("AG1Player is not Search"));
+			return;
+		}
 
-			if (Player->InDeadState())
-			{
-				ChangeState(EGameModeState::Outro);
-			}
+		if (Player->InDeadState())
+		{
+			ChangeState(EGameModeState::Outro);
 		}
 	}
 }

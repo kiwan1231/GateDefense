@@ -35,20 +35,30 @@ struct FEventActionData
 	GENERATED_BODY()
 
 public:
+	FEventActionData()
+		: ActionID(NAME_None)
+		, ActionType(EEventActionType::None)
+		, SpawnMonster(nullptr)
+		, SpawnPos(FVector::ZeroVector)
+		, SpawnMonsterDropID(NAME_None)
+	{
+	}
+
+public:
 	UPROPERTY(EditDefaultsOnly)
-	FName ActionID;
+	FName ActionID = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly)
-	EEventActionType ActionType;
+	EEventActionType ActionType = EEventActionType::None;
 
 public:
 	/// Action
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
 	TSubclassOf<class AG1Monster> SpawnMonster;
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
-	FVector SpawnPos;
+	FVector SpawnPos = FVector::ZeroVector;
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
-	FName SpawnMonsterDropID;
+	FName SpawnMonsterDropID = NAME_None;
 };
 
 USTRUCT()
@@ -57,8 +67,18 @@ struct FEventData
 	GENERATED_BODY()
 
 public:
+	FEventData()
+		: EventID(NAME_None)
+		, TriggerType(EEventTriggerType::None)
+		, Repeat(false)
+		, RequiredTriggerCount(1)
+		, ElapsedTime(0.f)
+	{
+	}
+
+public:
 	UPROPERTY(EditDefaultsOnly)
-	FName EventID;
+	FName EventID = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly)
 	EEventTriggerType TriggerType = EEventTriggerType::None;
@@ -72,7 +92,7 @@ public:
 public:
 	/// Trigger
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "TriggerType == EEventTriggerType::ElapsedTime"))
-	float ElapsedTime;
+	float ElapsedTime = 0.f;
 
 public:
 	/// Action

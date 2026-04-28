@@ -344,7 +344,7 @@ bool AG1Character::AddEquipment(const FName EquipID)
 				EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("shield_Socket"));
 			}
 
-			EquipItem->SetOwner(this);
+			EquipItem->EquipItemSetOwner(this);
 			EquipItem->InitEquipment(EquipID);
 
 			EquipObjectList.Add(ItemInfo->EquipType, EquipItem);

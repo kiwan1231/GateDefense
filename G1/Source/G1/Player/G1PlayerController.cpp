@@ -453,7 +453,8 @@ void AG1PlayerController::Delegate_OnGameOver(EGameModeType GameModeType)
 {
 	if (GetIngameUI())
 	{
-		GetIngameUI()->RemoveFromViewport();
+		//GetIngameUI()->RemoveFromViewport();
+		GetIngameUI()->RemoveFromParent();
 	}
 
 	if (GameOverUIClass)
