@@ -58,6 +58,7 @@ private: // input function
 
 	void Input_OpenInventory(const FInputActionValue& InputValue);
 	void Input_PickUpItem(const FInputActionValue& InputValue);
+	void Input_ESC(const FInputActionValue& InputValue);
 
 private:/// tick function
 	//void UpdateCharacterState(float DeltaTime);
@@ -111,6 +112,7 @@ public:
 
 public:
 	void InitUserInterfaceWidget();
+	void SetCharacterInput(bool InputLock);
 
 public:
 	TObjectPtr<class UG1IngameSceneWidget> GetIngameUI();

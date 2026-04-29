@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UI/G1UserWidget.h"
+
+#include "Item/G1ItemDefine.h"
+
 #include "G1PlayerUserWidget.generated.h"
 
 /**
@@ -20,8 +23,11 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
+	void OnInitPlayerWidget(class AG1Player* Player);
+
 	void SetName(const FString& Name);
 	void SetHpRatio(float CurHp, float MaxHp);
+	void SetDamage(float Damage);
 
 protected:
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
@@ -35,4 +41,15 @@ protected:
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<class UTextBlock> MaxHP;
+
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UTextBlock> CurrentDamage;
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class AG1Player> G1Player;
+
+protected:
+	void Delegate_OnAddEquipment(class AG1Character* Character, FName ItemID);
+	void Delegate_OnRemoveEquipment(class AG1Character* Character, EEquipmentType EquipType);
 };

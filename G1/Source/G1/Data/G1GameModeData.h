@@ -23,6 +23,7 @@ enum class EEventActionType : uint8
 {
 	None = 0,
 	SpawnMonster,
+	RandomSpawnMonster,
 	SpawnBoss,
 	ClearGame,
 	GameOver,
@@ -53,11 +54,13 @@ public:
 
 public:
 	/// Action
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster || ActionType == EEventActionType::RandomSpawnMonster"))
 	TSubclassOf<class AG1Monster> SpawnMonster;
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
 	FVector SpawnPos = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster"))
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::RandomSpawnMonster"))
+	TArray<FVector> RandomSpawnList;
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "ActionType == EEventActionType::SpawnMonster || ActionType == EEventActionType::RandomSpawnMonster"))
 	FName SpawnMonsterDropID = NAME_None;
 };
 

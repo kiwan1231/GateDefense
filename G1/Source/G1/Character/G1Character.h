@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
+#include "AttributeSet.h"
+#include "GameplayEffectTypes.h"
+
 #include "G1CharacterDefine.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystemInterface.h"
@@ -111,6 +114,9 @@ public: // interface
 	virtual void InitAbilitySystem();
 	virtual void Highlight();
 	virtual void UnHighlight();
+
+public: // Delegate
+	void Delegate_OnBaseDamageChanged(const FOnAttributeChangeData& Data);
 
 public: 
 	// ¾îºô¸®Æ¼ ½Àµæ

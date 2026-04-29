@@ -33,5 +33,5 @@ public:
 	TMap<FName, FActiveGameplayEffectHandle> EquipHandles;
 
 private:
-
+	void LogActiveGameplayEffects();
 };

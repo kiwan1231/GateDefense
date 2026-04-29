@@ -2,6 +2,9 @@
 
 
 #include "Character/G1Character.h"
+
+#include "GameplayEffectExtension.h"
+
 #include "AbilitySystem/G1AbilitySystem.h"
 #include "AbilitySystem/Attributes/G1AttributeSet.h"
 #include "G1CharacterDefine.h"
@@ -43,6 +46,13 @@ void AG1Character::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (AbilitySystem)
+	{
+		AbilitySystem->GetGameplayAttributeValueChangeDelegate(
+			UG1AttributeSet::GetBaseDamageAttribute()
+		).AddUObject(this, &AG1Character::Delegate_OnBaseDamageChanged);
+	}
+
 	if (HpBarClass->IsValidLowLevel())
 	{
 		HpBarComponent->SetWidgetClass(HpBarClass);
@@ -308,8 +318,7 @@ void AG1Character::InitEquipment()
 
 bool AG1Character::AddEquipment(const FName EquipID)
 {
-	UG1AbilitySystem* AS = Cast<UG1AbilitySystem>(AbilitySystem);
-	if (AS == nullptr)
+	if (AbilitySystem == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("InitEquipment: UG1AbilitySystem is null"));
 		return false;
@@ -347,24 +356,23 @@ bool AG1Character::AddEquipment(const FName EquipID)
 			EquipItem->EquipItemSetOwner(this);
 			EquipItem->InitEquipment(EquipID);
 
-			EquipObjectList.Add(ItemInfo->EquipType, EquipItem);
-
-			AS->AddItemAbilities(EquipItem->ItemAbilities);
+			if (EquipObjectList.Contains(ItemInfo->EquipType))
+			{
+				EquipObjectList[ItemInfo->EquipType] = EquipItem;
+			}
+			else
+			{
+				EquipObjectList.Add(ItemInfo->EquipType, EquipItem);
+			}
+			
+			AbilitySystem->AddItemAbilities(EquipItem->ItemAbilities);
+			AbilitySystem->AddEquipmentGameplayEffect(EquipID);
 
 			OnAddEquipment.Broadcast(this, EquipID);
 		}
 	}
 
-	if (IsValid(AbilitySystem))
-	{
-		AbilitySystem->AddEquipmentGameplayEffect(EquipID);
-		return true;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("InitEquipment: AbilitySystem is null, can't add effect for %s"), *EquipID.ToString());
-		return false;
-	}
+	return true;
 }
 
 void AG1Character::RemoveEquipment(const EEquipmentType EquipType)
@@ -374,15 +382,15 @@ void AG1Character::RemoveEquipment(const EEquipmentType EquipType)
 	{
 		return;
 	}
-	UG1AbilitySystem* AS = Cast<UG1AbilitySystem>(AbilitySystem);
-	if (AS == nullptr)
+
+	if (AbilitySystem == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s RemoveEquipment: UG1AbilitySystem is null"), *GetName());
 		return;
 	}
 
-	AS->RemoveItemAbilities(EquipItem->ItemAbilities);
-
+	AbilitySystem->RemoveEquipmentGameplayEffect(EquipItem->ItemID);
+	AbilitySystem->RemoveItemAbilities(EquipItem->ItemAbilities);
 	EquipItem->Destroy();
 	EquipObjectList[EquipType] = nullptr;
 
@@ -480,6 +488,24 @@ void AG1Character::UnHighlight()
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
 		MeshComp->SetRenderCustomDepth(false);
+	}
+}
+
+void AG1Character::Delegate_OnBaseDamageChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("===== BaseDamage Changed ====="));
+	UE_LOG(LogTemp, Warning, TEXT("Old: %f New: %f Delta: %f"),
+		Data.OldValue,
+		Data.NewValue,
+		Data.NewValue - Data.OldValue);
+
+	if (Data.GEModData)
+	{
+		const UGameplayEffect* GE = Data.GEModData->EffectSpec.Def;
+		if (GE)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Effect: %s"), *GE->GetName());
+		}
 	}
 }
 

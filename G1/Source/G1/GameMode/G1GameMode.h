@@ -32,6 +32,7 @@ public:
 		: EventData(_EventData)
 		, EnabledTrigger(_EnabledTrigger)
 		, CompleteTrigger(false)
+		, ElapsedTime(0.f)
 	{
 
 	}
@@ -47,6 +48,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	int TriggerCount = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	float ElapsedTime = 0.f;
 };
 
 UCLASS()
@@ -72,7 +76,7 @@ public:
 public:
 	virtual void InitEventInstance();
 	virtual void PlayEventAction(FG1EventInstance* PlayEvent);
-	virtual void CheckElapsedTimeEvent();
+	virtual void CheckElapsedTimeEvent(float DeltaTime);
 	virtual void CheckCharacterDeadEvent(AG1Character* DeadCharacter);
 
 public: /// Delegate ÇÔ¼ö

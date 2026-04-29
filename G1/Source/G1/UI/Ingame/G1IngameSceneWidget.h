@@ -25,8 +25,13 @@ public:
 	TObjectPtr<class UG1PlayerUserWidget> PlayerWidget;
 
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
+	TObjectPtr<class UG1QuitGameWidget> QuitGameWidget;
+
+	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<class UG1InventoryWidget> PlayerInventory;
 
 public:
+	bool IsVisibleWidget() const;
 	void OnInputInventory();
+	void OnInputESC();
 };

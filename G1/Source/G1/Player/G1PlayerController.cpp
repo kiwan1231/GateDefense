@@ -17,7 +17,9 @@
 #include "UI/Ingame/G1IngameSceneWidget.h"
 #include "UI/Ingame/G1GameOverSceneWidget.h"
 #include "UI/Item/DropItem/G1DropItemDescWidget.h"
+#include "UI/Ingame/G1PlayerUserWidget.h"
 #include "UI/Inventory/G1InventoryWidget.h"
+#include "UI/G1QuitGameWidget.h"
 
 #include "GameMode/G1GameMode.h"
 #include "Kismet/GameplayStatics.h"
@@ -59,6 +61,7 @@ void AG1PlayerController::OnPossess(APawn* InPawn)
 
 	if (GetIngameUI() != nullptr)
 	{
+		GetIngameUI()->PlayerWidget->OnInitPlayerWidget(G1Player);
 		GetIngameUI()->PlayerInventory->OnInitInventory(G1Player);
 	}
 }
@@ -89,6 +92,9 @@ void AG1PlayerController::SetupInputComponent()
 
 			auto OpenInventoryAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Interface_Inventory);
 			EnhancedInputComponent->BindAction(OpenInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::Input_OpenInventory);
+
+			auto OpenEscAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Interface_ESC);
+			EnhancedInputComponent->BindAction(OpenEscAction, ETriggerEvent::Triggered, this, &ThisClass::Input_ESC);
 
 			/*auto HitTargetAction = InputData->FindInputActionByTag(G1GameplayTags::Input_Action_HitTarget);
 			EnhancedInputComponent->BindAction(HitTargetAction, ETriggerEvent::Triggered, this, &ThisClass::Input_HitTarget);*/
@@ -285,38 +291,18 @@ void AG1PlayerController::Input_OpenInventory(const FInputActionValue& InputValu
 	if (PlayerInventory == nullptr || PlayerInventory->IsValidLowLevel() == false)
 		return;
 
-	if (PlayerInventory->IsVisible())
+	InGameUI->OnInputInventory();
+
+	if (InGameUI->IsVisibleWidget())
 	{
-		PlayerInventory->Hide();
-
-		FInputModeGameAndUI InputMode;
-		SetInputMode(InputMode);
-
-		// 付快胶 包访 可记 汗备
-		bShowMouseCursor = false;
-		//bEnableClickEvents = false;
-		//bEnableMouseOverEvents = false;
+		SetCharacterInput(true);
 	}
 	else
 	{
-		PlayerInventory->Show();
-
-		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(PlayerInventory->TakeWidget());
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		InputMode.SetHideCursorDuringCapture(false);
-
-		SetInputMode(InputMode);
-
-		bShowMouseCursor = true;
-		//bEnableClickEvents = true;
-		//bEnableMouseOverEvents = true;
+		/*FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(PlayerInventory->TakeWidget());*/
+		SetCharacterInput(false);
 	}
-
-	/*if (GetIngameUI() != nullptr && GetIngameUI()->IsValidLowLevel())
-	{
-		GetIngameUI()->OnInputInventory();
-	}*/
 }
 
 void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)
@@ -338,6 +324,28 @@ void AG1PlayerController::Input_PickUpItem(const FInputActionValue& InputValue)
 		{
 			/// NearItem is not
 		}
+	}
+}
+
+void AG1PlayerController::Input_ESC(const FInputActionValue& InputValue)
+{
+	TObjectPtr<UG1IngameSceneWidget> InGameUI = GetIngameUI();
+	if (InGameUI == nullptr || InGameUI->IsValidLowLevel() == false)
+		return;
+
+	TObjectPtr<UG1QuitGameWidget> QuitGameWidget = InGameUI->QuitGameWidget;
+	if (QuitGameWidget == nullptr || QuitGameWidget->IsValidLowLevel() == false)
+		return;
+
+	InGameUI->OnInputESC();
+
+	if (InGameUI->IsVisibleWidget())
+	{
+		SetCharacterInput(true);
+	}
+	else
+	{
+		SetCharacterInput(false);
 	}
 }
 
@@ -435,7 +443,7 @@ bool AG1PlayerController::EnablePlayerInput()
 {
 	if (GetIngameUI())
 	{
-		if (GetIngameUI()->PlayerInventory->IsVisible())
+		if (GetIngameUI()->IsVisibleWidget())
 		{
 			return false;
 		}
@@ -496,6 +504,32 @@ void AG1PlayerController::InitUserInterfaceWidget()
 			DropItemDescWidget->AddToViewport();
 			DropItemDescWidget->Hide();
 		}
+	}
+}
+
+void AG1PlayerController::SetCharacterInput(bool InputLock)
+{
+	if (InputLock)
+	{
+		FInputModeGameAndUI InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		InputMode.SetHideCursorDuringCapture(false);
+
+		SetInputMode(InputMode);
+
+		bShowMouseCursor = true;
+		//bEnableClickEvents = true;
+		//bEnableMouseOverEvents = true;
+	}
+	else
+	{
+		FInputModeGameAndUI InputMode;
+		SetInputMode(InputMode);
+
+		// 付快胶 包访 可记 汗备
+		bShowMouseCursor = false;
+		//bEnableClickEvents = false;
+		//bEnableMouseOverEvents = false;
 	}
 }
 

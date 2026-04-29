@@ -46,7 +46,7 @@ void AG1GameMode::Tick(float DeltaTime)
 	{
 		ElapsedTime += DeltaTime;
 
-		CheckElapsedTimeEvent();
+		CheckElapsedTimeEvent(DeltaTime);
 	}
 
 	else if (ModeState == EGameModeState::GameOver)
@@ -118,6 +118,8 @@ void AG1GameMode::InitEventInstance()
 
 void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 {
+	return;
+
 	PlayEvent->TriggerCount = 0;
 
 	if (PlayEvent->EventData->Repeat == false)
@@ -136,7 +138,23 @@ void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 				Monster->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
 			}
 		}
+		else if (Action.ActionType == EEventActionType::RandomSpawnMonster)
+		{
+			FVector RandomPos = FVector::ZeroVector;
 
+			if (Action.RandomSpawnList.Num() > 0)
+			{
+				int32 Index = FMath::RandRange(0, Action.RandomSpawnList.Num() - 1);
+				RandomPos = Action.RandomSpawnList[Index];
+			}
+
+			AG1Monster* Monster = GetWorld()->SpawnActor<AG1Monster>(Action.SpawnMonster, RandomPos, FRotator::ZeroRotator);
+			if (Monster != nullptr)
+			{
+				Monster->MonsterDropID = Action.SpawnMonsterDropID;
+				Monster->OnCharacterDead.AddUObject(this, &AG1GameMode::Delegate_OnCharacterDead);
+			}
+		}
 		else if (Action.ActionType == EEventActionType::GameOver)
 		{
 			OnGameOver.Broadcast(ModeType);
@@ -144,7 +162,7 @@ void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 	}
 }
 
-void AG1GameMode::CheckElapsedTimeEvent()
+void AG1GameMode::CheckElapsedTimeEvent(float DeltaTime)
 {
 	for (FG1EventInstance& EventInstance : EventInstanceList)
 	{
@@ -158,9 +176,16 @@ void AG1GameMode::CheckElapsedTimeEvent()
 			continue;
 		}
 
-		if (EventInstance.EventData->ElapsedTime <= ElapsedTime)
+		EventInstance.ElapsedTime += DeltaTime;
+
+		if (EventInstance.EventData->ElapsedTime <= EventInstance.ElapsedTime)
 		{
 			PlayEventAction(&EventInstance);
+
+			if (EventInstance.EventData->Repeat)
+			{
+				EventInstance.ElapsedTime -= EventInstance.EventData->ElapsedTime;
+			}
 		}
 	}
 }

@@ -16,6 +16,7 @@ namespace G1GameplayTags
 namespace G1GameplayTags
 {
 	UE_DEFINE_GAMEPLAY_TAG(Input_Interface_Inventory, "Input.Interface.Inventory");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Interface_ESC, "Input.Interface.ESC");
 }
 
 namespace G1GameplayTags

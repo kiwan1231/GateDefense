@@ -74,6 +74,9 @@ void UG1AbilitySystem::RemoveItemAbilities(const TArray<TSubclassOf<class UGamep
 
 void UG1AbilitySystem::AddEquipmentGameplayEffect(const FName EquipID)
 {
+	if (EquipHandles.Contains(EquipID))
+		return;
+
 	auto ItemData = UG1AssetManager::GetAssetByName<UG1ItemData>("Item_Weapon");
 
 	const FG1ItemInfo* ItemInfo = ItemData->FindItemInfo(EquipID);
@@ -93,7 +96,7 @@ void UG1AbilitySystem::RemoveEquipmentGameplayEffect(const FName EquipID)
 {
 	if (EquipHandles.Contains(EquipID))
 	{
-		RemoveActiveGameplayEffect(EquipHandles[EquipID]);
+		bool bRemoved = RemoveActiveGameplayEffect(EquipHandles[EquipID]);
 		EquipHandles.Remove(EquipID);
 	}
 }
@@ -104,4 +107,9 @@ void UG1AbilitySystem::ActivateAbility(FGameplayTag AbilityTag)
 	{
 		TryActivateAbility(SpecHandle);
 	}
+}
+
+void UG1AbilitySystem::LogActiveGameplayEffects()
+{
+	
 }

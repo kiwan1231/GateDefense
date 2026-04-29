@@ -99,11 +99,14 @@ void AG1Player::PossessedBy(AController* NewController)
 	auto InGameUI = Controller->GetIngameUI();
 	if (InGameUI != nullptr && InGameUI->PlayerWidget != nullptr)
 	{
-		Controller->IngameUI->PlayerWidget->SetName("juseal");
+		Controller->IngameUI->PlayerWidget->SetName("player");
 
 		float Hp = AttributeSet->GetHealth();
 		float MaxHp = AttributeSet->GetMaxHealth();
 		Controller->IngameUI->PlayerWidget->SetHpRatio(Hp, MaxHp);
+
+		float Damage = TotalDemage();
+		Controller->IngameUI->PlayerWidget->SetDamage(Damage);
 	}
 }
 
