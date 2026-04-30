@@ -118,8 +118,6 @@ void AG1GameMode::InitEventInstance()
 
 void AG1GameMode::PlayEventAction(FG1EventInstance* PlayEvent)
 {
-	return;
-
 	PlayEvent->TriggerCount = 0;
 
 	if (PlayEvent->EventData->Repeat == false)
